@@ -28,7 +28,7 @@
                 <h1>会社一覧</h1>
             </div>
             <div class="menu">
-                <a href="company/register_company.php" class="create">新規登録</a><!-- company/register_company.phpに遷移 -->
+                <a href="register.php" class="create">新規登録</a><!-- company/register_company.phpに遷移 -->
                 <form action="" method="GET">
                     <input type="text" class="search-form">
                     <input class="search" type="submit" value="検索">
