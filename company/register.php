@@ -33,7 +33,7 @@ if (!empty($_POST)) {
     $manager_name = $_POST['manager_name'];
     $phone_number = $_POST['phone_number'];
     $postal_code = $_POST['postal_code'];
-    $prefecture_code = $_POST['prefecture_code'];
+    $prefecture_code = intval($_POST['prefecture_code']);
     $address = $_POST['address'];
     $mail_address = $_POST['mail_address'];
     $prefix = $_POST['prefix'];
@@ -52,13 +52,13 @@ if (!empty($_POST)) {
 
     if ($phone_number == '') {
         $error['phone_number'] = '電話番号を入力してください';
-    } elseif (mb_strlen($phone_number) > 11 || !is_int($phone_number)) {
+    } elseif (mb_strlen($phone_number) > 11 || !preg_match('/^\d+$/', $phone_number)) {
         $error['phone_number'] = '電話番号はハイフンなしの11桁以下の半角整数で入力してください';
     }
 
     if ($postal_code == '') {
         $error['postal_code'] = '郵便番号を入力してください';
-    } elseif (mb_strlen($postal_code) != 7 || !is_int($postal_code)) {
+    } elseif (mb_strlen($postal_code) != 7 || !preg_match('/^\d+$/', $postal_code)) {
         $error['postal_code'] = '郵便番号はハイフンなしの7桁の半角整数で入力してください';
     }
 
@@ -88,6 +88,11 @@ if (!empty($_POST)) {
         $error['prefix'] = 'プレフィックスを入力してください';
     } elseif (mb_strlen($prefix) > 8 || !preg_match('/^[a-zA-Z0-9]+$/', $prefix)) {
         $error['prefix'] = 'プレフィックスは8字以内の半角英数字で入力してください';
+    }
+
+    if (empty($error)) {
+        header('Location: check.php');
+        exit();
     }
 }
 
