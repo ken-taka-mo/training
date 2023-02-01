@@ -102,7 +102,7 @@ if (!empty($_POST)) {
         <div class="container">
             <div class="heading">
                 <h1>会社登録</h1>
-                <a href="../index.php">戻る</a>
+                <a href="index.php">戻る</a>
             </div>
             <form action="register.php" method="POST" class="create-form">
                 <div class="form-items">
