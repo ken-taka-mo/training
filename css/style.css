@@ -1,3 +1,12 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 h1 {
     margin: 0;
 }
@@ -6,12 +15,27 @@ a {
     text-decoration: none;
 }
 
-.list {
-    width: 85%;
-    margin: 100px auto 0;
+table {
+    border-spacing: 0;
+}
+
+main {
     border: 2px solid gray;
     border-radius: 6px;
-    height: 800px;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+    margin: 0;
+    text-align: right;
+}
+/* 一覧ページ */
+
+
+.list {
+    width: 85%;
+    height: 750px;
 }
 
 .container {
@@ -49,9 +73,9 @@ a {
     float: right;
 }
 
-select {
+select, .search-form {
     width: 150px;
-    height: 26px;
+    height: 20px;
     margin-right: 5px;
     background-color: #dddddd7a;
 }
@@ -73,15 +97,14 @@ table {
     height: 35px;
 }
 
-tr:first-of-type {
-    border-left: 2px solid #bfbcbc;
+th:first-of-type {
+    border-left: 2px solid #efefef;
 }
 
 th {
     font-size: 12px;
-    border-right: 2px solid #bfbcbc;
-    border-bottom: 2px solid #bfbcbc;
-    
+    border-right: 2px solid #efefef;
+    border-bottom: 2px solid #efefef;
 }
 
 th:not(.link) {
@@ -91,6 +114,10 @@ th:not(.link) {
 
 th a {
     color: red;
+}
+
+.th-id a{
+    color: white;
 }
 
 .to-list a{
@@ -123,4 +150,58 @@ th a {
 
 .prev span {
     padding-right: 7px;
+}
+
+/* 登録ページ */
+
+.create-page {
+    width: 40%;
+    margin: 0 auto;
+}
+.create-page .heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.create-form {
+    margin: 50px 0;
+}
+
+
+.item {
+    width: 100%;
+    height: 60px;
+    display: flex;
+    border-top: 1px solid #efefef;
+}
+
+.item-titles {
+    background-color: red;
+    color: white;
+    display: inline-block;
+    text-align: left;
+    line-height: 60px;
+    padding-left: 5px;
+    flex: 2;
+}
+
+.item input, .address-details {
+    flex: 8;
+}
+
+.address-details {
+    font-size: 12px;
+}
+
+.address-detail {
+    width: 100%;
+}
+
+.address-detail > label {
+    width: 20%;
+}
+
+.address-detail > input, .address-detail > select {
+    width: 80%;
 }
