@@ -46,29 +46,23 @@ $companies = $companies->fetchAll();
                     <th class="link">編集</th>
                     <th class="link">削除</th>
                 </tr>
+                <!-- 会社テーブルのプレフィックス、作成日時、更新日時以外を10行ずつ一覧表示 -->
+                <!-- デフォルトは会社番号昇順で表示 -->
+                <!-- テーブルヘッダーの会社番号クリック時に会社番号降順で表示 -->
                 <?php foreach ($companies as $company) :?>
                     <tr>
                         <th><?= h($company['id']) ?></th>
                         <th><?= h($company['name']) ?></th>
                         <th><?= h($company['manager_name']) ?></th>
-                        <th><?= h($company['phone_number']) ?></th>
-                        <th><?= '〒' . h($company['postal_code']) . "<br>" . $prefectures[h($company['prefecture_code'])] . h($company['address'])?></th>
+                        <th><?= h(insertHyphen($company['phone_number'])) ?></th>
+                        <th><?= '〒' . h(substr_replace($company['postal_code'], '-', 3, 0)) . "<br>" . $prefectures[h($company['prefecture_code'])] . h($company['address'])?></th>
                         <th><?= h($company['mail_address'])?></th>
                         <th class="link to-list"><a href="../quotations/index.php?id=<?= h($company['id'])?>">見積一覧</a></th><!-- estimation/index.php?=会社番号(ID)で遷移 -->
                         <th class="link to-list"><a href="../invoices/index.php?id=<?= h($company['id'])?>">請求一覧</a></th><!-- bill/index.php?=会社番号(ID)で遷移 -->
                         <th class="link"><a href="edit.php?id=<?= h($company['id'])?>">編集</a></th><!-- company/edit_company.php?=会社番号(ID)で遷移-->
-                        <th class="link"><a href="#">削除</a></th><!-- where id = 会社番号でDELETE -->
+                        <th class="link"><a href="delete.php?id=<?= h($company['id'])?>">削除</a></th><!-- where id = 会社番号でDELETE -->
                     </tr>
                 <?php endforeach?>
-                <tr>
-                    <!-- 会社テーブルのプレフィックス、作成日時、更新日時以外を10行ずつ一覧表示 -->
-                    <!-- デフォルトは会社番号昇順で表示 -->
-                    <!-- テーブルヘッダーの会社番号クリック時に会社番号降順で表示 -->
-                    <th class="link to-list"><a href="../quotations/">見積一覧</a></th><!-- estimation/index.php?=会社番号(ID)で遷移 -->
-                    <th class="link to-list"><a href="../invoices/">請求一覧</a></th><!-- bill/index.php?=会社番号(ID)で遷移 -->
-                    <th class="link"><a href="#">編集</a></th><!-- company/edit_company.php?=会社番号(ID)で遷移-->
-                    <th class="link"><a href="#">削除</a></th><!-- where id = 会社番号でDELETE -->
-                </tr>
             </table>
             <div class="page-navigation">
                 <a href="" class="prev p-nav"><span>&larr;</span>前へ</a><!-- 前の10行を表示。なければクリック不可。 -->
