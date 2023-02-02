@@ -3,6 +3,7 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
 
+
 if (empty($_GET['id'])) {
     header('Location: index.php');
     exit();
@@ -23,62 +24,84 @@ if (empty($_GET['id'])) {
         $prefecture_code = $details['prefecture_code'];
         $address = $details['address'];
         $mail_address = $details['mail_address'];
-    } else {
-        $name = $_POST['name'];
-        $manager_name = $_POST['manager_name'];
-        $phone_number = $_POST['phone_number'];
-        $postal_code = $_POST['postal_code'];
-        $prefecture_code = $_POST['prefecture_code'];
-        $address = $_POST['address'];
-        $mail_address = $_POST['mail_address'];
     }
 }
 
 
 
 if (!empty($_POST)) {
-    if ($_POST['name'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['name'])) {
+    $name = $_POST['name'];
+    $manager_name = $_POST['manager_name'];
+    $phone_number = $_POST['phone_number'];
+    $postal_code = $_POST['postal_code'];
+    $prefecture_code = $_POST['prefecture_code'];
+    $address = $_POST['address'];
+    $mail_address = $_POST['mail_address'];
+
+    if ($name == '' || preg_match('/^[\s\n\t]+$/', $name)) {
         $error['name'] = '会社名を入力してください';
-    } elseif (mb_strlen($_POST['name']) > 64) {
+    } elseif (mb_strlen($name) > 64) {
         $error['name'] = '会社名は64文字以内で入力してください';
     }
 
-    if ($_POST['manager_name'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['manager_name'])) {
+    if ($manager_name == '' || preg_match('/^[\s\n\t]+$/', $manager_name)) {
         $error['manager_name'] = '担当者名を入力してください';
-    } elseif (mb_strlen($_POST['manager_name']) > 32) {
+    } elseif (mb_strlen($manager_name) > 32) {
         $error['manager_name'] = '担当者名は32文字以内で入力してください';
     }
 
-    if ($_POST['phone_number'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['phone_number'])) {
+    if ($phone_number == '' || preg_match('/^[\s\n\t]+$/', $phone_number)) {
         $error['phone_number'] = '電話番号を入力してください';
-    } elseif (mb_strlen($_POST['phone_number']) > 11 || !preg_match('/^\d+$/', $_POST['phone_number'])) {
+    } elseif (mb_strlen($phone_number) > 11 || !preg_match('/^\d+$/', $phone_number)) {
         $error['phone_number'] = '電話番号はハイフンなしの11桁以下の半角整数で入力してください';
     }
 
-    if ($_POST['postal_code'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['postal_code'])) {
+    if ($postal_code == '' || preg_match('/^[\s\n\t]+$/', $postal_code)) {
         $error['postal_code'] = '郵便番号を入力してください';
-    } elseif (mb_strlen($_POST['postal_code']) != 7 || !preg_match('/^\d+$/', $_POST['postal_code'])) {
+    } elseif (mb_strlen($postal_code) != 7 || !preg_match('/^\d+$/', $postal_code)) {
         $error['postal_code'] = '郵便番号はハイフンなしの7桁の半角整数で入力してください';
     }
 
-    if ($_POST['prefecture_code'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['prefecture_code'])) {
+    if ($prefecture_code == '' || preg_match('/^[\s\n\t]+$/', $prefecture_code)) {
         $error['prefecture_code'] = 'もう一度都道府県を選択してください';
-    } elseif (mb_strlen($_POST['prefecture_code']) < 1 && mb_strlen($_POST['prefecture_code'] > 47)) {
+    } elseif (mb_strlen($prefecture_code) < 1 && mb_strlen($prefecture_code > 47)) {
         $error['prefecture_code'] = 'もう一度都道府県を選択してください';
     }
 
-    if ($_POST['address'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['address'])) {
+    if ($address == '' || preg_match('/^[\s\n\t]+$/', $address)) {
         $error['address'] = '市区町村を入力してください';
-    } elseif (mb_strlen($_POST['address']) > 100) {
+    } elseif (mb_strlen($address) > 100) {
         $error['address'] = '市区町村は100字以内で入力してください';
     }
 
-    if ($_POST['mail_address'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['mail_address'])) {
+    if ($mail_address == '' || preg_match('/^[\s\n\t]+$/', $mail_address)) {
         $error['mail_address'] = 'メールアドレスを入力してください';
-    } elseif (mb_strlen($_POST['mail_address']) > 100) {
+    } elseif (mb_strlen($mail_address) > 100) {
         $error['mail_address'] = 'メールアドレスは100字以内で入力して下さい';
-    } elseif (!preg_match('/^[a-zA-Z0-9_+-]+(\.[a-zA-Z0-9_+-]+)*@[a-zA-Z0-9_+-]+(\.[a-zA-Z0-9_+-]+)*$/', $_POST['mail_address'])) {
+    } elseif (!preg_match('/^[a-zA-Z0-9_+-]+(\.[a-zA-Z0-9_+-]+)*@[a-zA-Z0-9_+-]+(\.[a-zA-Z0-9_+-]+)*$/', $mail_address)) {
         $error['mail_address'] = '正しいメールアドレスを入力してください';
+    }
+
+    if (!isset($error)) {
+        $statement = $db->prepare('UPDATE companies SET
+        name=?,
+        manager_name=?,
+        phone_number=?,
+        postal_code=?,
+        prefecture_code=?,
+        address=?,
+        mail_address=?,
+        modified=NOW() WHERE id=?');
+        $statement->bindParam(1, $name);
+        $statement->bindParam(2, $manager_name);
+        $statement->bindParam(3, $phone_number);
+        $statement->bindParam(4, $postal_code);
+        $statement->bindParam(5, $prefecture_code, PDO::PARAM_INT);
+        $statement->bindParam(6, $address);
+        $statement->bindParam(7, $mail_address);
+        $statement->bindParam(8, $id, PDO::PARAM_INT);
+        $statement->execute();
+        header('Location: index.php');
     }
 }
 ?>
