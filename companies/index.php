@@ -11,18 +11,18 @@ if ($maxPage == 0) {
     $maxPage = 1;
 }
 if (isset($_GET['page'])) {
-    if (!preg_match('/^[0-9]+$/', $_GET['page']) || $_GET['page'] == 0) {
+    if (!preg_match('/^[0-9]+$/', $_GET['page']) || preg_match('/^[0]*$/', $_GET['page'])) {
         header('Location: index.php');
         exit();
+    }
+
+    if ($_GET['page'] > $maxPage) {
+        header("Location: index.php?page={$maxPage}");
+        exit();
     } else {
-        if ($_GET['page'] > $maxPage) {
-            header("Location: index.php?page={$maxPage}");
-            exit();
-        } else {
-            $page = $_GET['page'];
-            $page = max($page, 1);
-            $page = min($page, $maxPage);
-        }
+        $page = $_GET['page'];
+        $page = max($page, 1);
+        $page = min($page, $maxPage);
     }
 }
 $start = ($page - 1) * 10;
@@ -70,7 +70,7 @@ $companies = $statement->fetchAll();
             <table>
                 <tr class="table-title">
                     <?php if (isset($_GET["order"])) :?>
-                        <th class="th-id"><a href="index.php">会社番号</a></th><!-- クリック時昇順降順変更 -->
+                        <th class="th-id"><a href="index.php">会社番号</a></th>
                     <?php else :?>
                         <th class="th-id"><a href="index.php?order=DESC">会社番号</a></th>
                     <?php endif ?>
@@ -84,7 +84,6 @@ $companies = $statement->fetchAll();
                     <th class="link">編集</th>
                     <th class="link">削除</th>
                 </tr>
-                <!-- テーブルヘッダーの会社番号クリック時に会社番号降順で表示 -->
                 <?php foreach ($companies as $company) :?>
                     <tr>
                         <th><?= h($company['id']) ?></th>
@@ -96,7 +95,7 @@ $companies = $statement->fetchAll();
                         <th class="link to-list"><a href="../quotations/index.php?id=<?= h($company['id'])?>">見積一覧</a></th>
                         <th class="link to-list"><a href="../invoices/index.php?id=<?= h($company['id'])?>">請求一覧</a></th>
                         <th class="link"><a href="edit.php?id=<?= h($company['id'])?>">編集</a></th>
-                        <th class="link"><a href="delete.php?id=<?= h($company['id'])?>">削除</a></th><!-- where id = 会社番号でDELETE -->
+                        <th class="link"><a href="delete.php?id=<?= h($company['id'])?>">削除</a></th>
                     </tr>
                 <?php endforeach?>
             </table>
