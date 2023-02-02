@@ -47,7 +47,7 @@ $companyData = $statement->fetch();
         <div class="container">
             <div class="heding">
                 <h1>見積作成</h1>
-                <a href="#">戻る</a>
+                <a href="index.php?id=<?= $companyId?>">戻る</a>
             </div>
             <form action="">
                 <input type="hidden" name="id" value=<?= $companyId?>>
