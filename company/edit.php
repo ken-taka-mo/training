@@ -102,6 +102,7 @@ if (!empty($_POST)) {
         $statement->bindParam(8, $id, PDO::PARAM_INT);
         $statement->execute();
         header('Location: index.php');
+        exit();
     }
 }
 ?>
