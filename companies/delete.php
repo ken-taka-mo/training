@@ -11,9 +11,9 @@ if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id']
     exit();
 }
 
-$statement = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=?');
-$statement->execute(array($_GET['id']));
-$count = $statement->fetch();
+$hasData = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=?');
+$hasData->execute(array($_GET['id']));
+$count = $hasData->fetch();
 if ($count['cnt']) {
     $id = $_GET['id'];
 } else {
