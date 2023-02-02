@@ -4,43 +4,43 @@ require_once('../utils/functions.php');
 session_start();
 
 if (!empty($_POST)) {
-    if ($_POST['name'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['name'])) {
+    if (preg_match('/^[\s\n\t]*$/', $_POST['name'])) {
         $error['name'] = '会社名を入力してください';
     } elseif (mb_strlen($_POST['name']) > 64) {
         $error['name'] = '会社名は64文字以内で入力してください';
     }
 
-    if ($_POST['manager_name'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['manager_name'])) {
+    if (preg_match('/^[\s\n\t]*$/', $_POST['manager_name'])) {
         $error['manager_name'] = '担当者名を入力してください';
     } elseif (mb_strlen($_POST['manager_name']) > 32) {
         $error['manager_name'] = '担当者名は32文字以内で入力してください';
     }
 
-    if ($_POST['phone_number'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['phone_number'])) {
+    if (preg_match('/^[\s\n\t]*$/', $_POST['phone_number'])) {
         $error['phone_number'] = '電話番号を入力してください';
     } elseif (mb_strlen($_POST['phone_number']) > 11 || !preg_match('/^\d+$/', $_POST['phone_number'])) {
         $error['phone_number'] = '電話番号はハイフンなしの11桁以下の半角整数で入力してください';
     }
 
-    if ($_POST['postal_code'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['postal_code'])) {
+    if (preg_match('/^[\s\n\t]*$/', $_POST['postal_code'])) {
         $error['postal_code'] = '郵便番号を入力してください';
     } elseif (mb_strlen($_POST['postal_code']) != 7 || !preg_match('/^\d+$/', $_POST['postal_code'])) {
         $error['postal_code'] = '郵便番号はハイフンなしの7桁の半角整数で入力してください';
     }
 
-    if ($_POST['prefecture_code'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['prefecture_code'])) {
+    if (preg_match('/^[\s\n\t]*$/', $_POST['prefecture_code'])) {
         $error['prefecture_code'] = 'もう一度都道府県を選択してください';
     } elseif (mb_strlen($_POST['prefecture_code']) < 1 && mb_strlen($_POST['prefecture_code'] > 47)) {
         $error['prefecture_code'] = 'もう一度都道府県を選択してください';
     }
 
-    if ($_POST['address'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['address'])) {
+    if (preg_match('/^[\s\n\t]*$/', $_POST['address'])) {
         $error['address'] = '市区町村を入力してください';
     } elseif (mb_strlen($_POST['address']) > 100) {
         $error['address'] = '市区町村は100字以内で入力してください';
     }
 
-    if ($_POST['mail_address'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['mail_address'])) {
+    if (preg_match('/^[\s\n\t]*$/', $_POST['mail_address'])) {
         $error['mail_address'] = 'メールアドレスを入力してください';
     } elseif (mb_strlen($_POST['mail_address']) > 100) {
         $error['mail_address'] = 'メールアドレスは100字以内で入力して下さい';
@@ -48,7 +48,7 @@ if (!empty($_POST)) {
         $error['mail_address'] = '正しいメールアドレスを入力してください';
     }
 
-    if ($_POST['prefix'] == '' || preg_match('/^[\s\n\t]+$/', $_POST['prefix'])) {
+    if (preg_match('/^[\s\n\t]*$/', $_POST['prefix'])) {
         $error['prefix'] = 'プレフィックスを入力してください';
     } elseif (mb_strlen($_POST['prefix']) > 8 || !preg_match('/^[a-zA-Z0-9]+$/', $_POST['prefix'])) {
         $error['prefix'] = 'プレフィックスは8字以内の半角英数字で入力してください';
