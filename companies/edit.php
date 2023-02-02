@@ -43,43 +43,43 @@ if (empty($_POST)) {
     $address = $_POST['address'];
     $mail_address = $_POST['mail_address'];
 
-    if ($name == '' || preg_match('/^[\s\n\t]+$/', $name)) {
+    if (preg_match('/^[\s\n\t]*$/', $name)) {
         $error['name'] = '会社名を入力してください';
     } elseif (mb_strlen($name) > 64) {
         $error['name'] = '会社名は64文字以内で入力してください';
     }
 
-    if ($manager_name == '' || preg_match('/^[\s\n\t]+$/', $manager_name)) {
+    if (preg_match('/^[\s\n\t]*$/', $manager_name)) {
         $error['manager_name'] = '担当者名を入力してください';
     } elseif (mb_strlen($manager_name) > 32) {
         $error['manager_name'] = '担当者名は32文字以内で入力してください';
     }
 
-    if ($phone_number == '' || preg_match('/^[\s\n\t]+$/', $phone_number)) {
+    if (preg_match('/^[\s\n\t]*$/', $phone_number)) {
         $error['phone_number'] = '電話番号を入力してください';
     } elseif (mb_strlen($phone_number) > 11 || !preg_match('/^\d+$/', $phone_number)) {
         $error['phone_number'] = '電話番号はハイフンなしの11桁以下の半角整数で入力してください';
     }
 
-    if ($postal_code == '' || preg_match('/^[\s\n\t]+$/', $postal_code)) {
+    if (preg_match('/^[\s\n\t]*$/', $postal_code)) {
         $error['postal_code'] = '郵便番号を入力してください';
     } elseif (mb_strlen($postal_code) != 7 || !preg_match('/^\d+$/', $postal_code)) {
         $error['postal_code'] = '郵便番号はハイフンなしの7桁の半角整数で入力してください';
     }
 
-    if ($prefecture_code == '' || preg_match('/^[\s\n\t]+$/', $prefecture_code)) {
+    if (preg_match('/^[\s\n\t]*$/', $prefecture_code)) {
         $error['prefecture_code'] = 'もう一度都道府県を選択してください';
     } elseif (mb_strlen($prefecture_code) < 1 && mb_strlen($prefecture_code > 47)) {
         $error['prefecture_code'] = 'もう一度都道府県を選択してください';
     }
 
-    if ($address == '' || preg_match('/^[\s\n\t]+$/', $address)) {
+    if (preg_match('/^[\s\n\t]*$/', $address)) {
         $error['address'] = '市区町村を入力してください';
     } elseif (mb_strlen($address) > 100) {
         $error['address'] = '市区町村は100字以内で入力してください';
     }
 
-    if ($mail_address == '' || preg_match('/^[\s\n\t]+$/', $mail_address)) {
+    if (preg_match('/^[\s\n\t]*$/', $mail_address)) {
         $error['mail_address'] = 'メールアドレスを入力してください';
     } elseif (mb_strlen($mail_address) > 100) {
         $error['mail_address'] = 'メールアドレスは100字以内で入力して下さい';
