@@ -3,33 +3,38 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
 
-
 if (empty($_GET['id'])) {
     header('Location: index.php');
     exit();
-} elseif (!preg_match('/^[0-9]+$/', $_GET['id'])) {
+} elseif (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id'])) {
     header('Location: index.php');
     exit();
-} else {
-    $id = $_GET['id'];
-    $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix FROM companies WHERE id=?');
-    $statement->bindParam(1, $id, PDO::PARAM_INT);
-    $statement->execute();
-    $details = $statement->fetch();
-    if (empty($_POST)) {
-        $name = $details['name'];
-        $manager_name = $details['manager_name'];
-        $phone_number = $details['phone_number'];
-        $postal_code = $details['postal_code'];
-        $prefecture_code = $details['prefecture_code'];
-        $address = $details['address'];
-        $mail_address = $details['mail_address'];
-    }
 }
 
+$hasData = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=?');
+$hasData->execute(array($_GET['id']));
+$count = $hasData->fetch();
+if ($count['cnt']) {
+    $id = $_GET['id'];
+} else {
+    header('Location: index.php');
+    exit();
+}
 
+$statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix FROM companies WHERE id=?');
+$statement->bindParam(1, $id, PDO::PARAM_INT);
+$statement->execute();
+$details = $statement->fetch();
 
-if (!empty($_POST)) {
+if (empty($_POST)) {
+    $name = $details['name'];
+    $manager_name = $details['manager_name'];
+    $phone_number = $details['phone_number'];
+    $postal_code = $details['postal_code'];
+    $prefecture_code = $details['prefecture_code'];
+    $address = $details['address'];
+    $mail_address = $details['mail_address'];
+} else {
     $name = $_POST['name'];
     $manager_name = $_POST['manager_name'];
     $phone_number = $_POST['phone_number'];
