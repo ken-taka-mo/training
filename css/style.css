@@ -154,17 +154,17 @@ th a {
 
 /* 登録ページ */
 
-.create-page {
+.create-page, .edit-page {
     width: 40%;
     margin: 0 auto;
 }
-.create-page .heading {
+.create-page .heading, .edit-page .heading {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.create-form {
+.create-form, .edit-form {
     margin: 50px 0;
 }
 
@@ -186,7 +186,16 @@ th a {
     flex: 2;
 }
 
-.item input, .address-details {
+.item p {
+    height: 60px;
+    line-height: 60px;
+    padding-left: 5px;
+    margin: 0;
+    border-right: 1px solid #7a7a7a;
+    border-bottom: 1px solid #7a7a7a;
+}
+
+.item input, .address-details, .item p {
     flex: 8;
 }
 
