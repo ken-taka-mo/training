@@ -1,5 +1,6 @@
 <?php
 require_once('../dbconnect.php');
+session_start();
     // id
     // 会社id　companiesTABLEのid
     // 見積番号 プレフィックス-q-8桁の数字
@@ -56,6 +57,12 @@ if (!empty($_POST)) {
         $error['status'] = '状態を入力してください';
     } elseif (!preg_match('/^[129]$/', $_POST['status'])) {
         $error['status'] = '状態をもう一度選択してください';
+    }
+
+    if (!isset($error)) {
+        $_SESSION['new_quotation'] = $_POST;
+        header('Location: check.php');
+        exit();
     }
 }
 
