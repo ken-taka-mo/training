@@ -27,7 +27,19 @@ if (isset($_GET['page'])) {
 }
 $start = ($page - 1) * 10;
 
-$statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies LIMIT ?,10');
+if (isset($_GET['order'])) {
+    if ($_GET['order'] == 'DESC') {
+        $_SESSION["desc"] = true;
+        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies ORDER BY id DESC LIMIT ?,10');
+    } else {
+        $_SESSION["desc"] = false;
+        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies LIMIT ?,10');
+    }
+} else {
+    $_SESSION["desc"] = false;
+    $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies LIMIT ?,10');
+}
+
 $statement->bindParam(1, $start, PDO::PARAM_INT);
 $statement->execute();
 $companies = $statement->fetchAll();
@@ -72,8 +84,6 @@ $companies = $statement->fetchAll();
                     <th class="link">編集</th>
                     <th class="link">削除</th>
                 </tr>
-                <!-- 会社テーブルのプレフィックス、作成日時、更新日時以外を10行ずつ一覧表示 -->
-                <!-- デフォルトは会社番号昇順で表示 -->
                 <!-- テーブルヘッダーの会社番号クリック時に会社番号降順で表示 -->
                 <?php foreach ($companies as $company) :?>
                     <tr>
@@ -92,12 +102,28 @@ $companies = $statement->fetchAll();
             </table>
             <div class="page-navigation">
                 <?php if ($page <= 1) :?>
-                    <a href="index.php?page=<?= $page + 1?>" class="next p-nav">次へ<span>&rarr;</span></a>
+                    <?php if ($_SESSION['desc'] == true) :?>
+                        <a href="index.php?page=<?= $page + 1?>&order=DESC" class="next p-nav">次へ<span>&rarr;</span></a>
+                    <?php else :?>
+                        <a href="index.php?page=<?= $page + 1?>" class="next p-nav">次へ<span>&rarr;</span></a>
+                    <?php endif ?>
                 <?php elseif ($page >= $maxPage) :?>
-                    <a href="index.php?page=<?= $page - 1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
+                    <?php if ($_SESSION['desc'] == true) :?>
+                        <a href="index.php?page=<?= $page - 1?>&order=DESC" class="prev p-nav"><span>&larr;</span>前へ</a>
+                    <?php else :?>
+                        <a href="index.php?page=<?= $page - 1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
+                    <?php endif ?>
                 <?php else :?>
-                    <a href="index.php?page=<?= $page - 1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
-                    <a href="index.php?page=<?= $page + 1?>" class="next p-nav">次へ<span>&rarr;</span></a>
+                    <?php if ($_SESSION['desc'] == true) :?>
+                        <a href="index.php?page=<?= $page - 1?>&order=DESC" class="prev p-nav"><span>&larr;</span>前へ</a>
+                    <?php else :?>
+                        <a href="index.php?page=<?= $page - 1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
+                    <?php endif ?>
+                    <?php if ($_SESSION['desc'] == true) :?>
+                        <a href="index.php?page=<?= $page + 1?>&order=DESC" class="next p-nav">次へ<span>&rarr;</span></a>
+                    <?php else :?>
+                        <a href="index.php?page=<?= $page + 1?>" class="next p-nav">次へ<span>&rarr;</span></a>
+                    <?php endif ?>
                 <?php endif?>
             </div>
         </div>
