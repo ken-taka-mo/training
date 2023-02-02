@@ -134,7 +134,7 @@ if (!empty($_POST)) {
                         <p><?= $error['status'] ?></p>
                     <?php endif?>
                 </table>
-                <input type="submit" value="見積作成">
+                <input type="submit" value="確認">
             </form>
         </div>
     </main>
