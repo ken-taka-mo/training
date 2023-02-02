@@ -23,14 +23,14 @@ $hasData = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=?');
 $hasData->execute(array($_GET['id']));
 $count = $hasData->fetch();
 if ($count['cnt']) {
-    $id = $_GET['id'];
+    $companyId = $_GET['id'];
 } else {
     header('Location: ../companies/index.php');
     exit();
 }
 
 $statement = $db->prepare('SELECT name, manager_name, prefix FROM companies WHERE id=?');
-$statement->execute(array($id));
+$statement->execute(array($companyId));
 $companyData = $statement->fetch();
 ?>
 
@@ -50,15 +50,41 @@ $companyData = $statement->fetch();
                 <a href="#">戻る</a>
             </div>
             <form action="">
-                <div class="form-items">
-                    <!-- 見積名 -->
-                    <!-- 会社名 表示のみ　companiesTABLEの会社名-->
-                    <!-- 金額 -->
-                    <!-- 見積書有効期限 -->
-                    <!-- 納期 -->
-                    <!-- 状態 -->
-                </div>
-                <input type="submit" value="作成">
+                <input type="hidden" name="id" value=<?= $companyId?>>
+                <input type="hidden" name="prefix" value=<?= $companyData['prefix']?>>
+                <table class="form-items">
+                    <tr>
+                        <th>見積名</th>
+                        <td><input type="text" name="title"></td>
+                    </tr>
+                    <tr>
+                        <th>会社名</th>
+                        <td><?= $companyData['name']?></td>
+                    </tr>
+                    <tr>
+                        <th>金額</th>
+                        <td><input type="text" name="total"></td>
+                    </tr>
+                    <tr>
+                        <th>見積有効期限</th>
+                        <td><input type="date" name="validity_period"></td>
+                    </tr>
+                    <tr>
+                        <th>納期</th>
+                        <td><input type="date" name="due_date"></td>
+                    </tr>
+                    <tr>
+                        <th>状態</th>
+                        <td>
+                            <select name="status" id="">
+                                <option value="1">下書き</option>
+                                <option value="2">発行済み</option>
+                                <option value="9">破棄</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <input type="submit" value="見積作成">
             </form>
         </div>
     </main>
