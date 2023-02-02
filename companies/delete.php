@@ -17,7 +17,7 @@ $count = $statement->fetch();
 if ($count['cnt']) {
     $id = $_GET['id'];
 } else {
-    header('Location: ../companies/index.php');
+    header('Location: index.php');
     exit();
 }
 
