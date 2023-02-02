@@ -6,7 +6,7 @@ require_once('../utils/prefectures.php');
 if (empty($_GET['id'])) {
     header('Location: index.php');
     exit();
-} elseif (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id'])) {
+} elseif (!preg_match('/^[0-9]*[1-9]+$/', $_GET['id'])) {
     header('Location: index.php');
     exit();
 }
