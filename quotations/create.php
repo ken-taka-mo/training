@@ -83,9 +83,10 @@ if (!empty($_POST)) {
                 <h1>見積作成</h1>
                 <a href="index.php?id=<?= $companyId?>">戻る</a>
             </div>
-            <form action="" method="POST">
-                <input type="hidden" name="id" value=<?= $companyId?>>
+            <form action="create.php?id=<?= $companyId?>" method="POST">
+                <input type="hidden" name="company_id" value=<?= $companyId?>>
                 <input type="hidden" name="prefix" value=<?= $companyData['prefix']?>>
+                <input type="hidden" name="name" value=<?= $companyData['name']?>>
                 <table class="form-items">
                     <tr>
                         <th>見積名</th>
