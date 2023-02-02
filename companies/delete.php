@@ -6,7 +6,7 @@ if (empty($_GET['id'])) {
     exit();
 }
 
-if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id'])) {
+if (!preg_match('/^[0-9]*[1-9]+$/', $_GET['id'])) {
     header('Location: index.php');
     exit();
 }
