@@ -15,11 +15,22 @@ if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id']
 
 $id = $_GET['id'];
 
-$page = 1;
 $countStatement = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE company_id=?');
 $countStatement->bindParam(1, $id, PDO::PARAM_INT);
 $countStatement->execute();
 $count = $countStatement->fetch();
+
+if (!$count['cnt'] > 0) {
+    $quotationExist = false;
+} else {
+    $quotationExist = true;
+    $statement = $db->prepare('SELECT c.name, c.manager_name, q.no, q.title, q.total, q.validity_period, q.due_date, q.status FROM companies c, quotations q WHERE c.id=?');
+    $statement->bindParam(1, $id, PDO::PARAM_INT);
+    $statement->execute();
+    $quotations = $statement->fetchAll();
+}
+
+$page = 1;
 $maxPage = ceil($count['cnt'] / 10);
 if ($maxPage == 0) {
     $maxPage = 1;
@@ -50,20 +61,6 @@ if ($end > $count['cnt']) {
 $nameStatement = $db->prepare('SELECT name FROM companies WHERE id=?');
 $nameStatement->execute(array($id));
 $name = $nameStatement->fetch();
-
-$hasDataStatement = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE company_id=?');
-$hasDataStatement->execute(array($id));
-$count = $hasDataStatement->fetch();
-
-if (!$count['cnt'] > 0) {
-    $quotationExist = false;
-} else {
-    $quotationExist = true;
-    $statement = $db->prepare('SELECT c.name, c.manager_name, q.no, q.title, q.total, q.validity_period, q.due_date, q.status FROM companies c, quotations q WHERE c.id=?');
-    $statement->bindParam(1, $id, PDO::PARAM_INT);
-    $statement->execute();
-    $quotations = $statement->fetchAll();
-}
 
 if (isset($_GET['order'])) {
     if ($_GET['order'] == 'desc') {
