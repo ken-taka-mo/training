@@ -1,14 +1,7 @@
 <?php
 require_once('../dbconnect.php');
+require_once('../utils/functions.php');
 session_start();
-    // id
-    // 会社id　companiesTABLEのid
-    // 見積番号 プレフィックス-q-8桁の数字
-    // 見積名
-    // 金額
-    // 見積書有効期限
-    // 納期
-    // 状態
 if (empty($_GET['id'])) {
     header('Location: ../companies/index.php');
     exit();
@@ -66,6 +59,24 @@ if (!empty($_POST)) {
     }
 }
 
+if (isset($_GET['action']) && $_GET['action'] == 'rewrite') {
+    $_POST = $_SESSION['new_quotation'];
+}
+
+$title = '';
+$total = '';
+$validity_period = '';
+$due_date = '';
+$status = 1;
+
+if (!empty($_POST)) {
+    $title = $_POST['title'];
+    $total = $_POST['total'];
+    $validity_period = $_POST['validity_period'];
+    $due_date = $_POST['due_date'];
+    $status = $_POST['status'];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -90,7 +101,7 @@ if (!empty($_POST)) {
                 <table class="form-items">
                     <tr>
                         <th>見積名</th>
-                        <td><input type="text" name="title"></td>
+                        <td><input type="text" name="title" value=<?= h($title) ?>></td>
                     </tr>
                     <?php if (isset($error['title'])) :?>
                         <p><?= $error['title'] ?></p>
@@ -101,21 +112,21 @@ if (!empty($_POST)) {
                     </tr>
                     <tr>
                         <th>金額</th>
-                        <td><input type="text" name="total"></td>
+                        <td><input type="text" name="total" value=<?= h($total) ?>></td>
                     </tr>
                     <?php if (isset($error['total'])) :?>
                         <p><?= $error['total'] ?></p>
                     <?php endif?>
                     <tr>
                         <th>見積有効期限</th>
-                        <td><input type="date" name="validity_period"></td>
+                        <td><input type="date" name="validity_period" value=<?= h($validity_period) ?>></td>
                     </tr>
                     <?php if (isset($error['validity_period'])) :?>
                         <p><?= $error['validity_period'] ?></p>
                     <?php endif?>
                     <tr>
                         <th>納期</th>
-                        <td><input type="date" name="due_date"></td>
+                        <td><input type="date" name="due_date" value=<?= h($due_date) ?>></td>
                     </tr>
                     <?php if (isset($error['due_date'])) :?>
                         <p><?= $error['due_date'] ?></p>
@@ -124,9 +135,19 @@ if (!empty($_POST)) {
                         <th>状態</th>
                         <td>
                             <select name="status" id="">
-                                <option value="1">下書き</option>
-                                <option value="2">発行済み</option>
-                                <option value="9">破棄</option>
+                                <?php if ($status == 1) :?>
+                                    <option value="1" selected>下書き</option>
+                                    <option value="2">発行済み</option>
+                                    <option value="9">破棄</option>
+                                <?php elseif ($status == 2) :?>
+                                    <option value="1">下書き</option>
+                                    <option value="2" selected>発行済み</option>
+                                    <option value="9">破棄</option>
+                                <?php else :?>
+                                    <option value="1">下書き</option>
+                                    <option value="2">発行済み</option>
+                                    <option value="9" selected>破棄</option>
+                                <?php endif ?>
                             </select>
                         </td>
                     </tr>
