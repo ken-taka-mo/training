@@ -2,6 +2,7 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
+session_start();
 
 $page = 1;
 $counts = $db->query('SELECT COUNT(*) AS cnt FROM companies');
@@ -28,7 +29,7 @@ if (isset($_GET['page'])) {
 $start = ($page - 1) * 10;
 
 if (isset($_GET['order'])) {
-    if ($_GET['order'] == 'DESC') {
+    if ($_GET['order'] == 'desc') {
         $_SESSION["desc"] = true;
         $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies ORDER BY id DESC LIMIT ?,10');
     } else {
@@ -69,10 +70,10 @@ $companies = $statement->fetchAll();
             </div>
             <table>
                 <tr class="table-title">
-                    <?php if (isset($_GET["order"])) :?>
+                    <?php if ($_SESSION["desc"]) :?>
                         <th class="th-id"><a href="index.php">会社番号</a></th>
                     <?php else :?>
-                        <th class="th-id"><a href="index.php?order=DESC">会社番号</a></th>
+                        <th class="th-id"><a href="index.php?order=desc">会社番号</a></th>
                     <?php endif ?>
                     <th>会社名</th>
                     <th>担当者名</th>
@@ -101,26 +102,23 @@ $companies = $statement->fetchAll();
             </table>
             <div class="page-navigation">
                 <?php if ($page <= 1) :?>
-                    <?php if ($_SESSION['desc'] == true) :?>
-                        <a href="index.php?page=<?= $page + 1?>&order=DESC" class="next p-nav">次へ<span>&rarr;</span></a>
+                    <?php if ($_SESSION['desc']) :?>
+                        <a href="index.php?page=<?= $page + 1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
                     <?php else :?>
                         <a href="index.php?page=<?= $page + 1?>" class="next p-nav">次へ<span>&rarr;</span></a>
                     <?php endif ?>
                 <?php elseif ($page >= $maxPage) :?>
-                    <?php if ($_SESSION['desc'] == true) :?>
-                        <a href="index.php?page=<?= $page - 1?>&order=DESC" class="prev p-nav"><span>&larr;</span>前へ</a>
+                    <?php if ($_SESSION['desc']) :?>
+                        <a href="index.php?page=<?= $page - 1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
                     <?php else :?>
                         <a href="index.php?page=<?= $page - 1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
                     <?php endif ?>
                 <?php else :?>
-                    <?php if ($_SESSION['desc'] == true) :?>
-                        <a href="index.php?page=<?= $page - 1?>&order=DESC" class="prev p-nav"><span>&larr;</span>前へ</a>
+                    <?php if ($_SESSION['desc']) :?>
+                        <a href="index.php?page=<?= $page - 1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
+                        <a href="index.php?page=<?= $page + 1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
                     <?php else :?>
                         <a href="index.php?page=<?= $page - 1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
-                    <?php endif ?>
-                    <?php if ($_SESSION['desc'] == true) :?>
-                        <a href="index.php?page=<?= $page + 1?>&order=DESC" class="next p-nav">次へ<span>&rarr;</span></a>
-                    <?php else :?>
                         <a href="index.php?page=<?= $page + 1?>" class="next p-nav">次へ<span>&rarr;</span></a>
                     <?php endif ?>
                 <?php endif?>
