@@ -27,6 +27,7 @@ if (!empty($_POST)) {
     $statement->bindParam(6, $newQuotation['due_date']);
     $statement->bindParam(7, $newQuotation['status'], PDO::PARAM_INT);
     $statement->execute();
+    unset($_SESSION['new_quotation']);
     header("Location: index.php?id={$newQuotation['company_id']}");
     exit();
 }
