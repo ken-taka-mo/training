@@ -61,7 +61,7 @@ if (!empty($_POST)) {
                         </tr>
                         <tr>
                             <th>金額</th>
-                            <td><?= h($newQuotation['total']) ?></td>
+                            <td><?= number_format(h($newQuotation['total'])) . '円'?></td>
                         </tr>
                         <tr>
                             <th>見積有効期限</th>
