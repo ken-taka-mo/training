@@ -9,7 +9,7 @@ if (!isset($_GET['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-q-)[0-9]{8}$/', $_G
 
 $no = $_GET['no'];
 
-$statement = $db->prepare('SELECT title, company_id, total, validity_period, due_date, status FROM quotations WHERE no=?');
+$statement = $db->prepare('SELECT id, title, company_id, total, validity_period, due_date, status FROM quotations WHERE no=?');
 $statement->execute(array($no));
 $quotationData = $statement->fetch();
 $companyNameStatement = $db->prepare('SELECT name FROM companies WHERE id = ?');
@@ -21,6 +21,7 @@ $total = $quotationData['total'];
 $validity_period = $quotationData['validity_period'];
 $due_date = $quotationData['due_date'];
 $status = $quotationData['status'];
+$id = $quotationData['id'];
 
 if (!empty($_POST)) {
     $title = $_POST['title'];
@@ -54,6 +55,21 @@ if (!empty($_POST)) {
     } elseif (!preg_match('/^[129]$/', $_POST['status'])) {
         $error['status'] = '状態をもう一度選択してください';
     }
+
+    if (empty($error)) {
+        $updateStatement = $db->prepare('UPDATE quotations SET
+        title=?, total=?, validity_period=?, due_date=?, status=?, modified=NOW()
+        WHERE id=?');
+        $updateStatement->bindParam(1, $title);
+        $updateStatement->bindParam(2, $total, PDO::PARAM_INT);
+        $updateStatement->bindParam(3, $validity_period);
+        $updateStatement->bindParam(4, $due_date);
+        $updateStatement->bindParam(5, $status, PDO::PARAM_INT);
+        $updateStatement->bindParam(6, $id, PDO::PARAM_INT);
+        $updateStatement->execute();
+        header("Location: index.php?id={$quotationData['company_id']}");
+        exit();
+    }
 }
 ?>
 
@@ -70,9 +86,9 @@ if (!empty($_POST)) {
         <div class="container">
             <div class="heding">
                 <h1>見積編集</h1>
-                <a href="index.php?id=<?= $quotationData['company_id']?>">戻る</a>
+                <a href="index.php?id=<?= h($quotationData['company_id'])?>">戻る</a>
             </div>
-            <form action="edit.php?no=<?= $no?>" method="POST">
+            <form action="edit.php?no=<?= h($no)?>" method="POST">
                 <table>
                     <tr>
                         <th>見積名</th>
@@ -83,7 +99,7 @@ if (!empty($_POST)) {
                     <?php endif?>
                     <tr>
                         <th>会社名</th>
-                        <td><?= $companyName['name']?></td>
+                        <td><?= h($companyName['name'])?></td>
                     </tr>
                     <tr>
                         <th>金額</th>
