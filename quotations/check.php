@@ -1,18 +1,35 @@
 <?php
 require_once('../utils/functions.php');
+require_once('../dbconnect.php');
 
 session_start();
 if (empty($_SESSION['new_quotation'])) {
-    echo "";
     header('Location: index.php');
     exit();
 } else {
     $newQuotation = $_SESSION['new_quotation'];
+    $countStatement = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE company_id =?');
+    $countStatement->bindParam(1, $newQuotation['company_id'], PDO::PARAM_INT);
+    $countStatement->execute();
+    $countQuotation = $countStatement->fetch();
+    $nextNo = $countQuotation['cnt'] + 1;
+    $tailNumber = sprintf('%08d', $nextNo);
+    $no = $newQuotation['prefix'] . '-q-' . $tailNumber;
 }
 
-// if (!empty($_POST)) {
-
-// }
+if (!empty($_POST)) {
+    $statement = $db->prepare('INSERT INTO quotations SET company_id=?, no=?, title=?, total=?, validity_period=?, due_date=?, status=?, created=NOW(), modified=NOW()');
+    $statement->bindParam(1, $newQuotation['company_id']);
+    $statement->bindParam(2, $no);
+    $statement->bindParam(3, $newQuotation['title']);
+    $statement->bindParam(4, $newQuotation['total'], PDO::PARAM_INT);
+    $statement->bindParam(5, $newQuotation['validity_period']);
+    $statement->bindParam(6, $newQuotation['due_date']);
+    $statement->bindParam(7, $newQuotation['total'], PDO::PARAM_INT);
+    $statement->execute();
+    header("Location: index.php?id={$newQuotation['company_id']}");
+    exit();
+}
 
 ?>
 
