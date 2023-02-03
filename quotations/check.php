@@ -8,11 +8,11 @@ if (empty($_SESSION['new_quotation'])) {
     exit();
 } else {
     $newQuotation = $_SESSION['new_quotation'];
-    $countStatement = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE company_id =?');
-    $countStatement->bindParam(1, $newQuotation['company_id'], PDO::PARAM_INT);
-    $countStatement->execute();
-    $countQuotation = $countStatement->fetch();
-    $nextNo = $countQuotation['cnt'] + 1;
+    $lastIdStatement = $db->prepare('SELECT id FROM quotations WHERE company_id =? ORDER BY id DESC LIMIT 1');
+    $lastIdStatement->bindParam(1, $newQuotation['company_id'], PDO::PARAM_INT);
+    $lastIdStatement->execute();
+    $lastId = $lastIdStatement->fetch();
+    $nextNo = $lastId['id'] + 1;
     $tailNumber = sprintf('%08d', $nextNo);
     $no = $newQuotation['prefix'] . '-q-' . $tailNumber;
 }
@@ -25,7 +25,7 @@ if (!empty($_POST)) {
     $statement->bindParam(4, $newQuotation['total'], PDO::PARAM_INT);
     $statement->bindParam(5, $newQuotation['validity_period']);
     $statement->bindParam(6, $newQuotation['due_date']);
-    $statement->bindParam(7, $newQuotation['total'], PDO::PARAM_INT);
+    $statement->bindParam(7, $newQuotation['status'], PDO::PARAM_INT);
     $statement->execute();
     header("Location: index.php?id={$newQuotation['company_id']}");
     exit();
@@ -73,23 +73,13 @@ if (!empty($_POST)) {
                         </tr>
                         <tr>
                             <th>状態</th>
-                            <td>
-                                <select name="status" id="">
-                                    <?php if ($newQuotation['status'] == 1) :?>
-                                        <option value="1" selected>下書き</option>
-                                        <option value="2">発行済み</option>
-                                        <option value="9">破棄</option>
-                                    <?php elseif ($newQuotation['status'] == 2) :?>
-                                        <option value="1">下書き</option>
-                                        <option value="2" selected>発行済み</option>
-                                        <option value="9">破棄</option>
-                                    <?php else :?>
-                                        <option value="1">下書き</option>
-                                        <option value="2">発行済み</option>
-                                        <option value="9" selected>破棄</option>
-                                    <?php endif ?>
-                                </select>
-                            </td>
+                            <?php if ($newQuotation['status'] == 1) :?>
+                                <td>下書き</td>
+                            <?php elseif ($newQuotation['status'] == 2) :?>
+                                <td>発行済み</td>
+                            <?php else :?>
+                                <td>破棄</td>
+                            <?php endif ?>
                         </tr>
                     </table>
                     <a href="create.php?id=<?= h($newQuotation['company_id'])?>&action=rewrite">&laquo;&nbsp;書き直す</a> || <input type="submit" value="見積作成">
