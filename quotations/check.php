@@ -1,4 +1,6 @@
 <?php
+require_once('../utils/functions.php');
+
 session_start();
 if (empty($_SESSION['new_quotation'])) {
     echo "";
@@ -7,6 +9,10 @@ if (empty($_SESSION['new_quotation'])) {
 } else {
     $newQuotation = $_SESSION['new_quotation'];
 }
+
+// if (!empty($_POST)) {
+
+// }
 
 ?>
 
@@ -30,23 +36,23 @@ if (empty($_SESSION['new_quotation'])) {
                     <table class="form-items">
                         <tr>
                             <th>見積名</th>
-                            <td><?= $newQuotation['title'] ?></td>
+                            <td><?= h($newQuotation['title']) ?></td>
                         </tr>
                         <tr>
                             <th>会社名</th>
-                            <td><?= $newQuotation['name']?></td>
+                            <td><?= h($newQuotation['name'])?></td>
                         </tr>
                         <tr>
                             <th>金額</th>
-                            <td><?= $newQuotation['total'] ?></td>
+                            <td><?= h($newQuotation['total']) ?></td>
                         </tr>
                         <tr>
                             <th>見積有効期限</th>
-                            <td><?= $newQuotation['validity_period'] ?></td>
+                            <td><?= h($newQuotation['validity_period']) ?></td>
                         </tr>
                         <tr>
                             <th>納期</th>
-                            <td><?= $newQuotation['due_date'] ?></td>
+                            <td><?= h($newQuotation['due_date']) ?></td>
                         </tr>
                         <tr>
                             <th>状態</th>
@@ -69,7 +75,7 @@ if (empty($_SESSION['new_quotation'])) {
                             </td>
                         </tr>
                     </table>
-                    <input type="submit" value="見積作成">
+                    <a href="create.php?id=<?= h($newQuotation['company_id'])?>&action=rewrite">&laquo;&nbsp;書き直す</a> || <input type="submit" value="見積作成">
                 </form>
             </div>
         </main>
