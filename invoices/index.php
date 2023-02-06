@@ -98,7 +98,7 @@ if (isset($_GET['order'])) {
                 </div>
             </div>
             <div class="menu">
-                <a href="#" class="create">新規登録</a>
+                <a href="create.php?id=<?= $id ?>" class="create">新規登録</a>
                 <form action="">
                     <input type="text">
                     <input class="search" type="submit" value="検索">
