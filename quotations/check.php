@@ -8,11 +8,15 @@ if (empty($_SESSION['new_quotation'])) {
     exit();
 } else {
     $newQuotation = $_SESSION['new_quotation'];
-    $lastIdStatement = $db->prepare('SELECT id FROM quotations WHERE company_id =? ORDER BY id DESC LIMIT 1');
+    $lastIdStatement = $db->prepare('SELECT no FROM quotations WHERE company_id =? ORDER BY id DESC LIMIT 1');
     $lastIdStatement->bindParam(1, $newQuotation['company_id'], PDO::PARAM_INT);
     $lastIdStatement->execute();
     $lastId = $lastIdStatement->fetch();
-    $nextNo = $lastId['id'] + 1;
+    if (isset($lastId['no'])) {
+        $nextNo = intval(substr($lastId['no'], -8)) + 1;
+    } else {
+        $nextNo = 1;
+    }
     $tailNumber = sprintf('%08d', $nextNo);
     $no = $newQuotation['prefix'] . '-q-' . $tailNumber;
 }
