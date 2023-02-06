@@ -140,8 +140,28 @@ if (isset($_GET['order'])) {
                 <?php endfor ?>
             </table>
             <div class="page-navigation">
-                <a href="" class="prev p-nav"><span>&larr;</span>前へ</a>
-                <a href="" class="next p-nav">次へ<span>&rarr;</span></a>
+                <?php if ($showButton) :?>
+                    <?php if ($_SESSION['desc']) :?>
+                        <?php if ($page <= 1) :?>
+                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
+                        <?php elseif ($page >= $maxPage) :?>
+                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page -1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
+                        <?php elseif ($page == $maxPage) :?>
+                        <?php else :?>
+                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page -1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
+                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
+                        <?php endif?>
+                    <?php else :?>
+                        <?php if ($page <= 1) :?>
+                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>" class="next p-nav">次へ<span>&rarr;</span></a>
+                        <?php elseif ($page >= $maxPage) :?>
+                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page -1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
+                        <?php else :?>
+                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page -1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
+                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>" class="next p-nav">次へ<span>&rarr;</span></a>
+                        <?php endif?>
+                    <?php endif?>
+                <?php endif?>
             </div>
             <?php else :?>
             <table>
