@@ -11,7 +11,7 @@ if (empty($_GET['id'])) {
     exit();
 }
 
-$hasData = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=?');
+$hasData = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
 $hasData->execute(array($_GET['id']));
 $count = $hasData->fetch();
 if ($count['cnt']) {
