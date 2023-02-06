@@ -23,8 +23,9 @@ if (!$count['cnt'] > 0) {
     $quotationExist = false;
 } else {
     $quotationExist = true;
-    $statement = $db->prepare('SELECT c.name, c.manager_name, q.no, q.title, q.total, q.validity_period, q.due_date, q.status FROM companies c, quotations q WHERE c.id=? AND q.deleted is NULL');
+    $statement = $db->prepare('SELECT c.name, c.manager_name, q.no, q.title, q.total, q.validity_period, q.due_date, q.status FROM companies c, quotations q WHERE c.id=? AND q.company_id=? AND q.deleted is NULL');
     $statement->bindParam(1, $id, PDO::PARAM_INT);
+    $statement->bindParam(2, $id, PDO::PARAM_INT);
     $statement->execute();
     $quotations = $statement->fetchAll();
 }
@@ -52,7 +53,7 @@ if (isset($_GET['page'])) {
 }
 
 $start = ($page - 1) * 10;
-$end = ($page) * 10 - 1;
+$end = $start + 9;
 if ($end >= $count['cnt']) {
     $end = $count['cnt'] - 1;
 }
