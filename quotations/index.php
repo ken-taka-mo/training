@@ -53,7 +53,7 @@ if (isset($_GET['page'])) {
 }
 
 $start = ($page - 1) * 10;
-$end = ($page) * 10 - 1;
+$end = $start + 9;
 if ($end >= $count['cnt']) {
     $end = $count['cnt'] - 1;
 }
