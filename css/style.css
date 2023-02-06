@@ -9,6 +9,11 @@ html, body {
 
 h1 {
     margin: 0;
+    font-size: 24px;
+}
+
+h2 {
+    margin: 0;
 }
 
 a {
@@ -17,6 +22,8 @@ a {
 
 table {
     border-spacing: 0;
+    height: 400px;
+    width: 100%;
 }
 
 main {
@@ -45,13 +52,29 @@ main {
 
 .heading {
     border-bottom: 2px solid gray;
-    margin-top: 40px;
+    margin-top: 30px;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.heading h1 {
-    font-size: 24px;
+.heading-right {
+    display: flex;
+    align-items: center;
 }
 
+.heading-right h2 {
+    padding-right: 30px;
+}
+
+.btn-back {
+    font-weight: bold;
+    color: red;
+    border: red solid 3px;
+    border-radius: 10px;
+    padding: 5px 20px;
+}
 
 .menu {
     height: 80px;
@@ -60,7 +83,7 @@ main {
     justify-content: space-between;
 }
 
-.create {
+.btn {
     background-color: red;
     color: white;
     padding: 0 50px;
@@ -70,7 +93,7 @@ main {
 }
 
 .menu form {
-    float: right;
+    margin: 0;
 }
 
 select, .search-form {
@@ -86,28 +109,26 @@ select, .search-form {
     height: 26px;
 }
 
-table {
-    height: 400px;
-    width: 100%;
-}
-
-.table-title {
+.title {
     background-color: red;
     color: white;
+}
+
+.list-title {
     height: 35px;
 }
 
-th:first-of-type {
+.list th:first-of-type {
     border-left: 2px solid #efefef;
 }
 
-th {
+.list th {
     font-size: 12px;
     border-right: 2px solid #efefef;
     border-bottom: 2px solid #efefef;
 }
 
-th:not(.link) {
+.list th:not(.link) {
     text-align: left;
     padding-left: 15px;
 }
@@ -116,15 +137,16 @@ th a {
     color: red;
 }
 
-.th-id a{
-    color: white;
-}
-
 .to-list a{
     border: 2px solid red;
     border-radius: 30px;
     padding: 1px 20px;
 }
+
+.order a{
+    color: white;
+}
+
 
 .page-navigation {
     text-align: center;
@@ -158,16 +180,17 @@ th a {
     width: 40%;
     margin: 0 auto;
 }
-.create-page .heading, .edit-page .heading {
+
+.create-page .heading {
     display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 
-.create-form, .edit-form {
-    margin: 50px 0;
-}
 
+
+form {
+    margin: 20px 0 60px;
+}
 
 .item {
     width: 100%;
@@ -176,14 +199,39 @@ th a {
     border-top: 1px solid #efefef;
 }
 
-.item-titles {
+.item-title {
     background-color: red;
     color: white;
-    display: inline-block;
     text-align: left;
     line-height: 60px;
+    width: 20%;
     padding-left: 5px;
-    flex: 2;
+}
+
+.item td {
+    width: 80%;
+    line-height: 60px;
+}
+
+.text {
+    text-align: center;
+}
+
+td input {
+    width: 95%;
+    height: 60%;
+    font-size: 20px;
+    border-radius: 5px;
+}
+
+.date {
+    width: 40%;
+}
+
+td select {
+    height: 70%;
+    font-size: 16px;
+    text-align: center;
 }
 
 .item p {
@@ -195,22 +243,5 @@ th a {
     border-bottom: 1px solid #7a7a7a;
 }
 
-.item input, .address-details, .item p {
-    flex: 8;
-}
 
-.address-details {
-    font-size: 12px;
-}
 
-.address-detail {
-    width: 100%;
-}
-
-.address-detail > label {
-    width: 20%;
-}
-
-.address-detail > input, .address-detail > select {
-    width: 80%;
-}
