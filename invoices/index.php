@@ -120,22 +120,22 @@ if (isset($_GET['order'])) {
                 </tr>
                 <?php for ($i = $start; $i <= $end; $i++) :?>
                     <tr>
-                        <th><?= h($invoices['no']) ?></th>
-                        <th><?= h($invoices['title']) ?></th>
+                        <th><?= h($invoices[$i]['no']) ?></th>
+                        <th><?= h($invoices[$i]['title']) ?></th>
                         <th><?= h($companyData['manager_name']) ?></th>
-                        <th><?= number_format(h($invoices['total'])) . '円'?></th>
-                        <th><?= h($invoices['payment_deadline']) ?></th>
-                        <th><?= h($invoices['date_of_issue']) ?></th>
-                        <th><?= h($invoices['quotation_no'])?></th>
-                        <?php if ($invoices['status'] == 1) :?>
+                        <th><?= number_format(h($invoices[$i]['total'])) . '円'?></th>
+                        <th><?= h($invoices[$i]['payment_deadline']) ?></th>
+                        <th><?= h($invoices[$i]['date_of_issue']) ?></th>
+                        <th><?= h($invoices[$i]['quotation_no'])?></th>
+                        <?php if ($invoices[$i]['status'] == 1) :?>
                             <th>下書き</th>
-                        <?php elseif ($invoices['status'] == 2) :?>
+                        <?php elseif ($invoices[$i]['status'] == 2) :?>
                             <th>発行済み</th>
                         <?php else :?>
                             <th>破棄</th>
                         <?php endif?>
-                        <th class="link"><a href="edit.php?no=<?= h($invoices['no'])?>">編集</a></th>
-                        <th class="link"><a href="delete.php?no=<?= h($invoices['no'])?>">削除</a></th>
+                        <th class="link"><a href="edit.php?no=<?= h($invoices[$i]['no'])?>">編集</a></th>
+                        <th class="link"><a href="delete.php?no=<?= h($invoices[$i]['no'])?>">削除</a></th>
                     </tr>
                 <?php endfor ?>
             </table>
