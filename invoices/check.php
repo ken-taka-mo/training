@@ -8,7 +8,6 @@ if (empty($_SESSION['new_invoice'])) {
     exit();
 } else {
     $new_invoice = $_SESSION['new_invoice'];
-    var_dump($new_invoice);
     $lastIdStatement = $db->prepare('SELECT no FROM invoices WHERE company_id=? ORDER BY id DESC LIMIT 1');
     $lastIdStatement->bindParam(1, $new_invoice['company_id'], PDO::PARAM_INT);
     $lastIdStatement->execute();
@@ -78,13 +77,13 @@ if (!empty($_POST)) {
                     </tr>
                     <tr>
                         <th>見積番号</th>
-                        <td><?= h($new_invoice['quotation_no']) ?></td>
+                        <td><?= $new_invoice['prefix'] . '-q-' . h($new_invoice['quotation_no']) ?></td>
                     </tr>
                     <tr>
                         <th>状態</th>
                             <?php if ($new_invoice['status'] == 1) :?>
                                 <td>下書き</td>
-                            <?php elseif ($$new_invoice['status'] == 2) :?>
+                            <?php elseif ($new_invoice['status'] == 2) :?>
                                 <td>発行済み</td>
                             <?php else :?>
                                 <td>破棄</td>
