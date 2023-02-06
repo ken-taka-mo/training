@@ -5,7 +5,7 @@ require_once('../utils/prefectures.php');
 session_start();
 
 $page = 1;
-$counts = $db->query('SELECT COUNT(*) AS cnt FROM companies');
+$counts = $db->query('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL');
 $cnt = $counts->fetch();
 $maxPage = ceil($cnt['cnt'] / 10);
 if ($maxPage == 0) {
@@ -31,14 +31,14 @@ $start = ($page - 1) * 10;
 if (isset($_GET['order'])) {
     if ($_GET['order'] == 'desc') {
         $_SESSION["desc"] = true;
-        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies ORDER BY id DESC LIMIT ?,10');
+        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL ORDER BY id DESC LIMIT ?,10');
     } else {
         $_SESSION["desc"] = false;
-        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies LIMIT ?,10');
+        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL LIMIT ?,10');
     }
 } else {
     $_SESSION["desc"] = false;
-    $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies LIMIT ?,10');
+    $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL LIMIT ?,10');
 }
 
 $statement->bindParam(1, $start, PDO::PARAM_INT);
