@@ -107,7 +107,11 @@ if (isset($_GET['order'])) {
             <?php if ($invoicesExist) :?>
             <table>
                 <tr class="table-title">
-                    <th>請求番号</th>
+                    <?php if ($_SESSION['desc']) :?>
+                        <th class="th-id"><a href="index.php?id=<?= h($id) ?>">請求番号</a></th>
+                    <?php else :?>
+                        <th class="th-id"><a href="index.php?id=<?= h($id) ?>&order=desc">請求番号</a></th>
+                    <?php endif ?>
                     <th>請求名</th>
                     <th>担当者名</th>
                     <th>金額</th>
