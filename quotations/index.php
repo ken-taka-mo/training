@@ -95,11 +95,11 @@ if (isset($_GET['order'])) {
                 <h1>見積一覧</h1>
                 <div class="heading-right">
                     <h2><?= h($companyData['name'])?></h2>
-                    <a href="../companies/">会社一覧へ戻る</a>
+                    <a class="btn-back" href="../companies/">会社一覧へ戻る</a>
                 </div>
             </div>
             <div class="menu">
-                <a href="create.php?id=<?= h($id)?>" class="create">新規作成</a>
+                <a href="create.php?id=<?= h($id)?>" class="btn">新規作成</a>
                 <form action="">
                     <select name="" id="">
                         <option value="1">下書き</option>
@@ -111,11 +111,11 @@ if (isset($_GET['order'])) {
             </div>
             <?php if ($quotationExist) :?>
             <table>
-                <tr class="table-title">
+                <tr class="title list-title">
                     <?php if ($_SESSION['desc']) :?>
-                        <th class="th-id"><a href="index.php?id=<?= h($id) ?>">見積番号</a></th>
+                        <th class="order"><a href="index.php?id=<?= h($id) ?>">見積番号</a></th>
                     <?php else :?>
-                        <th class="th-id"><a href="index.php?id=<?= h($id) ?>&order=desc">見積番号</a></th>
+                        <th class="order"><a href="index.php?id=<?= h($id) ?>&order=desc">見積番号</a></th>
                     <?php endif ?>
                     <th>見積名</th>
                     <th>担当者名</th>
@@ -172,7 +172,7 @@ if (isset($_GET['order'])) {
             </div>
             <?php else :?>
                 <table>
-                <tr class="table-title">
+                <tr class="title list-title">
                     <th>見積番号</th>
                 </tr>
                 <tr>
