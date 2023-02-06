@@ -46,8 +46,8 @@ if (!empty($_POST)) {
     }
     if (preg_match('/^[\s\n\t]*$/', $_POST['quotation_no'])) {
         $error['quotation_no'] = '見積番号を入力してください';
-    } elseif (mb_strlen($_POST['quotation_no']) > 100 || !preg_match('/^[0-9a-zA-Z]+$/', $_POST['quotation_no'])) {
-        $error['quotation_no'] = '見積番号は100字以下の半角英数字で入力して下さい';
+    } elseif (mb_strlen($_POST['quotation_no']) > 8 || !preg_match('/^[0]*[1-9]+$/', $_POST['quotation_no'])) {
+        $error['quotation_no'] = '見積番号は8桁の半角数字で入力して下さい';
     }
     if (preg_match('/^[\s\n\t]*$/', $_POST['status'])) {
         $error['status'] = '状態を入力してください';
@@ -138,7 +138,7 @@ if (!empty($_POST)) {
                     <?php endif?>
                     <tr>
                         <th>見積番号</th>
-                        <td><input type="text" name="quotation_no" value=<?= h($quotation_no) ?>></td>
+                        <td><?=$companyData['prefix'] . '-q-'?><input type="text" name="quotation_no" value=<?= h($quotation_no) ?>></td>
                     </tr>
                     <?php if (isset($error['quotation_no'])) :?>
                         <p><?= $error['quotation_no'] ?></p>
