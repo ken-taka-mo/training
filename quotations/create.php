@@ -11,7 +11,7 @@ if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id']
     header('Location: ../companies/index.php');
     exit();
 }
-$hasData = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=?');
+$hasData = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
 $hasData->execute(array($_GET['id']));
 $count = $hasData->fetch();
 if ($count['cnt']) {
