@@ -23,9 +23,8 @@ if (!$count['cnt'] > 0) {
     $invoicesExist = false;
 } else {
     $invoicesExist = true;
-    $statement = $db->prepare('SELECT c.name, c.manager_name, i.no, i.title, i.total, i.payment_deadline, i.date_of_issue, i.quotation_no, i.status FROM companies c, invoices i WHERE c.id=? AND i.company_id=? AND i.deleted is NULL');
+    $statement = $db->prepare('SELECT no, title, total, payment_deadline, date_of_issue, quotation_no, status FROM invoices WHERE company_id=? AND deleted is NULL');
     $statement->bindParam(1, $id, PDO::PARAM_INT);
-    $statement->bindParam(2, $id, PDO::PARAM_INT);
     $statement->execute();
     $invoices = $statement->fetchAll();
 }
@@ -63,9 +62,9 @@ if (!$end <= 9 && $maxPage > 1) {
     $showButton = true;
 }
 
-$nameStatement = $db->prepare('SELECT name FROM companies WHERE id=?');
-$nameStatement->execute(array($id));
-$name = $nameStatement->fetch();
+$companyStatement = $db->prepare('SELECT name, manager_name FROM companies WHERE id=?');
+$companyStatement->execute(array($id));
+$companyData = $companyStatement->fetch();
 
 if (isset($_GET['order'])) {
     if ($_GET['order'] == 'desc') {
@@ -94,7 +93,7 @@ if (isset($_GET['order'])) {
             <div class="heading">
                 <h1>請求一覧</h1>
                 <div class="heading-right">
-                    <h2>株式会社○○○○</h2>
+                    <h2><?= $companyData['name']?></h2>
                     <a href="../companies/">会社一覧へ戻る</a>
                 </div>
             </div>
@@ -119,18 +118,26 @@ if (isset($_GET['order'])) {
                     <th class="link">編集</th>
                     <th class="link">削除</th>
                 </tr>
-                <?php foreach ($invoices as $invoice) :?>
-                    <th><?= $invoice['no']?></th>
-                    <th><?= $invoice['title']?></th>
-                    <th><?= $invoice['manager_name']?></th>
-                    <th><?= $invoice['total']?></th>
-                    <th><?= $invoice['payment_deadline']?></th>
-                    <th><?= $invoice['date_of_issue']?></th>
-                    <th><?= $invoice['quotation_no']?></th>
-                    <th><?= $invoice['status']?></th>
-                    <th class="link"><a href="edit.php?no=<?= $invoice['no']?>">編集</a></th>
-                    <th class="link"><a href="delete.php?no=<?= $invoice['no']?>">削除</a></th>
-                <?php endforeach?>
+                <?php for ($i = $start; $i <= $end; $i++) :?>
+                    <tr>
+                        <th><?= h($invoices['no']) ?></th>
+                        <th><?= h($invoices['title']) ?></th>
+                        <th><?= h($companyData['manager_name']) ?></th>
+                        <th><?= number_format(h($invoices['total'])) . '円'?></th>
+                        <th><?= h($invoices['payment_deadline']) ?></th>
+                        <th><?= h($invoices['date_of_issue']) ?></th>
+                        <th><?= h($invoices['quotation_no'])?></th>
+                        <?php if ($invoices['status'] == 1) :?>
+                            <th>下書き</th>
+                        <?php elseif ($invoices['status'] == 2) :?>
+                            <th>発行済み</th>
+                        <?php else :?>
+                            <th>破棄</th>
+                        <?php endif?>
+                        <th class="link"><a href="edit.php?no=<?= h($invoices['no'])?>">編集</a></th>
+                        <th class="link"><a href="delete.php?no=<?= h($invoices['no'])?>">削除</a></th>
+                    </tr>
+                <?php endfor ?>
             </table>
             <div class="page-navigation">
                 <a href="" class="prev p-nav"><span>&larr;</span>前へ</a>
