@@ -88,17 +88,17 @@ if (isset($_GET['order'])) {
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <main class="list li-company">
+    <main class="list">
         <div class="container">
             <div class="heading">
                 <h1>請求一覧</h1>
                 <div class="heading-right">
                     <h2><?= $companyData['name']?></h2>
-                    <a href="../companies/">会社一覧へ戻る</a>
+                    <a class="btn-back" href="../companies/">会社一覧へ戻る</a>
                 </div>
             </div>
             <div class="menu">
-                <a href="create.php?id=<?= $id ?>" class="create">新規登録</a>
+                <a href="create.php?id=<?= $id ?>" class="btn">新規登録</a>
                 <form action="">
                     <input type="text">
                     <input class="search" type="submit" value="検索">
@@ -106,11 +106,11 @@ if (isset($_GET['order'])) {
             </div>
             <?php if ($invoicesExist) :?>
             <table>
-                <tr class="table-title">
+                <tr class="title list-title">
                     <?php if ($_SESSION['desc']) :?>
-                        <th class="th-id"><a href="index.php?id=<?= h($id) ?>">請求番号</a></th>
+                        <th class="order"><a href="index.php?id=<?= h($id) ?>">請求番号</a></th>
                     <?php else :?>
-                        <th class="th-id"><a href="index.php?id=<?= h($id) ?>&order=desc">請求番号</a></th>
+                        <th class="order"><a href="index.php?id=<?= h($id) ?>&order=desc">請求番号</a></th>
                     <?php endif ?>
                     <th>請求名</th>
                     <th>担当者名</th>
@@ -169,7 +169,7 @@ if (isset($_GET['order'])) {
             </div>
             <?php else :?>
             <table>
-            <tr class="table-title">
+            <tr class="title list-title">
                 <th>見積番号</th>
             </tr>
             <tr>
