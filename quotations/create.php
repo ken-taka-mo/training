@@ -29,7 +29,7 @@ if (!empty($_POST)) {
     if (preg_match('/^[\s\n\t]*$/', $_POST['title'])) {
         $error['title'] = '見積名を入力してください';
     } elseif (mb_strlen($_POST['title']) > 64) {
-        $error['title'] = '見積名は64以下で入力してください';
+        $error['title'] = '見積名は64字以下で入力してください';
     }
     if (preg_match('/^[\s\n\t]*$/', $_POST['total'])) {
         $error['total'] = '金額を入力してください';
