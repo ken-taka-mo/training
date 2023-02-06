@@ -23,9 +23,8 @@ if (!$count['cnt'] > 0) {
     $quotationExist = false;
 } else {
     $quotationExist = true;
-    $statement = $db->prepare('SELECT c.name, c.manager_name, q.no, q.title, q.total, q.validity_period, q.due_date, q.status FROM companies c, quotations q WHERE c.id=? AND q.company_id=? AND q.deleted is NULL');
+    $statement = $db->prepare('SELECT no, title, total, validity_period, due_date, status FROM quotations WHERE company_id=? AND deleted is NULL');
     $statement->bindParam(1, $id, PDO::PARAM_INT);
-    $statement->bindParam(2, $id, PDO::PARAM_INT);
     $statement->execute();
     $quotations = $statement->fetchAll();
 }
@@ -63,9 +62,9 @@ if (!$end <= 9 && $maxPage > 1) {
     $showButton = true;
 }
 
-$nameStatement = $db->prepare('SELECT name FROM companies WHERE id=?');
-$nameStatement->execute(array($id));
-$name = $nameStatement->fetch();
+$companyStatement = $db->prepare('SELECT name, manager_name FROM companies WHERE id=?');
+$companyStatement->execute(array($id));
+$companyData = $companyStatement->fetch();
 
 if (isset($_GET['order'])) {
     if ($_GET['order'] == 'desc') {
@@ -95,7 +94,7 @@ if (isset($_GET['order'])) {
             <div class="heading">
                 <h1>見積一覧</h1>
                 <div class="heading-right">
-                    <h2><?= h($name['name'])?></h2>
+                    <h2><?= h($companyData['name'])?></h2>
                     <a href="../companies/">会社一覧へ戻る</a>
                 </div>
             </div>
@@ -131,7 +130,7 @@ if (isset($_GET['order'])) {
                     <tr>
                         <th><?= h($quotations[$i]['no']) ?></th>
                         <th><?= h($quotations[$i]['title']) ?></th>
-                        <th><?= h($quotations[$i]['manager_name']) ?></th>
+                        <th><?= h($companyData['manager_name']) ?></th>
                         <th><?= number_format(h($quotations[$i]['total'])) . '円'?></th>
                         <th><?= h($quotations[$i]['validity_period']) ?></th>
                         <th><?= h($quotations[$i]['due_date']) ?></th>
