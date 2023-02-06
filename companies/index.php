@@ -56,24 +56,24 @@ $companies = $statement->fetchAll();
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <main class="list li-company">
+    <main class="list">
         <div class="container">
             <div class="heading">
                 <h1>会社一覧</h1>
             </div>
             <div class="menu">
-                <a href="register.php" class="create">新規登録</a>
+                <a href="register.php" class="btn">新規登録</a>
                 <form action="" method="GET">
                     <input type="text" class="search-form">
                     <input class="search" type="submit" value="検索">
                 </form>
             </div>
             <table>
-                <tr class="table-title">
+                <tr class="list-title title">
                     <?php if ($_SESSION["desc"]) :?>
-                        <th class="th-id"><a href="index.php">会社番号</a></th>
+                        <th class="order"><a href="index.php">会社番号</a></th>
                     <?php else :?>
-                        <th class="th-id"><a href="index.php?order=desc">会社番号</a></th>
+                        <th class="order"><a href="index.php?order=desc">会社番号</a></th>
                     <?php endif ?>
                     <th>会社名</th>
                     <th>担当者名</th>
