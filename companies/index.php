@@ -4,10 +4,11 @@ require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
 session_start();
 
+const MAX_PAGE = 10;
 $page = 1;
 $counts = $db->query('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL');
 $cnt = $counts->fetch();
-$maxPage = ceil($cnt['cnt'] / 10);
+$maxPage = ceil($cnt['cnt'] / MAX_PAGE);
 if ($maxPage == 0) {
     $maxPage = 1;
 }
@@ -65,7 +66,7 @@ $companies = $statement->fetchAll();
                 <a href="register.php" class="btn">新規登録</a>
                 <form action="" method="GET">
                     <input type="text" class="search-form">
-                    <input class="search" type="submit" value="検索">
+                    <input class="btn-search" type="submit" value="検索">
                 </form>
             </div>
             <table>

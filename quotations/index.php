@@ -106,7 +106,7 @@ if (isset($_GET['order'])) {
                         <option value="2">発行済み</option>
                         <option value="3">破棄</option>
                     </select>
-                    <input class="search" type="submit" value="検索">
+                    <input class="btn-search" type="submit" value="検索">
                 </form>
             </div>
             <?php if ($quotationExist) :?>

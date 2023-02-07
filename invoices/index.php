@@ -100,8 +100,8 @@ if (isset($_GET['order'])) {
             <div class="menu">
                 <a href="create.php?id=<?= $id ?>" class="btn">新規登録</a>
                 <form action="">
-                    <input type="text">
-                    <input class="search" type="submit" value="検索">
+                    <input type="text" class="search-form">
+                    <input class="btn-search" type="submit" value="検索">
                 </form>
             </div>
             <?php if ($invoicesExist) :?>
