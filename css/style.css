@@ -12,12 +12,18 @@ h1 {
     font-size: 24px;
 }
 
-h2 {
+h2, h3, h4, p {
     margin: 0;
 }
 
 a {
     text-decoration: none;
+}
+
+input {
+    height: 35px;
+    font-size: 20px;
+    border-radius: 5px;
 }
 
 table {
@@ -46,8 +52,8 @@ main {
 }
 
 .container {
-    width: 90%;
-    margin: 0 auto;
+    width: 80%;
+    margin: 100px auto;
 }
 
 .heading {
@@ -90,6 +96,7 @@ main {
     font-size: 15px;
     border-radius: 50px;
     padding: 4px 40px;
+    cursor: pointer;
 }
 
 .menu form {
@@ -177,7 +184,7 @@ th a {
 /* 登録ページ */
 
 .create-page, .edit-page {
-    width: 40%;
+    width: 50%;
     margin: 0 auto;
 }
 
@@ -186,10 +193,13 @@ th a {
     justify-content: space-between;
 }
 
-
-
 form {
     margin: 20px 0 60px;
+}
+
+.form-items {
+    padding-bottom: 25px;
+    border-bottom: #000 1px solid;
 }
 
 .item {
@@ -199,49 +209,107 @@ form {
     border-top: 1px solid #efefef;
 }
 
-.item-title {
-    background-color: red;
-    color: white;
-    text-align: left;
-    line-height: 60px;
-    width: 20%;
-    padding-left: 5px;
-}
-
-.item td {
+.form-wrapper {
     width: 80%;
     line-height: 60px;
+    margin-left: 2%;
 }
 
-.text {
-    text-align: center;
-}
-
-td input {
+.form-wrapper input[type="text"] {
     width: 95%;
-    height: 60%;
-    font-size: 20px;
-    border-radius: 5px;
 }
 
-.date {
+.form-wrapper input[type="date"] {
     width: 40%;
 }
 
-td select {
-    height: 70%;
-    font-size: 16px;
-    text-align: center;
+.item-title {
+    background-color: red;
+    color: white;
+    line-height: 60px;
+    width: 20%;
+    padding-left: 10px;
+    font-size: 14px;
 }
 
+
 .item p {
-    height: 60px;
     line-height: 60px;
-    padding-left: 5px;
-    margin: 0;
+}
+
+.item p:not(.q-no-wrapper p) {
     border-right: 1px solid #7a7a7a;
     border-bottom: 1px solid #7a7a7a;
 }
+
+.item span {
+    color: white;
+    font-size: 12px;
+    float: right;
+    padding-right: 5px;
+}
+
+/* 請求作成の見積番号入力欄 */
+.q-no-wrapper {
+    width: 80%;
+    margin-left: 2%;
+}
+
+.q-no-wrapper p {
+    font-size: 20px;
+    display: inline;
+}
+
+.q-no-wrapper input {
+    width: 100px;
+}
+
+.form-wrapper select {
+    height: 30px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.btn-form {
+    margin-top: 40px;
+}
+
+/* 会社登録ページの住所入力欄 */
+.address-items {
+    height: 180px;
+}
+
+.address-item-wrapper {
+    width: 80%;
+    margin-left: 2%;
+    display: flex;
+    flex-direction: column;
+}
+
+.address-item {
+    display: flex;
+    height: 60px;
+    width: 100%;
+    line-height: 60px;
+}
+
+.address-item h4 {
+    width: 15%;
+    font-size: 13px;
+}
+
+.address-item input {
+    width: 80%;
+    margin-top: calc(23px/2);
+    margin-bottom: calc(23px/2);
+}
+
+.address-item select {
+    height: 30px;
+    margin: 15px 0;
+}
+
+
 
 
 
