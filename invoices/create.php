@@ -118,7 +118,7 @@ if (!empty($_POST)) {
                     </div>
                     <div class="item">
                         <h3 class="item-title">金額<span>(半角数字)</span></h3>
-                        <div class="form-wrapper"><input type="text" name="total" value=<?= h($total) ?>> 円</div>
+                        <div class="form-wrapper"><input type="text" name="total" value=<?= h($total) ?>>円</div>
                     </div>
                     <?php if (isset($error['total'])) :?>
                         <p class="error"><?= $error['total'] ?></p>

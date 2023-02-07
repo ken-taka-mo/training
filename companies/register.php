@@ -108,21 +108,21 @@ if (!empty($_POST)) {
                 <div class="form-items">
                     <div class="item">
                         <h3 class="item-title">会社名</h3>
-                        <div class="text"><input type="text" name="name" value=<?= h($name) ?>></div>
+                        <div class="form-wrapper"><input type="text" name="name" value=<?= h($name) ?>></div>
                     </div>
                     <?php if (isset($error['name'])) :?>
                         <p class="error"><?= $error['name'] ?></p>
                     <?php endif ?>
                     <div class="item">
                         <h3 class="item-title">担当者</h3>
-                        <div class="text"><input type="text" name="manager_name" value=<?= h($manager_name) ?>></div>
+                        <div class="form-wrapper"><input type="text" name="manager_name" value=<?= h($manager_name) ?>></div>
                     </div>
                     <?php if (isset($error['manager_name'])) :?>
                         <p class="error"><?= $error['manager_name'] ?></p>
                     <?php endif ?>
                     <div class="item">
                         <h3 class="item-title">電話番号</h3>
-                        <div class="text"><input type="text" name="phone_number" value=<?= h($phone_number) ?>></div>
+                        <div class="form-wrapper"><input type="text" name="phone_number" value=<?= h($phone_number) ?>></div>
                     </div>
                     <?php if (isset($error['phone_number'])) :?>
                         <p class="error"><?= $error['phone_number'] ?></p>
@@ -163,14 +163,14 @@ if (!empty($_POST)) {
                     <?php endif ?>
                     <div class="item">
                         <h3 class="item-title">メールアドレス</h3>
-                        <div class="text"><input type="text" name="mail_address" value=<?= h($mail_address) ?>></div>
+                        <div class="form-wrapper"><input type="text" name="mail_address" value=<?= h($mail_address) ?>></div>
                     </div>
                     <?php if (isset($error['mail_address'])) :?>
                         <p class="error"><?= $error['mail_address'] ?></p>
                     <?php endif ?>
                     <div class="item">
                         <h3 class="item-title">プレフィックス</h3>
-                        <div class="text"><input type="text" name="prefix" value=<?= h($prefix) ?>></div>
+                        <div class="form-wrapper"><input type="text" name="prefix" value=<?= h($prefix) ?>></div>
                     </div>
                     <?php if (isset($error['prefix'])) :?>
                         <p class="error"><?= $error['prefix'] ?></p>

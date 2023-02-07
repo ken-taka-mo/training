@@ -86,54 +86,55 @@ if (!empty($_POST)) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>見積作成</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <main>
+    <main class="create-page">
         <div class="container">
-            <div class="heding">
+            <div class="heading">
                 <h1>見積作成</h1>
-                <a href="index.php?id=<?= $companyId?>">戻る</a>
+                <a href="index.php?id=<?= $companyId?>" class="btn-back">戻る</a>
             </div>
             <form action="create.php?id=<?= $companyId?>" method="POST">
                 <input type="hidden" name="company_id" value=<?= $companyId?>>
                 <input type="hidden" name="prefix" value=<?= $companyData['prefix']?>>
                 <input type="hidden" name="name" value=<?= $companyData['name']?>>
-                <table class="form-items">
-                    <tr>
-                        <th>見積名</th>
-                        <td><input type="text" name="title" value=<?= h($title) ?>></td>
-                    </tr>
+                <div class="form-items">
+                    <div class="item">
+                        <h3 class="item-title">見積名</h3>
+                        <div class="form-wrapper"><input type="text" name="title" value=<?= h($title) ?>></div>
+                    </div>
                     <?php if (isset($error['title'])) :?>
-                        <p><?= $error['title'] ?></p>
+                        <p class="error"><?= $error['title'] ?></p>
                     <?php endif?>
-                    <tr>
-                        <th>会社名</th>
-                        <td><?= $companyData['name']?></td>
-                    </tr>
-                    <tr>
-                        <th>金額</th>
-                        <td><input type="text" name="total" value=<?= h($total) ?>></td>
-                    </tr>
+                    <div class="item">
+                        <h3 class="item-title">会社名</h3>
+                        <div class="form-wrapper"><?= $companyData['name']?></div>
+                    </div>
+                    <div class="item">
+                        <h3 class="item-title">金額<span>(半角数字)</span></h3>
+                        <div class="form-wrapper"><input type="text" name="total" value=<?= h($total) ?>>円</div>
+                    </div>
                     <?php if (isset($error['total'])) :?>
-                        <p><?= $error['total'] ?></p>
+                        <p class="error"><?= $error['total'] ?></p>
                     <?php endif?>
-                    <tr>
-                        <th>見積有効期限</th>
-                        <td><input type="date" name="validity_period" value=<?= h($validity_period) ?>></td>
-                    </tr>
+                    <div class="item">
+                        <h3 class="item-title">見積有効期限</h3>
+                        <div class="form-wrapper"><input class="date" type="date" name="validity_period" value=<?= h($validity_period) ?>></div>
+                    </div>
                     <?php if (isset($error['validity_period'])) :?>
-                        <p><?= $error['validity_period'] ?></p>
+                        <p class="error"><?= $error['validity_period'] ?></p>
                     <?php endif?>
-                    <tr>
-                        <th>納期</th>
-                        <td><input type="date" name="due_date" value=<?= h($due_date) ?>></td>
-                    </tr>
+                    <div class="item">
+                        <h3 class="item-title">納期<span>(本日以降)</span></h3>
+                        <div class="form-wrapper"><input class="date" type="date" name="due_date" value=<?= h($due_date) ?>></div>
+                    </div>
                     <?php if (isset($error['due_date'])) :?>
-                        <p><?= $error['due_date'] ?></p>
+                        <p class="error"><?= $error['due_date'] ?></p>
                     <?php endif?>
-                    <tr>
-                        <th>状態</th>
-                        <td>
+                    <div class="item">
+                        <h3 class="item-title">状態</h3>
+                        <div class="form-wrapper">
                             <select name="status" id="">
                                 <?php if ($status == 1) :?>
                                     <option value="1" selected>下書き</option>
@@ -149,13 +150,13 @@ if (!empty($_POST)) {
                                     <option value="9" selected>破棄</option>
                                 <?php endif ?>
                             </select>
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                     <?php if (isset($error['status'])) :?>
-                        <p><?= $error['status'] ?></p>
+                        <p class="error"><?= $error['status'] ?></p>
                     <?php endif?>
-                </table>
-                <input type="submit" value="確認">
+                </div>
+                <input class="btn btn-form" type="submit" value="見積作成">
             </form>
         </div>
     </main>
