@@ -47,31 +47,57 @@ if (!empty($_POST)) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>入力内容確認</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <main>
+    <main class="create-page">
         <div class="container">
-            <div class="heding">
+            <div class="heading">
                 <h1>入力内容確認</h1>
+                <a href="index.php" class="btn-back">戻る</a>
             </div>
             <form action="" method="POST">
                 <input type="hidden" name="action" value="submit">
                 <div class="form-items">
-                    <p>会社名：<?= h($register['name']) ?></p>
-                    <p>担当者名：<?= h($register['manager_name'])?></p>
-                    <p>電話番号：<?= h($register['phone_number'])?></p>
-                    <div>
-                        <p>住所</p>
-                        <div>
-                            <p>郵便番号：<?= h($register['postal_code']) ?></p>
-                            <p>都道府県：<?= $prefectures[h($register['prefecture_code'])]?></p>
-                            <p>市区町村：<?= h($register['address'])?></p>
+                    <div class="item">
+                        <h3 class="item-title">会社名</h3>
+                        <div class="form-wrapper"><?= h($register['name']) ?></div>
+                    </div>
+                    <div class="item">
+                        <h3 class="item-title">担当者</h3>
+                        <div class="form-wrapper"><?= h($register['manager_name'])?></div>
+                    </div>
+                    <div class="item">
+                        <h3 class="item-title">電話番号</h3>
+                        <div class="form-wrapper"><?= h($register['phone_number'])?></div>
+                    </div>
+                    <div class="item address-items">
+                        <h3 class="item-title">住所</h3>
+                        <div class="address-item-wrapper">
+                            <div class="address-item">
+                                <h4>郵便番号</h4>
+                                <?= h(substr_replace($register['postal_code'], '-', 3, 0)) ?>
+                            </div>
+                            <div class="address-item">
+                                <h4>都道府県</h4>
+                                <?= $prefectures[h($register['prefecture_code'])]?>
+                            </div>
+                            <div class="address-item">
+                                <h4>市区町村</h4>
+                                <?= h($register['address'])?>
+                            </div>
                         </div>
                     </div>
-                    <p>メールアドレス：<?= h($register['mail_address'])?></p>
-                    <p>プレフィックス：<?= h($register['prefix'])?></p>
+                    <div class="item">
+                        <h3 class="item-title">メールアドレス</h3>
+                        <div class="form-wrapper"><?= h($register['mail_address'])?></div>
+                    </div>
+                    <div class="item">
+                        <h3 class="item-title">プレフィックス</h3>
+                        <div class="form-wrapper"><?= h($register['prefix'])?></div>
+                    </div>
                 </div>
-                <a href="./register.php?action=rewrite">&laquo;&nbsp;書き直す</a> || <input type="submit" value="作成">
+                <a href="./register.php?action=rewrite">&laquo;&nbsp;書き直す</a> || <input class="btn btn-form" type="submit" value="登録">
             </form>
         </div>
     </main>
