@@ -45,49 +45,52 @@ if (!empty($_POST)) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>見積確認ページ</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
     <body>
-        <main>
+        <main class="create-page">
             <div class="container">
-                <div class="heding">
+                <div class="heading">
                     <h1>見積内容確認</h1>
                 </div>
                 <form action="check.php" method="POST">
                     <input type="hidden" name="id" value=<?= $newQuotation['company_id']?>>
                     <input type="hidden" name="prefix" value=<?= $newQuotation['prefix']?>>
-                    <table class="form-items">
-                        <tr>
-                            <th>見積名</th>
-                            <td><?= h($newQuotation['title']) ?></td>
-                        </tr>
-                        <tr>
-                            <th>会社名</th>
-                            <td><?= h($newQuotation['name'])?></td>
-                        </tr>
-                        <tr>
-                            <th>金額</th>
-                            <td><?= number_format(h($newQuotation['total'])) . '円'?></td>
-                        </tr>
-                        <tr>
-                            <th>見積有効期限</th>
-                            <td><?= h($newQuotation['validity_period']) ?></td>
-                        </tr>
-                        <tr>
-                            <th>納期</th>
-                            <td><?= h($newQuotation['due_date']) ?></td>
-                        </tr>
-                        <tr>
-                            <th>状態</th>
-                            <?php if ($newQuotation['status'] == 1) :?>
-                                <td>下書き</td>
-                            <?php elseif ($newQuotation['status'] == 2) :?>
-                                <td>発行済み</td>
-                            <?php else :?>
-                                <td>破棄</td>
-                            <?php endif ?>
-                        </tr>
-                    </table>
-                    <a href="create.php?id=<?= h($newQuotation['company_id'])?>&action=rewrite">&laquo;&nbsp;書き直す</a> || <input type="submit" value="見積作成">
+                    <div class="form-items">
+                        <div class="item">
+                            <h3 class="item-title">見積名</h3>
+                            <div class="form-wrapper"><?= h($newQuotation['title']) ?></div>
+                        </div>
+                        <div class="item">
+                            <h3 class="item-title">会社名</h3>
+                            <div class="form-wrapper"><?= h($newQuotation['name'])?></div>
+                        </div>
+                        <div class="item">
+                            <h3 class="item-title">金額<span>(半角数字)</span></h3>
+                            <div class="form-wrapper"><?= number_format(h($newQuotation['total'])) . '円'?></div>
+                        </div>
+                        <div class="item">
+                            <h3 class="item-title">見積有効期限</h3>
+                            <div class="form-wrapper"><?= h($newQuotation['validity_period']) ?></div>
+                        </div>
+                        <div class="item">
+                            <h3 class="item-title">納期<span>(本日以降)</span></h3>
+                            <div class="form-wrapper"><?= h($newQuotation['due_date']) ?></div>
+                        </div>
+                        <div class="item">
+                            <h3 class="item-title">状態</h3>
+                            <div class="form-wrapper">
+                                <?php if ($newQuotation['status'] == 1) :?>
+                                    <p>下書き</p>
+                                <?php elseif ($newQuotation['status'] == 2) :?>
+                                    <p>発行済み</p>
+                                <?php else :?>
+                                    <p>破棄</p>
+                                <?php endif ?>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="create.php?id=<?= h($newQuotation['company_id'])?>&action=rewrite">&laquo;&nbsp;書き直す</a> || <input class="btn btn-form" type="submit" value="作成">
                 </form>
             </div>
         </main>
