@@ -237,11 +237,6 @@ form {
     line-height: 60px;
 }
 
-.item p:not(.q-no-wrapper p) {
-    border-right: 1px solid #7a7a7a;
-    border-bottom: 1px solid #7a7a7a;
-}
-
 .item span {
     color: white;
     font-size: 12px;
