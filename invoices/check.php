@@ -44,43 +44,47 @@ if (!empty($_POST)) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>請求作成</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <main>
+    <main class="create-page">
         <div class="container">
-            <div class="heding">
-                <h1>請求書入力確認</h1>
+            <div class="heading">
+                <h1>請求入力確認</h1>
             </div>
             <form action="check.php?id=<?= $new_invoice['company_id']?>" method="POST">
                 <input type="hidden" name="company_id" value=<?= $new_invoice['company_id']?>>
                 <input type="hidden" name="prefix" value=<?= $new_invoice['prefix']?>>
-                <table class="form-items">
-                    <tr>
-                        <th>請求名</th>
-                        <td><?= h($new_invoice['title']) ?></td>
-                    </tr>
-                    <tr>
-                        <th>会社名</th>
-                        <td><?= $new_invoice['name']?></td>
-                    </tr>
-                    <tr>
-                        <th>金額</th>
-                        <td><?= number_format(h($new_invoice['total'])) ?>円</td>
-                    </tr>
-                    <tr>
-                        <th>支払い期限</th>
-                        <td><?= h($new_invoice['payment_deadline']) ?></td>
-                    </tr>
-                    <tr>
-                        <th>請求日</th>
-                        <td><?= h($new_invoice['date_of_issue']) ?></td>
-                    </tr>
-                    <tr>
-                        <th>見積番号</th>
-                        <td><?= $new_invoice['prefix'] . '-q-' . h($new_invoice['quotation_no']) ?></td>
-                    </tr>
-                    <tr>
-                        <th>状態</th>
+                <div class="form-items">
+                    <div class="item">
+                        <h3 class="item-title">請求名</h3>
+                        <div class="form-wrapper"><?= h($new_invoice['title']) ?></div>
+                    </div>
+                    <div class="item">
+                        <h3 class="item-title">会社名</h3>
+                        <div class="form-wrapper"><?= $new_invoice['name']?></div>
+                    </div>
+                    <div class="item">
+                        <h3 class="item-title">金額<span>(半角数字)</span></h3>
+                        <div class="form-wrapper"><?= number_format(h($new_invoice['total'])) ?>円</div>
+                    </div>
+                    <div class="item">
+                        <h3 class="item-title">支払い期限<span>(本日以降)</span></h3>
+                        <div class="form-wrapper"><?= h($new_invoice['payment_deadline']) ?></div>
+                    </div>
+                    <div class="item">
+                        <h3 class="item-title">請求日</h3>
+                        <div class="form-wrapper"><?= h($new_invoice['date_of_issue']) ?></div>
+                    </div>
+                    <div class="item">
+                        <h3 class="item-title">見積番号<span>(半角数字)</span></h3>
+                        <div class="q-no-wrapper">
+                            <p><?= $new_invoice['prefix'] . '-q-' . h($new_invoice['quotation_no']) ?></p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <h3 class="item-title">状態</h3>
+                        <div class="form-wrapper">
                             <?php if ($new_invoice['status'] == 1) :?>
                                 <td>下書き</td>
                             <?php elseif ($new_invoice['status'] == 2) :?>
@@ -88,9 +92,10 @@ if (!empty($_POST)) {
                             <?php else :?>
                                 <td>破棄</td>
                             <?php endif ?>
-                    </tr>
-                </table>
-                <a href="create.php?id=<?= h($new_invoice['company_id'])?>&action=rewrite">&laquo;&nbsp;書き直す</a> || <input type="submit" value="作成">
+                        </div>
+                    </div>
+                </div>
+                <a href="create.php?id=<?= h($new_invoice['company_id'])?>&action=rewrite">&laquo;&nbsp;書き直す</a> || <input class="btn btn-form" type="submit" value="作成">
             </form>
         </div>
     </main>
