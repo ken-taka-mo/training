@@ -102,44 +102,41 @@ if (!empty($_POST)) {
         <div class="container">
             <div class="heading">
                 <h1>会社登録</h1>
-                <a href="index.php">戻る</a>
+                <a href="index.php" class="btn-back">戻る</a>
             </div>
-            <form action="register.php" method="POST" class="create-form">
+            <form action="register.php" method="POST">
                 <div class="form-items">
                     <div class="item">
-                        <label for="name" class="item-titles">会社名</label>
-                        <input type="text" id="name" name="name" value=<?= h($name) ?>>
+                        <h3 class="item-title">会社名</h3>
+                        <div class="text"><input type="text" name="name" value=<?= h($name) ?>></div>
                     </div>
                     <?php if (isset($error['name'])) :?>
                         <p class="error"><?= $error['name'] ?></p>
                     <?php endif ?>
                     <div class="item">
-                        <label for="manager_name" class="item-titles">担当者名</label>
-                        <input type="text" id="manager_name" name="manager_name" value=<?= h($manager_name) ?>>
+                        <h3 class="item-title">担当者</h3>
+                        <div class="text"><input type="text" name="manager_name" value=<?= h($manager_name) ?>></div>
                     </div>
                     <?php if (isset($error['manager_name'])) :?>
                         <p class="error"><?= $error['manager_name'] ?></p>
                     <?php endif ?>
                     <div class="item">
-                        <label for="phone_number" class="item-titles">電話番号</label>
-                        <input type="text" id="phone_number" name="phone_number" value=<?= h($phone_number) ?>>
+                        <h3 class="item-title">電話番号</h3>
+                        <div class="text"><input type="text" name="phone_number" value=<?= h($phone_number) ?>></div>
                     </div>
                     <?php if (isset($error['phone_number'])) :?>
                         <p class="error"><?= $error['phone_number'] ?></p>
                     <?php endif ?>
-                    <div class="item">
-                        <label for="postal_code" class="item-titles">住所</label>
-                        <div class="address-details">
-                            <div class="address-detail">
-                                <label for="postal_code">郵便番号</label>
-                                <input type="text" id="postal_code" name="postal_code" value=<?= h($postal_code) ?>>
+                    <div class="item address-items">
+                        <h3 class="item-title">住所</h3>
+                        <div class="address-item-wrapper">
+                            <div class="address-item">
+                                <h4>郵便番号</h4>
+                                <input type="text" name="postal_code" value=<?= h($postal_code) ?>>
                             </div>
-                            <?php if (isset($error['postal_code'])) :?>
-                                <p class="error"><?= $error['postal_code'] ?></p>
-                            <?php endif ?>
-                            <div class="address-detail">
-                                <label for="prefecture_code">都道府県</label>
-                                <select name="prefecture_code" id="prefecture_code">
+                            <div class="address-item">
+                                <h4>都道府県</h4>
+                                <select name="prefecture_code">
                                     <?php for ($i = 1; $i <= 47; $i++) :?>
                                         <?php if ($prefecture_code == $i) :?>
                                             <option value=<?= $i ?> selected><?= $prefectures[$i] ?></option>
@@ -149,34 +146,37 @@ if (!empty($_POST)) {
                                     <?php endfor ?>
                                 </select>
                             </div>
-                            <?php if (isset($error['prefecture'])) :?>
-                                <p class="error"><?= $error['prefecture'] ?></p>
-                            <?php endif ?>
-                            <div class="address-detail">
-                                <label for="address">市区町村</label>
-                                <input type="text" id="address" name="address" value=<?= h($address) ?>>
+                            <div class="address-item">
+                                <h4>市区町村</h4>
+                                <input type="text" name="address" value=<?= h($address) ?>>
                             </div>
-                            <?php if (isset($error['address'])) :?>
-                                <p class="error"><?= $error['address'] ?></p>
-                            <?php endif ?>
                         </div>
                     </div>
+                    <?php if (isset($error['postal_code'])) :?>
+                        <p class="error"><?= $error['postal_code'] ?></p>
+                    <?php endif ?>
+                    <?php if (isset($error['prefecture'])) :?>
+                        <p class="error"><?= $error['prefecture'] ?></p>
+                    <?php endif ?>
+                    <?php if (isset($error['address'])) :?>
+                        <p class="error"><?= $error['address'] ?></p>
+                    <?php endif ?>
                     <div class="item">
-                        <label for="mail_address" class="item-titles">メールアドレス</label>
-                        <input type="text" id="mail_address" name="mail_address" value=<?= h($mail_address) ?>>
+                        <h3 class="item-title">メールアドレス</h3>
+                        <div class="text"><input type="text" name="mail_address" value=<?= h($mail_address) ?>></div>
                     </div>
                     <?php if (isset($error['mail_address'])) :?>
                         <p class="error"><?= $error['mail_address'] ?></p>
                     <?php endif ?>
                     <div class="item">
-                        <label for="prefix" class="item-titles">プレフィックス</label>
-                        <input type="text" id="prefix" name="prefix" value=<?= h($prefix) ?>>
+                        <h3 class="item-title">プレフィックス</h3>
+                        <div class="text"><input type="text" name="prefix" value=<?= h($prefix) ?>></div>
                     </div>
                     <?php if (isset($error['prefix'])) :?>
                         <p class="error"><?= $error['prefix'] ?></p>
                     <?php endif ?>
                 </div>
-                <input type="submit" value="作成">
+                <input class="btn btn-form" type="submit" value="新規登録">
             </form>
         </div>
     </main>
