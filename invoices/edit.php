@@ -78,59 +78,62 @@ if (!empty($_POST)) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>見積編集</title>
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <main>
+    <main class="edit-page">
         <div class="container">
-            <div class="heding">
+            <div class="heading">
                 <h1>見積編集</h1>
-                <a href="index.php?id=<?= h($invoiceData['company_id'])?>">戻る</a>
+                <a href="index.php?id=<?= h($invoiceData['company_id'])?>" class="btn-back">戻る</a>
             </div>
             <form action="edit.php?no=<?= h($no)?>" method="POST">
-                <table>
-                    <tr>
-                        <th>請求番号</th>
-                        <td><?= $invoiceData['no']?></td>
-                    </tr>
-                    <tr>
-                        <th>請求名</th>
-                        <td><input type="text" name="title" value=<?= h($title) ?>></td>
-                    </tr>
+                <div class="form-items">
+                    <div class="item">
+                        <h3 class="item-title">請求名</h3>
+                        <div class="form-wrapper"><input type="text" name="title" value=<?= h($title) ?>></div>
+                    </div>
                     <?php if (isset($error['title'])) :?>
-                        <p><?= $error['title'] ?></p>
+                        <p class="error"><?= $error['title'] ?></p>
                     <?php endif?>
-                    <tr>
-                        <th>会社名</th>
-                        <td><?= h($companyData['name'])?></td>
-                    </tr>
-                    <tr>
-                        <th>金額</th>
-                        <td><input type="text" name="total" value=<?= h($total) ?>></td>
-                    </tr>
+                    <div class="item">
+                        <h3 class="item-title">会社名</h3>
+                        <div class="form-wrapper"><?= $companyData['name']?></div>
+                    </div>
+                    <div class="item">
+                        <h3 class="item-title">金額<span>(半角数字)</span></h3>
+                        <div class="form-wrapper"><input type="text" name="total" value=<?= h($total) ?>>円</div>
+                    </div>
                     <?php if (isset($error['total'])) :?>
-                        <p><?= $error['total'] ?></p>
+                        <p class="error"><?= $error['total'] ?></p>
                     <?php endif?>
-                    <tr>
-                        <th>支払い期限</th>
-                        <td><input type="date" name="payment_deadline" value=<?= h($payment_deadline) ?>></td>
-                    </tr>
+                    <div class="item">
+                        <h3 class="item-title">支払い期限<span>(本日以降)</span></h3>
+                        <div class="form-wrapper"><input type="date" name="payment_deadline" value=<?= h($payment_deadline) ?>></div>
+                    </div>
                     <?php if (isset($error['payment_deadline'])) :?>
-                        <p><?= $error['payment_deadline'] ?></p>
+                        <p class="error"><?= $error['payment_deadline'] ?></p>
                     <?php endif?>
-                    <tr>
-                        <th>請求日</th>
-                        <td><input type="date" name="date_of_issue" value=<?= h($date_of_issue) ?>></td>
-                    </tr>
+                    <div class="item">
+                        <h3 class="item-title">請求日</h3>
+                        <div class="form-wrapper"><input type="date" name="date_of_issue" value=<?= h($date_of_issue) ?>></div>
+                    </div>
                     <?php if (isset($error['date_of_issue'])) :?>
-                        <p><?= $error['date_of_issue'] ?></p>
+                        <p class="error"><?= $error['date_of_issue'] ?></p>
                     <?php endif?>
-                    <tr>
-                        <th>見積番号</th>
-                        <td><?= $companyData['prefix'] . '-q-' . $invoiceData['quotation_no']?></td>
-                    </tr>
-                    <tr>
-                        <th>状態</th>
-                        <td>
+                    <div class="item">
+                        <h3 class="item-title">見積番号<span>(半角数字)</span></h3>
+                        <div class="q-no-wrapper">
+                            <p><?=$companyData['prefix'] . '-q-'?></p>
+                            <input type="text" name="quotation_no" maxlength="8" value=<?= h($invoiceData['quotation_no'])?> >
+                        </div>
+                    </div>
+                    <?php if (isset($error['quotation_no'])) :?>
+                        <p class="error"><?= $error['quotation_no'] ?></p>
+                    <?php endif?>
+                    <div class="item">
+                        <h3 class="item-title">状態</h3>
+                        <div class="form-wrapper">
                             <select name="status" id="">
                                 <?php if ($status == 1) :?>
                                     <option value="1" selected>下書き</option>
@@ -146,10 +149,13 @@ if (!empty($_POST)) {
                                     <option value="9" selected>破棄</option>
                                 <?php endif ?>
                             </select>
-                        </td>
-                    </tr>
-                </table>
-                <input type="submit" value="更新">
+                        </div>
+                    </div>
+                    <?php if (isset($error['status'])) :?>
+                        <p class="error"><?= $error['status'] ?></p>
+                    <?php endif?>
+                </div>
+                <input class="btn btn-form" type="submit" value="更新">
             </form>
         </div>
     </main>
