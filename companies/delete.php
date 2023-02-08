@@ -1,21 +1,21 @@
 <?php
 require_once("../dbconnect.php");
 
-if (empty($_GET['id'])) {
+if (empty($_POST['id'])) {
     header('Location: index.php');
     exit();
 }
 
-if (!preg_match('/^[0-9]*[1-9]+$/', $_GET['id'])) {
+if (!preg_match('/^[0-9]*[1-9]+$/', $_POST['id'])) {
     header('Location: index.php');
     exit();
 }
 
 $hasData = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=?');
-$hasData->execute(array($_GET['id']));
+$hasData->execute(array($_POST['id']));
 $count = $hasData->fetch();
 if ($count['cnt']) {
-    $id = $_GET['id'];
+    $id = $_POST['id'];
 } else {
     header('Location: index.php');
     exit();
