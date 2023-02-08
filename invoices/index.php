@@ -100,6 +100,7 @@ if (isset($_GET['order'])) {
             <div class="menu">
                 <a href="create.php?id=<?= $id ?>" class="btn">新規登録</a>
                 <form action="search.php" method="GET">
+                    <input type="hidden" name="id" value=<?= $id?>>
                     <span>金額検索</span>
                     <input type="text" class="search-total" name="min"placeholder="下限">
                     <span>~</span>
