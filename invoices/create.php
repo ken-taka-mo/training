@@ -125,14 +125,14 @@ if (!empty($_POST)) {
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">支払い期限<span>(本日以降)</span></h3>
-                        <div class="form-wrapper"><input type="date" name="payment_deadline" value=<?= h($payment_deadline) ?>></div>
+                        <div class="form-wrapper"><input type="date" class="icon-del" name="payment_deadline" value=<?= h($payment_deadline) ?>></div>
                     </div>
                     <?php if (isset($error['payment_deadline'])) :?>
                         <p class="error"><?= $error['payment_deadline'] ?></p>
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">請求日</h3>
-                        <div class="form-wrapper"><input type="date" name="date_of_issue" value=<?= h($date_of_issue) ?>></div>
+                        <div class="form-wrapper"><input type="date" class="icon-del" name="date_of_issue" value=<?= h($date_of_issue) ?>></div>
                     </div>
                     <?php if (isset($error['date_of_issue'])) :?>
                         <p class="error"><?= $error['date_of_issue'] ?></p>
