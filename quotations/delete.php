@@ -16,6 +16,10 @@ if (!$idArray) {
     $deleteStatement = $db->prepare('UPDATE quotations set deleted=NOW(), modified=NOW() WHERE id=?');
     $deleteStatement->bindParam(1, $idArray['id'], PDO::PARAM_INT);
     $deleteStatement->execute();
+    if (!empty($_POST['status'])) {
+        header("Location: search.php?id={$idArray['company_id']}&status={$_POST['status']}");
+        exit();
+    }
     header("Location: index.php?id={$idArray['company_id']}");
-    exit;
+    exit();
 }
