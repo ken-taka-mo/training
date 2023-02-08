@@ -111,14 +111,14 @@ if (!empty($_POST)) {
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">見積有効期限</h3>
-                        <div class="form-wrapper"><input class="date" type="date" name="validity_period" value=<?= h($validity_period) ?>></div>
+                        <div class="form-wrapper"><input class="icon-del" type="date" name="validity_period" value=<?= h($validity_period) ?>></div>
                     </div>
                     <?php if (isset($error['validity_period'])) :?>
                         <p class="error"><?= $error['validity_period'] ?></p>
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">納期<span>(本日以降)</span></h3>
-                        <div class="form-wrapper"><input class="date" type="date" name="due_date" value=<?= h($due_date) ?>></div>
+                        <div class="form-wrapper"><input class="icon-del" type="date" name="due_date" value=<?= h($due_date) ?>></div>
                     </div>
                     <?php if (isset($error['due_date'])) :?>
                         <p class="error"><?= $error['due_date'] ?></p>
