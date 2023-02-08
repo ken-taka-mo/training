@@ -2,7 +2,6 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
-session_start();
 
 const MAX_PAGE = 10;
 $page = 1;
