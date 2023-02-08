@@ -58,7 +58,7 @@ if ($end >= $count['cnt']) {
 }
 
 $showButton = false;
-if (!$end <= 9 && $maxPage > 1) {
+if ($maxPage > 1) {
     $showButton = true;
 }
 
@@ -68,13 +68,14 @@ $companyData = $companyStatement->fetch();
 
 if (isset($_GET['order'])) {
     if ($_GET['order'] == 'desc') {
-        $_SESSION['desc'] = true;
+        $desc = true;
         $invoices = array_reverse($invoices);
     } else {
-        $_SESSION['desc'] = false;
+        header('index.php');
+        exit();
     }
 } else {
-    $_SESSION['desc'] = false;
+    $desc = false;
 }
 ?>
 
@@ -107,7 +108,7 @@ if (isset($_GET['order'])) {
             <?php if ($invoicesExist) :?>
             <table>
                 <tr class="title list-title">
-                    <?php if ($_SESSION['desc']) :?>
+                    <?php if ($desc) :?>
                         <th class="order"><a href="index.php?id=<?= h($id) ?>">請求番号</a></th>
                     <?php else :?>
                         <th class="order"><a href="index.php?id=<?= h($id) ?>&order=desc">請求番号</a></th>
@@ -148,7 +149,7 @@ if (isset($_GET['order'])) {
             </table>
             <div class="page-navigation">
                 <?php if ($showButton) :?>
-                    <?php if ($_SESSION['desc']) :?>
+                    <?php if ($desc) :?>
                         <?php if ($page <= 1) :?>
                             <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
                         <?php elseif ($page >= $maxPage) :?>
