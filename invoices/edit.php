@@ -77,14 +77,14 @@ if (!empty($_POST)) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>見積編集</title>
+    <title>請求編集</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <main class="edit-page">
         <div class="container">
             <div class="heading">
-                <h1>見積編集</h1>
+                <h1>請求編集</h1>
                 <a href="index.php?id=<?= h($invoiceData['company_id'])?>" class="btn-back">戻る</a>
             </div>
             <form action="edit.php?no=<?= h($no)?>" method="POST">
@@ -98,7 +98,7 @@ if (!empty($_POST)) {
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">会社名</h3>
-                        <div class="form-wrapper"><?= $companyData['name']?></div>
+                        <div class="form-wrapper"><p><?= $companyData['name']?></p></div>
                     </div>
                     <div class="item">
                         <h3 class="item-title">金額<span>(半角数字)</span></h3>

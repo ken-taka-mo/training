@@ -132,7 +132,7 @@ if (empty($_POST)) {
                 <div class="form-items">
                     <div class="item">
                         <h1 class="item-title">ID</h1>
-                        <div class="form-wrapper"><?= h($details['id'])?></div>
+                        <div class="form-wrapper"><p><?= h($details['id'])?></p></div>
                     </div>
                     <div class="item">
                         <h3 class="item-title">会社名</h3>
