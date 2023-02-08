@@ -21,7 +21,7 @@ if ($count['cnt']) {
     exit();
 }
 
-$statement = $db->prepare("UPDATE companies SET deleted=NOW() WHERE id=?");
+$statement = $db->prepare("UPDATE companies SET deleted=NOW(), modified=NOW() WHERE id=?");
 $statement->bindParam(1, $id, PDO::PARAM_INT);
 $statement->execute();
 header('Location: index.php');
