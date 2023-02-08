@@ -101,11 +101,13 @@ if (isset($_GET['order'])) {
             </div>
             <div class="menu">
                 <a href="create.php?id=<?= h($id)?>" class="btn">新規作成</a>
-                <form action="">
-                    <select name="" id="">
-                        <option value="1">下書き</option>
-                        <option value="2">発行済み</option>
-                        <option value="3">破棄</option>
+                <form action="search.php" method="GET">
+                    <input type="hidden" name="id" value=<?= $id?>>
+                    <select name="status" id="">
+                        <option value="">全て</option>
+                        <option value="下書き">下書き</option>
+                        <option value="発行済み">発行済み</option>
+                        <option value="破棄">破棄</option>
                     </select>
                     <input class="btn-search" type="submit" value="検索">
                 </form>
