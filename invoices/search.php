@@ -11,19 +11,31 @@ if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id']
     header('Location: ../companies/index.php');
     exit();
 }
-
 $id = $_GET['id'];
+$min = mb_convert_kana($_GET['min'], 'n', 'UTF-8');
+$max = mb_convert_kana($_GET['max'], 'n', 'UTF-8');
 
-$countStatement = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE company_id=? AND deleted is NULL');
+
+if (!preg_match('/^[0-9]+$/', $min) || !preg_match('/^[0-9]+$/', $max)) {
+    header("Location: index.php?id={$id}");
+    exit();
+}
+
+$countStatement = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE company_id=? AND total>=? AND total<=? AND deleted is NULL');
 $countStatement->bindParam(1, $id, PDO::PARAM_INT);
+$countStatement->bindParam(2, $min, PDO::PARAM_INT);
+$countStatement->bindParam(3, $max, PDO::PARAM_INT);
 $countStatement->execute();
 $count = $countStatement->fetch();
+
 if (!$count['cnt'] > 0) {
     $invoicesExist = false;
 } else {
     $invoicesExist = true;
-    $statement = $db->prepare('SELECT no, title, total, payment_deadline, date_of_issue, quotation_no, status FROM invoices WHERE company_id=? AND deleted is NULL');
+    $statement = $db->prepare('SELECT no, title, total, payment_deadline, date_of_issue, quotation_no, status FROM invoices WHERE company_id=? AND total>=? AND total<=? AND deleted is NULL');
     $statement->bindParam(1, $id, PDO::PARAM_INT);
+    $statement->bindParam(2, $min, PDO::PARAM_INT);
+    $statement->bindParam(3, $max, PDO::PARAM_INT);
     $statement->execute();
     $invoices = $statement->fetchAll();
 }
@@ -36,12 +48,12 @@ if ($maxPage == 0) {
 
 if (isset($_GET['page'])) {
     if (!preg_match('/^[0-9]+$/', $_GET['page']) || preg_match('/^[0]*$/', $_GET['page'])) {
-        header("Location: index.php?id={$id}");
+        header("Location: index.php?id={$id}&min={$min}&max={$max}");
         exit();
     }
 
     if ($_GET['page'] > $maxPage) {
-        header("Location: index.php?id={$id}&page={$maxPage}");
+        header("Location: index.php?id={$id}&page={$maxPage}&min={$min}&max={$max}");
         exit();
     } else {
         $page = $_GET['page'];
@@ -70,12 +82,13 @@ if (isset($_GET['order'])) {
         $desc = true;
         $invoices = array_reverse($invoices);
     } else {
-        header('index.php');
+        header("search.php?id={$id}&min={$min}&max={$max}");
         exit();
     }
 } else {
     $desc = false;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -99,22 +112,25 @@ if (isset($_GET['order'])) {
             </div>
             <div class="menu">
                 <a href="create.php?id=<?= $id ?>" class="btn">新規登録</a>
-                <form action="search.php" method="GET">
-                    <input type="hidden" name="id" value=<?= $id?>>
-                    <span>金額検索</span>
-                    <input type="text" class="search-total" name="min"placeholder="下限">
-                    <span>~</span>
-                    <input type="text" class="search-total" name="max" placeholder="上限">
-                    <input class="btn-search" type="submit" value="検索">
-                </form>
+                <div>
+                    <form action="search.php" method="GET">
+                        <input type="hidden" name="id" value=<?= $id?>>
+                        <span>金額検索</span>
+                        <input type="text" class="search-total" name="min"placeholder="下限" value=<?= $min?>>
+                        <span>~</span>
+                        <input type="text" class="search-total" name="max" placeholder="上限" value=<?= $max?>>
+                        <input class="btn-search" type="submit" value="検索">
+                    </form>
+                    <a href="index.php?id=<?= $id?>">条件クリア</a>
+                </div>
             </div>
             <?php if ($invoicesExist) :?>
             <table>
                 <tr class="title list-title">
                     <?php if ($desc) :?>
-                        <th class="order"><a href="index.php?id=<?= h($id) ?>">請求番号</a></th>
+                        <th class="order"><a href="search.php?id=<?= h($id) ?>&min=<?= $min?>&max=<?= $max?>">請求番号</a></th>
                     <?php else :?>
-                        <th class="order"><a href="index.php?id=<?= h($id) ?>&order=desc">請求番号</a></th>
+                        <th class="order"><a href="search.php?id=<?= h($id) ?>&min=<?= $min?>&max=<?= $max?>&order=desc">請求番号</a></th>
                     <?php endif ?>
                     <th>請求名</th>
                     <th>担当者名</th>
@@ -144,6 +160,8 @@ if (isset($_GET['order'])) {
                         <?php endif?>
                         <th class="link"><a href="edit.php?no=<?= h($invoices[$i]['no'])?>">編集</a></th>
                         <form action="delete.php" method="POST" onsubmit="return confirmDelete()">
+                            <input type="hidden" name="min" value=<?= $min?>>
+                            <input type="hidden" name="max" value=<?= $max?>>
                             <input type="hidden" name="no" value=<?= h($invoices[$i]['no'])?>>
                             <th class="link btn-delete"><input type="submit" value="削除" ></th>
                         </form>
@@ -154,22 +172,22 @@ if (isset($_GET['order'])) {
                 <?php if ($showButton) :?>
                     <?php if ($desc) :?>
                         <?php if ($page <= 1) :?>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
+                            <a href="search.php?id=<?= h($id) ?>&page=<?= $page +1?>&min=<?= $min?>&max=<?= $max?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
                         <?php elseif ($page >= $maxPage) :?>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page -1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
+                            <a href="search.php?id=<?= h($id) ?>&page=<?= $page -1?>&min=<?= $min?>&max=<?= $max?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
                         <?php elseif ($page == $maxPage) :?>
                         <?php else :?>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page -1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
+                            <a href="search.php?id=<?= h($id) ?>&page=<?= $page -1?>&min=<?= $min?>&max=<?= $max?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
+                            <a href="search.php?id=<?= h($id) ?>&page=<?= $page +1?>&min=<?= $min?>&max=<?= $max?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
                         <?php endif?>
                     <?php else :?>
                         <?php if ($page <= 1) :?>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>" class="next p-nav">次へ<span>&rarr;</span></a>
+                            <a href="search.php?id=<?= h($id) ?>&page=<?= $page +1?>&min=<?= $min?>&max=<?= $max?>" class="next p-nav">次へ<span>&rarr;</span></a>
                         <?php elseif ($page >= $maxPage) :?>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page -1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
+                            <a href="search.php?id=<?= h($id) ?>&page=<?= $page -1?>&min=<?= $min?>&max=<?= $max?>" class="prev p-nav"><span>&larr;</span>前へ</a>
                         <?php else :?>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page -1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>" class="next p-nav">次へ<span>&rarr;</span></a>
+                            <a href="search.php?id=<?= h($id) ?>&page=<?= $page -1?>&min=<?= $min?>&max=<?= $max?>" class="prev p-nav"><span>&larr;</span>前へ</a>
+                            <a href="search.php?id=<?= h($id) ?>&page=<?= $page +1?>&min=<?= $min?>&max=<?= $max?>" class="next p-nav">次へ<span>&rarr;</span></a>
                         <?php endif?>
                     <?php endif?>
                 <?php endif?>
