@@ -337,7 +337,10 @@ form {
     margin: 15px 0;
 }
 
-
+.search-total {
+    width: 150px;
+    font-size: 14px;
+}
 
 
 
