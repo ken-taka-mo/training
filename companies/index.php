@@ -47,13 +47,6 @@ $statement->execute();
 $companies = $statement->fetchAll();
 ?>
 
-<script>
-    function confirmDelete(){
-        let answer = confirm("本当に削除しますか");
-        return answer;
-    }
-</script>
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
