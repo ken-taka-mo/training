@@ -1,11 +1,11 @@
 <?php
 require_once('../dbconnect.php');
-if (!isset($_GET['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-q-)[0-9]{8}$/', $_GET['no'])) {
+if (!isset($_POST['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-q-)[0-9]{8}$/', $_POST['no'])) {
     header('Location: ../companies');
     exit();
 }
 
-$no = $_GET['no'];
+$no = $_POST['no'];
 $statement = $db->prepare('SELECT id, company_id FROM quotations WHERE no=?');
 $statement->execute(array($no));
 $idArray = $statement->fetch();
