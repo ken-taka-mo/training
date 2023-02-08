@@ -13,7 +13,7 @@ $idArray = $statement->fetch();
 if (!$idArray) {
     header('Location: index.php');
 } else {
-    $deleteStatement = $db->prepare('UPDATE quotations set deleted=NOW() WHERE id=?');
+    $deleteStatement = $db->prepare('UPDATE quotations set deleted=NOW(), modified=NOW() WHERE id=?');
     $deleteStatement->bindParam(1, $idArray['id'], PDO::PARAM_INT);
     $deleteStatement->execute();
     header("Location: index.php?id={$idArray['company_id']}");
