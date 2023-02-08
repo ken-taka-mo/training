@@ -29,7 +29,7 @@ if (!empty($_POST)) {
     }
 
     if (preg_match('/^[\s\n\t]*$/', $_POST['prefecture_code'])) {
-        $error['prefecture_code'] = 'もう一度都道府県を選択してください';
+        $error['prefecture_code'] = '都道府県を選択してください';
     } elseif (mb_strlen($_POST['prefecture_code']) < 1 && mb_strlen($_POST['prefecture_code'] > 47)) {
         $error['prefecture_code'] = 'もう一度都道府県を選択してください';
     }
@@ -137,6 +137,7 @@ if (!empty($_POST)) {
                             <div class="address-item">
                                 <h4>都道府県</h4>
                                 <select name="prefecture_code">
+                                    <option value="">選択してください</option>
                                     <?php for ($i = 1; $i <= 47; $i++) :?>
                                         <?php if ($prefecture_code == $i) :?>
                                             <option value=<?= $i ?> selected><?= $prefectures[$i] ?></option>
@@ -155,8 +156,8 @@ if (!empty($_POST)) {
                     <?php if (isset($error['postal_code'])) :?>
                         <p class="error"><?= $error['postal_code'] ?></p>
                     <?php endif ?>
-                    <?php if (isset($error['prefecture'])) :?>
-                        <p class="error"><?= $error['prefecture'] ?></p>
+                    <?php if (isset($error['prefecture_code'])) :?>
+                        <p class="error"><?= $error['prefecture_code'] ?></p>
                     <?php endif ?>
                     <?php if (isset($error['address'])) :?>
                         <p class="error"><?= $error['address'] ?></p>

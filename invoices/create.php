@@ -71,7 +71,7 @@ $total = '';
 $payment_deadline = '';
 $date_of_issue = '';
 $quotation_no = '';
-$status = 1;
+$status = '';
 
 if (!empty($_POST)) {
     $title = $_POST['title'];
@@ -114,7 +114,7 @@ if (!empty($_POST)) {
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">会社名</h3>
-                        <div class="form-wrapper"><?= $companyData['name']?></div>
+                        <div class="form-wrapper"><p><?= $companyData['name']?></p></div>
                     </div>
                     <div class="item">
                         <h3 class="item-title">金額<span>(半角数字)</span></h3>
@@ -159,10 +159,15 @@ if (!empty($_POST)) {
                                     <option value="1">下書き</option>
                                     <option value="2" selected>発行済み</option>
                                     <option value="9">破棄</option>
-                                <?php else :?>
+                                <?php elseif ($status == 9) :?>
                                     <option value="1">下書き</option>
                                     <option value="2">発行済み</option>
                                     <option value="9" selected>破棄</option>
+                                <?php else :?>
+                                    <option value="">選択してください</option>
+                                    <option value="1">下書き</option>
+                                    <option value="2">発行済み</option>
+                                    <option value="9">破棄</option>
                                 <?php endif ?>
                             </select>
                         </div>
