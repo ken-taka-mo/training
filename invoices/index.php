@@ -139,7 +139,10 @@ if (isset($_GET['order'])) {
                             <th>破棄</th>
                         <?php endif?>
                         <th class="link"><a href="edit.php?no=<?= h($invoices[$i]['no'])?>">編集</a></th>
-                        <th class="link"><a href="delete.php?no=<?= h($invoices[$i]['no'])?>">削除</a></th>
+                        <form action="delete.php" method="POST" onsubmit="return confirmDelete()">
+                            <input type="hidden" name="no" value=<?= h($invoices[$i]['no'])?>>
+                            <th class="link btn-delete"><input type="submit" value="削除" ></th>
+                        </form>
                     </tr>
                 <?php endfor ?>
             </table>
