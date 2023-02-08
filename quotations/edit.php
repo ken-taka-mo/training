@@ -100,7 +100,7 @@ if (!empty($_POST)) {
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">会社名</h3>
-                        <div class="form-wrapper"><?= h($companyName['name'])?></div>
+                        <div class="form-wrapper"><p><?= h($companyName['name'])?></p></div>
                     </div>
                     <div class="item">
                         <h3 class="item-title">金額<span>(半角数字)</span></h3>
