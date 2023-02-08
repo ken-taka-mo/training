@@ -1,7 +1,6 @@
 <?php
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
-session_start();
 
 if (empty($_GET['id'])) {
     header('Location: ../companies/index.php');
@@ -100,8 +99,11 @@ if (isset($_GET['order'])) {
             </div>
             <div class="menu">
                 <a href="create.php?id=<?= $id ?>" class="btn">新規登録</a>
-                <form action="">
-                    <input type="text" class="search-form">
+                <form action="search.php" method="GET">
+                    <span>金額検索</span>
+                    <input type="text" class="search-total" name="min"placeholder="下限">
+                    <span>~</span>
+                    <input type="text" class="search-total" name="max" placeholder="上限">
                     <input class="btn-search" type="submit" value="検索">
                 </form>
             </div>

@@ -1,7 +1,6 @@
 <?php
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
-session_start();
 
 if (empty($_GET['id'])) {
     header('Location: ../companies/index.php');
