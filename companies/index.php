@@ -29,16 +29,21 @@ if (isset($_GET['page'])) {
 }
 $start = ($page - 1) * 10;
 
+$showButton = false;
+if ($maxPage > 1) {
+    $showButton = true;
+}
+
 if (isset($_GET['order'])) {
     if ($_GET['order'] == 'desc') {
-        $_SESSION["desc"] = true;
+        $desc = true;
         $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL ORDER BY id DESC LIMIT ?,10');
     } else {
-        $_SESSION["desc"] = false;
-        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL LIMIT ?,10');
+        header('Location: index.php');
+        exit();
     }
 } else {
-    $_SESSION["desc"] = false;
+    $desc = false;
     $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL LIMIT ?,10');
 }
 
@@ -71,7 +76,7 @@ $companies = $statement->fetchAll();
             </div>
             <table>
                 <tr class="list-title title">
-                    <?php if ($_SESSION["desc"]) :?>
+                    <?php if ($desc) :?>
                         <th class="order"><a href="index.php">会社番号</a></th>
                     <?php else :?>
                         <th class="order"><a href="index.php?order=desc">会社番号</a></th>
@@ -105,26 +110,27 @@ $companies = $statement->fetchAll();
                 <?php endforeach?>
             </table>
             <div class="page-navigation">
-                <?php if ($page <= 1) :?>
-                    <?php if ($_SESSION['desc']) :?>
-                        <a href="index.php?page=<?= $page + 1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
+                <?php if ($showButton) :?>
+                    <?php if ($desc) :?>
+                        <?php if ($page <= 1) :?>
+                            <a href="index.php?page=<?= $page +1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
+                        <?php elseif ($page >= $maxPage) :?>
+                            <a href="index.php?page=<?= $page -1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
+                        <?php elseif ($page == $maxPage) :?>
+                        <?php else :?>
+                            <a href="index.php?page=<?= $page -1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
+                            <a href="index.php?page=<?= $page +1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
+                        <?php endif?>
                     <?php else :?>
-                        <a href="index.php?page=<?= $page + 1?>" class="next p-nav">次へ<span>&rarr;</span></a>
-                    <?php endif ?>
-                <?php elseif ($page >= $maxPage) :?>
-                    <?php if ($_SESSION['desc']) :?>
-                        <a href="index.php?page=<?= $page - 1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
-                    <?php else :?>
-                        <a href="index.php?page=<?= $page - 1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
-                    <?php endif ?>
-                <?php else :?>
-                    <?php if ($_SESSION['desc']) :?>
-                        <a href="index.php?page=<?= $page - 1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
-                        <a href="index.php?page=<?= $page + 1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
-                    <?php else :?>
-                        <a href="index.php?page=<?= $page - 1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
-                        <a href="index.php?page=<?= $page + 1?>" class="next p-nav">次へ<span>&rarr;</span></a>
-                    <?php endif ?>
+                        <?php if ($page <= 1) :?>
+                            <a href="index.php?page=<?= $page +1?>" class="next p-nav">次へ<span>&rarr;</span></a>
+                        <?php elseif ($page >= $maxPage) :?>
+                            <a href="index.php?page=<?= $page -1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
+                        <?php else :?>
+                            <a href="index.php?page=<?= $page -1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
+                            <a href="index.php?page=<?= $page +1?>" class="next p-nav">次へ<span>&rarr;</span></a>
+                        <?php endif?>
+                    <?php endif?>
                 <?php endif?>
             </div>
         </div>
