@@ -146,6 +146,17 @@ main {
     padding-left: 15px;
 }
 
+.btn-delete input {
+    color: red;
+    background-color: white;
+    font-size: 12px;
+    font-weight: bold;
+    width: 25px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+}
+
 th a {
     color: red;
 }

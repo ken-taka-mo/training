@@ -47,6 +47,13 @@ $statement->execute();
 $companies = $statement->fetchAll();
 ?>
 
+<script>
+    function confirmDelete(){
+        let answer = confirm("本当に削除しますか");
+        return answer;
+    }
+</script>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -97,7 +104,10 @@ $companies = $statement->fetchAll();
                         <th class="link to-list"><a href="../quotations/index.php?id=<?= h($company['id'])?>">見積一覧</a></th>
                         <th class="link to-list"><a href="../invoices/index.php?id=<?= h($company['id'])?>">請求一覧</a></th>
                         <th class="link"><a href="edit.php?id=<?= h($company['id'])?>">編集</a></th>
-                        <th class="link"><a href="delete.php?id=<?= h($company['id'])?>">削除</a></th>
+                        <form action="delete.php" method="POST" onsubmit= "return confirmDelete()">
+                            <input type="hidden" name="id" value=<?= h($company['id'])?>>
+                            <th class="link btn-delete"><input type="submit" value="削除" ></th>
+                        </form>
                     </tr>
                 <?php endforeach?>
             </table>
