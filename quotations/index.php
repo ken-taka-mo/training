@@ -119,11 +119,11 @@ if (isset($_GET['order'])) {
                     <?php else :?>
                         <th class="order th-q-id"><a href="index.php?id=<?= h($id) ?>&order=desc">見積番号</a></th>
                     <?php endif ?>
-                    <th class="th-q-name">見積名</th>
+                    <th class="th-name">見積名</th>
                     <th class="th-manager">担当者名</th>
                     <th class="th-total">金額</th>
-                    <th class="th-validity">見積書有効期限</th>
-                    <th class="th-due">納期</th>
+                    <th class="th-date">見積書有効期限</th>
+                    <th class="th-date">納期</th>
                     <th class="th-status">状態</th>
                     <th class="link">編集</th>
                     <th class="link">削除</th>
