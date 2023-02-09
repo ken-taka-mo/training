@@ -101,11 +101,11 @@ if ($cnt['cnt'] < 1) {
                         <?php else :?>
                             <th class="order"><a href="search.php?name=<?= h($getName)?>&order=desc">会社番号</a></th>
                         <?php endif ?>
-                        <th>会社名</th>
-                        <th>担当者名</th>
+                        <th class="th-name">会社名</th>
+                        <th class="th-manager">担当者名</th>
                         <th>電話番号</th>
-                        <th>住所</th>
-                        <th>メールアドレス</th>
+                        <th class="th-address">住所</th>
+                        <th class="th-mail">メールアドレス</th>
                         <th class="link">見積一覧</th>
                         <th class="link">請求一覧</th>
                         <th class="link">編集</th>
