@@ -14,18 +14,18 @@ if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id']
 
 $id = $_GET['id'];
 
-$countStatement = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE company_id=? AND deleted is NULL');
-$countStatement->bindParam(1, $id, PDO::PARAM_INT);
-$countStatement->execute();
-$count = $countStatement->fetch();
+$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE company_id=? AND deleted is NULL');
+$countStmt->bindParam(1, $id, PDO::PARAM_INT);
+$countStmt->execute();
+$count = $countStmt->fetch();
 if ($count['cnt'] < 1) {
     $invoicesExist = false;
 } else {
     $invoicesExist = true;
-    $statement = $db->prepare('SELECT no, title, total, payment_deadline, date_of_issue, quotation_no, status FROM invoices WHERE company_id=? AND deleted is NULL');
-    $statement->bindParam(1, $id, PDO::PARAM_INT);
-    $statement->execute();
-    $invoices = $statement->fetchAll();
+    $listStmt = $db->prepare('SELECT no, title, total, payment_deadline, date_of_issue, quotation_no, status FROM invoices WHERE company_id=? AND deleted is NULL');
+    $listStmt->bindParam(1, $id, PDO::PARAM_INT);
+    $listStmt->execute();
+    $invoices = $listStmt->fetchAll();
 }
 
 $page = 1;
@@ -60,9 +60,9 @@ if ($maxPage > 1) {
     $showButton = true;
 }
 
-$companyStatement = $db->prepare('SELECT name, manager_name FROM companies WHERE id=?');
-$companyStatement->execute(array($id));
-$companyData = $companyStatement->fetch();
+$companyDataStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=?');
+$companyDataStmt->execute(array($id));
+$companyData = $companyDataStmt->fetch();
 
 if (isset($_GET['order'])) {
     if ($_GET['order'] == 'desc') {

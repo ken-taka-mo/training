@@ -21,9 +21,9 @@ if ($count['cnt']) {
     exit();
 }
 
-$statement = $db->prepare('SELECT name, manager_name, prefix FROM companies WHERE id=?');
-$statement->execute(array($companyId));
-$companyData = $statement->fetch();
+$companyDataStmt = $db->prepare('SELECT name, manager_name, prefix FROM companies WHERE id=?');
+$companyDataStmt->execute(array($companyId));
+$companyData = $companyDataStmt->fetch();
 
 if (!empty($_POST)) {
     if (preg_match('/^[\s\n\t]*$/', $_POST['title'])) {

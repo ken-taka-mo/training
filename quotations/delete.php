@@ -6,9 +6,9 @@ if (!isset($_POST['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-q-)[0-9]{8}$/', $_
 }
 
 $no = $_POST['no'];
-$statement = $db->prepare('SELECT id, company_id FROM quotations WHERE no=?');
-$statement->execute(array($no));
-$idArray = $statement->fetch();
+$idStmt = $db->prepare('SELECT id, company_id FROM quotations WHERE no=?');
+$idStmt->execute(array($no));
+$idArray = $idStmt->fetch();
 
 if (!$idArray) {
     header('Location: index.php');
