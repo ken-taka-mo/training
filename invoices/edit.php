@@ -9,17 +9,18 @@ if (!isset($_GET['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-i-)[0-9]{8}$/', $_G
 
 $no = $_GET['no'];
 
-$statement = $db->prepare('SELECT id, title, company_id, total, payment_deadline, date_of_issue, no, quotation_no, status FROM invoices WHERE no=?');
-$statement->execute(array($no));
-$invoiceData = $statement->fetch();
-$companyDataStatement = $db->prepare('SELECT name, prefix FROM companies WHERE id = ?');
-$companyDataStatement->execute(array($invoiceData['company_id']));
-$companyData = $companyDataStatement->fetch();
+$invoiceDataStmt = $db->prepare('SELECT id, title, company_id, total, payment_deadline, date_of_issue, no, quotation_no, status FROM invoices WHERE no=?');
+$invoiceDataStmt->execute(array($no));
+$invoiceData = $invoiceDataStmt->fetch();
+
+$companyDataStmt = $db->prepare('SELECT name, prefix FROM companies WHERE id = ?');
+$companyDataStmt->execute(array($invoiceData['company_id']));
+$companyData = $companyDataStmt->fetch();
 
 $title = $invoiceData['title'];
 $total = $invoiceData['total'];
 $paymentDeadline = $invoiceData['payment_deadline'];
-$date_of_issue = $invoiceData['date_of_issue'];
+$dateOfIssue = $invoiceData['date_of_issue'];
 $status = $invoiceData['status'];
 $id = $invoiceData['id'];
 
@@ -27,7 +28,7 @@ if (!empty($_POST)) {
     $title = $_POST['title'];
     $total = $_POST['total'];
     $paymentDeadline = $_POST['payment_deadline'];
-    $date_of_issue = $_POST['date_of_issue'];
+    $dateOfIssue = $_POST['date_of_issue'];
     $status = $_POST['status'];
 
     if (preg_match('/^[\s\n\t]*$/', $_POST['title'])) {
@@ -55,16 +56,16 @@ if (!empty($_POST)) {
     }
 
     if (empty($error)) {
-        $updateStatement = $db->prepare('UPDATE invoices SET
+        $updateStmt = $db->prepare('UPDATE invoices SET
         title=?, total=?, payment_deadline=?, date_of_issue=?, status=?, modified=NOW()
         WHERE id=?');
-        $updateStatement->bindParam(1, $title);
-        $updateStatement->bindParam(2, $total, PDO::PARAM_INT);
-        $updateStatement->bindParam(3, $paymentDeadline);
-        $updateStatement->bindParam(4, $date_of_issue);
-        $updateStatement->bindParam(5, $status, PDO::PARAM_INT);
-        $updateStatement->bindParam(6, $id, PDO::PARAM_INT);
-        $updateStatement->execute();
+        $updateStmt->bindParam(1, $title);
+        $updateStmt->bindParam(2, $total, PDO::PARAM_INT);
+        $updateStmt->bindParam(3, $paymentDeadline);
+        $updateStmt->bindParam(4, $dateOfIssue);
+        $updateStmt->bindParam(5, $status, PDO::PARAM_INT);
+        $updateStmt->bindParam(6, $id, PDO::PARAM_INT);
+        $updateStmt->execute();
         header("Location: index.php?id={$invoiceData['company_id']}");
         exit();
     }
@@ -116,7 +117,7 @@ if (!empty($_POST)) {
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">請求日</h3>
-                        <div class="form-wrapper"><input type="date" class="icon-del" name="date_of_issue" value=<?= h($date_of_issue) ?>></div>
+                        <div class="form-wrapper"><input type="date" class="icon-del" name="date_of_issue" value=<?= h($dateOfIssue) ?>></div>
                     </div>
                     <?php if (isset($error['date_of_issue'])) :?>
                         <p class="error"><?= $error['date_of_issue'] ?></p>

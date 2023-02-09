@@ -8,10 +8,10 @@ if (empty($_SESSION['new_quotation'])) {
     exit();
 } else {
     $newQuotation = $_SESSION['new_quotation'];
-    $lastIdStatement = $db->prepare('SELECT no FROM quotations WHERE company_id =? ORDER BY id DESC LIMIT 1');
-    $lastIdStatement->bindParam(1, $newQuotation['company_id'], PDO::PARAM_INT);
-    $lastIdStatement->execute();
-    $lastId = $lastIdStatement->fetch();
+    $lastIdStmt = $db->prepare('SELECT no FROM quotations WHERE company_id =? ORDER BY id DESC LIMIT 1');
+    $lastIdStmt->bindParam(1, $newQuotation['company_id'], PDO::PARAM_INT);
+    $lastIdStmt->execute();
+    $lastId = $lastIdStmt->fetch();
     if (isset($lastId['no'])) {
         $nextNo = intval(substr($lastId['no'], -8)) + 1;
     } else {
@@ -22,15 +22,15 @@ if (empty($_SESSION['new_quotation'])) {
 }
 
 if (!empty($_POST)) {
-    $statement = $db->prepare('INSERT INTO quotations SET company_id=?, no=?, title=?, total=?, validity_period=?, due_date=?, status=?, created=NOW(), modified=NOW()');
-    $statement->bindParam(1, $newQuotation['company_id']);
-    $statement->bindParam(2, $no);
-    $statement->bindParam(3, $newQuotation['title']);
-    $statement->bindParam(4, $newQuotation['total'], PDO::PARAM_INT);
-    $statement->bindParam(5, $newQuotation['validity_period']);
-    $statement->bindParam(6, $newQuotation['due_date']);
-    $statement->bindParam(7, $newQuotation['status'], PDO::PARAM_INT);
-    $statement->execute();
+    $insertStmt = $db->prepare('INSERT INTO quotations SET company_id=?, no=?, title=?, total=?, validity_period=?, due_date=?, status=?, created=NOW(), modified=NOW()');
+    $insertStmt->bindParam(1, $newQuotation['company_id']);
+    $insertStmt->bindParam(2, $no);
+    $insertStmt->bindParam(3, $newQuotation['title']);
+    $insertStmt->bindParam(4, $newQuotation['total'], PDO::PARAM_INT);
+    $insertStmt->bindParam(5, $newQuotation['validity_period']);
+    $insertStmt->bindParam(6, $newQuotation['due_date']);
+    $insertStmt->bindParam(7, $newQuotation['status'], PDO::PARAM_INT);
+    $insertStmt->execute();
     unset($_SESSION['new_quotation']);
     header("Location: index.php?id={$newQuotation['company_id']}");
     exit();

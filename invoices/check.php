@@ -8,10 +8,10 @@ if (empty($_SESSION['new_invoice'])) {
     exit();
 } else {
     $newInvoice = $_SESSION['new_invoice'];
-    $lastIdStatement = $db->prepare('SELECT no FROM invoices WHERE company_id=? ORDER BY id DESC LIMIT 1');
-    $lastIdStatement->bindParam(1, $newInvoice['company_id'], PDO::PARAM_INT);
-    $lastIdStatement->execute();
-    $lastId = $lastIdStatement->fetch();
+    $lastIdStmt = $db->prepare('SELECT no FROM invoices WHERE company_id=? ORDER BY id DESC LIMIT 1');
+    $lastIdStmt->bindParam(1, $newInvoice['company_id'], PDO::PARAM_INT);
+    $lastIdStmt->execute();
+    $lastId = $lastIdStmt->fetch();
     if (isset($lastId['no'])) {
         $nextNo = intval(substr($lastId['no'], -8)) + 1;
     } else {
@@ -22,16 +22,16 @@ if (empty($_SESSION['new_invoice'])) {
 }
 
 if (!empty($_POST)) {
-    $statement = $db->prepare('INSERT INTO invoices SET company_id=?, no=?, title=?, total=?, payment_deadline=?, date_of_issue=?, quotation_no=?, status=?, created=NOW(), modified=NOW()');
-    $statement->bindParam(1, $newInvoice['company_id']);
-    $statement->bindParam(2, $no);
-    $statement->bindParam(3, $newInvoice['title']);
-    $statement->bindParam(4, $newInvoice['total'], PDO::PARAM_INT);
-    $statement->bindParam(5, $newInvoice['payment_deadline']);
-    $statement->bindParam(6, $newInvoice['date_of_issue']);
-    $statement->bindParam(7, $newInvoice['quotation_no']);
-    $statement->bindParam(8, $newInvoice['status'], PDO::PARAM_INT);
-    $statement->execute();
+    $insertStmt = $db->prepare('INSERT INTO invoices SET company_id=?, no=?, title=?, total=?, payment_deadline=?, date_of_issue=?, quotation_no=?, status=?, created=NOW(), modified=NOW()');
+    $insertStmt->bindParam(1, $newInvoice['company_id']);
+    $insertStmt->bindParam(2, $no);
+    $insertStmt->bindParam(3, $newInvoice['title']);
+    $insertStmt->bindParam(4, $newInvoice['total'], PDO::PARAM_INT);
+    $insertStmt->bindParam(5, $newInvoice['payment_deadline']);
+    $insertStmt->bindParam(6, $newInvoice['date_of_issue']);
+    $insertStmt->bindParam(7, $newInvoice['quotation_no']);
+    $insertStmt->bindParam(8, $newInvoice['status'], PDO::PARAM_INT);
+    $insertStmt->execute();
     unset($_SESSION['new_quotation']);
     header("Location: index.php?id={$newInvoice['company_id']}");
     exit();

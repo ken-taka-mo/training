@@ -9,12 +9,13 @@ if (!isset($_GET['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-q-)[0-9]{8}$/', $_G
 
 $no = $_GET['no'];
 
-$statement = $db->prepare('SELECT id, title, company_id, total, validity_period, due_date, status FROM quotations WHERE no=?');
-$statement->execute(array($no));
-$quotationData = $statement->fetch();
-$companyNameStatement = $db->prepare('SELECT name FROM companies WHERE id = ?');
-$companyNameStatement->execute(array($quotationData['company_id']));
-$companyName = $companyNameStatement->fetch();
+$quotationDataStmt = $db->prepare('SELECT id, title, company_id, total, validity_period, due_date, status FROM quotations WHERE no=?');
+$quotationDataStmt->execute(array($no));
+$quotationData = $quotationDataStmt->fetch();
+
+$companyNameStmt = $db->prepare('SELECT name FROM companies WHERE id = ?');
+$companyNameStmt->execute(array($quotationData['company_id']));
+$companyName = $companyNameStmt->fetch();
 
 $title = $quotationData['title'];
 $total = $quotationData['total'];
@@ -57,16 +58,16 @@ if (!empty($_POST)) {
     }
 
     if (empty($error)) {
-        $updateStatement = $db->prepare('UPDATE quotations SET
+        $updateStmt = $db->prepare('UPDATE quotations SET
         title=?, total=?, validity_period=?, due_date=?, status=?, modified=NOW()
         WHERE id=?');
-        $updateStatement->bindParam(1, $title);
-        $updateStatement->bindParam(2, $total, PDO::PARAM_INT);
-        $updateStatement->bindParam(3, $validityPeriod);
-        $updateStatement->bindParam(4, $dueDate);
-        $updateStatement->bindParam(5, $status, PDO::PARAM_INT);
-        $updateStatement->bindParam(6, $id, PDO::PARAM_INT);
-        $updateStatement->execute();
+        $updateStmt->bindParam(1, $title);
+        $updateStmt->bindParam(2, $total, PDO::PARAM_INT);
+        $updateStmt->bindParam(3, $validityPeriod);
+        $updateStmt->bindParam(4, $dueDate);
+        $updateStmt->bindParam(5, $status, PDO::PARAM_INT);
+        $updateStmt->bindParam(6, $id, PDO::PARAM_INT);
+        $updateStmt->execute();
         header("Location: index.php?id={$quotationData['company_id']}");
         exit();
     }

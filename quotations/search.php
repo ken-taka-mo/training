@@ -30,25 +30,25 @@ if (!preg_match('/^[129]$/', $sqlStatus)) {
     exit();
 }
 
-$companyStatement = $db->prepare('SELECT name, manager_name FROM companies WHERE id=?');
-$companyStatement->execute(array($id));
-$companyData = $companyStatement->fetch();
+$companyDataStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=?');
+$companyDataStmt->execute(array($id));
+$companyData = $companyDataStmt->fetch();
 
-$countStatement = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE company_id=? AND status=? AND deleted is NULL');
-$countStatement->bindParam(1, $id, PDO::PARAM_INT);
-$countStatement->bindParam(2, $sqlStatus, PDO::PARAM_INT);
-$countStatement->execute();
-$count = $countStatement->fetch();
+$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE company_id=? AND status=? AND deleted is NULL');
+$countStmt->bindParam(1, $id, PDO::PARAM_INT);
+$countStmt->bindParam(2, $sqlStatus, PDO::PARAM_INT);
+$countStmt->execute();
+$count = $countStmt->fetch();
 
 if ($count['cnt'] < 1) {
     $quotationExist = false;
 } else {
     $quotationExist = true;
-    $quotationStatement = $db->prepare('SELECT no, title, total, validity_period, due_date, status FROM quotations WHERE company_id=? AND status=? AND deleted is NULL');
-    $quotationStatement->bindParam(1, $id, PDO::PARAM_INT);
-    $quotationStatement->bindParam(2, $sqlStatus, PDO::PARAM_INT);
-    $quotationStatement->execute();
-    $quotations = $quotationStatement->fetchAll();
+    $quotationStmt = $db->prepare('SELECT no, title, total, validity_period, due_date, status FROM quotations WHERE company_id=? AND status=? AND deleted is NULL');
+    $quotationStmt->bindParam(1, $id, PDO::PARAM_INT);
+    $quotationStmt->bindParam(2, $sqlStatus, PDO::PARAM_INT);
+    $quotationStmt->execute();
+    $quotations = $quotationStmt->fetchAll();
 }
 
 $page = 1;
