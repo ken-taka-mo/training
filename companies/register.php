@@ -140,9 +140,9 @@ if (!empty($_POST)) {
                                     <option value="">選択してください</option>
                                     <?php for ($i = 1; $i <= 47; $i++) :?>
                                         <?php if ($prefectureCode == $i) :?>
-                                            <option value=<?= $i ?> selected><?= $prefectures[$i] ?></option>
+                                            <option value=<?= $i ?> selected><?= PREFECTURES[$i] ?></option>
                                         <?php else :?>
-                                            <option value=<?= $i ?>><?= $prefectures[$i] ?></option>
+                                            <option value=<?= $i ?>><?= PREFECTURES[$i] ?></option>
                                         <?php endif ?>
                                     <?php endfor ?>
                                 </select>

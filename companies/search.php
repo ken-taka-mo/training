@@ -117,7 +117,7 @@ if ($cnt['cnt'] < 1) {
                             <th><?= h($company['name']) ?></th>
                             <th><?= h($company['manager_name']) ?></th>
                             <th><?= h($company['phone_number']) ?></th>
-                            <th><?= '〒' . h(substr_replace($company['postal_code'], '-', 3, 0)) . "<br>" . $prefectures[h($company['prefecture_code'])] . h($company['address'])?></th>
+                            <th><?= '〒' . h(substr_replace($company['postal_code'], '-', 3, 0)) . "<br>" . PREFECTURES[h($company['prefecture_code'])] . h($company['address'])?></th>
                             <th><?= h($company['mail_address'])?></th>
                             <th class="link to-list"><a href="../quotations/index.php?id=<?= h($company['id'])?>">見積一覧</a></th>
                             <th class="link to-list"><a href="../invoices/index.php?id=<?= h($company['id'])?>">請求一覧</a></th>

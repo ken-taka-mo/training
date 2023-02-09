@@ -13,7 +13,7 @@ if (empty($_SESSION['register'])) {
 }
 
 if (!empty($_POST)) {
-    $statement = $db->prepare('INSERT INTO companies SET
+    $insertStmt = $db->prepare('INSERT INTO companies SET
     name=?,
     manager_name=?,
     phone_number=?,
@@ -24,15 +24,15 @@ if (!empty($_POST)) {
     prefix=?,
     created=NOW(),
     modified=NOW()');
-    $statement->bindParam(1, $register['name']);
-    $statement->bindParam(2, $register['manager_name']);
-    $statement->bindParam(3, $register['phone_number']);
-    $statement->bindParam(4, $register['postal_code']);
-    $statement->bindParam(5, $prefectureCode, PDO::PARAM_INT);
-    $statement->bindParam(6, $register['address']);
-    $statement->bindParam(7, $register['mail_address']);
-    $statement->bindParam(8, $register['prefix']);
-    $statement->execute();
+    $insertStmt->bindParam(1, $register['name']);
+    $insertStmt->bindParam(2, $register['manager_name']);
+    $insertStmt->bindParam(3, $register['phone_number']);
+    $insertStmt->bindParam(4, $register['postal_code']);
+    $insertStmt->bindParam(5, $prefectureCode, PDO::PARAM_INT);
+    $insertStmt->bindParam(6, $register['address']);
+    $insertStmt->bindParam(7, $register['mail_address']);
+    $insertStmt->bindParam(8, $register['prefix']);
+    $insertStmt->execute();
     unset($_SESSION['register']);
     header('Location: index.php');
     exit();
@@ -80,7 +80,7 @@ if (!empty($_POST)) {
                             </div>
                             <div class="address-item">
                                 <h4>都道府県</h4>
-                                <?= $prefectures[h($register['prefecture_code'])]?>
+                                <?= PREFECTURES[h($register['prefecture_code'])]?>
                             </div>
                             <div class="address-item">
                                 <h4>市区町村</h4>

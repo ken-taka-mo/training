@@ -11,9 +11,9 @@ if (empty($_GET['id'])) {
     exit();
 }
 
-$hasData = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
-$hasData->execute(array($_GET['id']));
-$count = $hasData->fetch();
+$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
+$countStmt->execute(array($_GET['id']));
+$count = $countStmt->fetch();
 if ($count['cnt']) {
     $id = $_GET['id'];
 } else {
@@ -21,10 +21,10 @@ if ($count['cnt']) {
     exit();
 }
 
-$statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix FROM companies WHERE id=?');
-$statement->bindParam(1, $id, PDO::PARAM_INT);
-$statement->execute();
-$details = $statement->fetch();
+$detailStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix FROM companies WHERE id=?');
+$detailStmt->bindParam(1, $id, PDO::PARAM_INT);
+$detailStmt->execute();
+$details = $detailStmt->fetch();
 
 if (empty($_POST)) {
     $name = $details['name'];
@@ -88,7 +88,7 @@ if (empty($_POST)) {
     }
 
     if (!isset($error)) {
-        $statement = $db->prepare('UPDATE companies SET
+        $updateStmt = $db->prepare('UPDATE companies SET
         name=?,
         manager_name=?,
         phone_number=?,
@@ -97,15 +97,15 @@ if (empty($_POST)) {
         address=?,
         mail_address=?,
         modified=NOW() WHERE id=?');
-        $statement->bindParam(1, $name);
-        $statement->bindParam(2, $managerName);
-        $statement->bindParam(3, $phoneNumber);
-        $statement->bindParam(4, $postalCode);
-        $statement->bindParam(5, $prefectureCode, PDO::PARAM_INT);
-        $statement->bindParam(6, $address);
-        $statement->bindParam(7, $mailAddress);
-        $statement->bindParam(8, $id, PDO::PARAM_INT);
-        $statement->execute();
+        $updateStmt->bindParam(1, $name);
+        $updateStmt->bindParam(2, $managerName);
+        $updateStmt->bindParam(3, $phoneNumber);
+        $updateStmt->bindParam(4, $postalCode);
+        $updateStmt->bindParam(5, $prefectureCode, PDO::PARAM_INT);
+        $updateStmt->bindParam(6, $address);
+        $updateStmt->bindParam(7, $mailAddress);
+        $updateStmt->bindParam(8, $id, PDO::PARAM_INT);
+        $updateStmt->execute();
         header('Location: index.php');
         exit();
     }
@@ -167,9 +167,9 @@ if (empty($_POST)) {
                                 <select name="prefecture_code">
                                     <?php for ($i = 1; $i <= 47; $i++) :?>
                                         <?php if ($prefectureCode == $i) :?>
-                                            <option value=<?= $i ?> selected><?= $prefectures[$i] ?></option>
+                                            <option value=<?= $i ?> selected><?= PREFECTURES[$i] ?></option>
                                         <?php else :?>
-                                            <option value=<?= $i ?>><?= $prefectures[$i] ?></option>
+                                            <option value=<?= $i ?>><?= PREFECTURES[$i] ?></option>
                                         <?php endif ?>
                                     <?php endfor ?>
                                 </select>
