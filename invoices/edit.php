@@ -18,7 +18,7 @@ $companyData = $companyDataStatement->fetch();
 
 $title = $invoiceData['title'];
 $total = $invoiceData['total'];
-$payment_deadline = $invoiceData['payment_deadline'];
+$paymentDeadline = $invoiceData['payment_deadline'];
 $date_of_issue = $invoiceData['date_of_issue'];
 $status = $invoiceData['status'];
 $id = $invoiceData['id'];
@@ -26,7 +26,7 @@ $id = $invoiceData['id'];
 if (!empty($_POST)) {
     $title = $_POST['title'];
     $total = $_POST['total'];
-    $payment_deadline = $_POST['payment_deadline'];
+    $paymentDeadline = $_POST['payment_deadline'];
     $date_of_issue = $_POST['date_of_issue'];
     $status = $_POST['status'];
 
@@ -60,7 +60,7 @@ if (!empty($_POST)) {
         WHERE id=?');
         $updateStatement->bindParam(1, $title);
         $updateStatement->bindParam(2, $total, PDO::PARAM_INT);
-        $updateStatement->bindParam(3, $payment_deadline);
+        $updateStatement->bindParam(3, $paymentDeadline);
         $updateStatement->bindParam(4, $date_of_issue);
         $updateStatement->bindParam(5, $status, PDO::PARAM_INT);
         $updateStatement->bindParam(6, $id, PDO::PARAM_INT);
@@ -109,7 +109,7 @@ if (!empty($_POST)) {
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">支払い期限<span>(本日以降)</span></h3>
-                        <div class="form-wrapper"><input type="date" class="icon-del" name="payment_deadline" value=<?= h($payment_deadline) ?>></div>
+                        <div class="form-wrapper"><input type="date" class="icon-del" name="payment_deadline" value=<?= h($paymentDeadline) ?>></div>
                     </div>
                     <?php if (isset($error['payment_deadline'])) :?>
                         <p class="error"><?= $error['payment_deadline'] ?></p>

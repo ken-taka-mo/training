@@ -11,9 +11,9 @@ if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id']
     header('Location: ../companies/index.php');
     exit();
 }
-$hasData = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
-$hasData->execute(array($_GET['id']));
-$count = $hasData->fetch();
+$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
+$countStmt->execute(array($_GET['id']));
+$count = $countStmt->fetch();
 if ($count['cnt']) {
     $companyId = $_GET['id'];
 } else {
@@ -65,15 +65,15 @@ if (isset($_GET['action']) && $_GET['action'] == 'rewrite') {
 
 $title = '';
 $total = '';
-$validity_period = '';
-$due_date = '';
+$validityPeriod = '';
+$dueDate = '';
 $status = '';
 
 if (!empty($_POST)) {
     $title = $_POST['title'];
     $total = $_POST['total'];
-    $validity_period = $_POST['validity_period'];
-    $due_date = $_POST['due_date'];
+    $validityPeriod = $_POST['validity_period'];
+    $dueDate = $_POST['due_date'];
     $status = $_POST['status'];
 }
 
@@ -120,14 +120,14 @@ if (!empty($_POST)) {
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">見積有効期限</h3>
-                        <div class="form-wrapper"><input class="icon-del" type="date" name="validity_period" value=<?= h($validity_period) ?>></div>
+                        <div class="form-wrapper"><input class="icon-del" type="date" name="validity_period" value=<?= h($validityPeriod) ?>></div>
                     </div>
                     <?php if (isset($error['validity_period'])) :?>
                         <p class="error"><?= $error['validity_period'] ?></p>
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">納期<span>(本日以降)</span></h3>
-                        <div class="form-wrapper"><input class="icon-del" type="date" name="due_date" value=<?= h($due_date) ?>></div>
+                        <div class="form-wrapper"><input class="icon-del" type="date" name="due_date" value=<?= h($dueDate) ?>></div>
                     </div>
                     <?php if (isset($error['due_date'])) :?>
                         <p class="error"><?= $error['due_date'] ?></p>

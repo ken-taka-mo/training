@@ -18,16 +18,16 @@ $companyName = $companyNameStatement->fetch();
 
 $title = $quotationData['title'];
 $total = $quotationData['total'];
-$validity_period = $quotationData['validity_period'];
-$due_date = $quotationData['due_date'];
+$validityPeriod = $quotationData['validity_period'];
+$dueDate = $quotationData['due_date'];
 $status = $quotationData['status'];
 $id = $quotationData['id'];
 
 if (!empty($_POST)) {
     $title = $_POST['title'];
     $total = $_POST['total'];
-    $validity_period = $_POST['validity_period'];
-    $due_date = $_POST['due_date'];
+    $validityPeriod = $_POST['validity_period'];
+    $dueDate = $_POST['due_date'];
     $status = $_POST['status'];
 
     if (preg_match('/^[\s\n\t]*$/', $_POST['title'])) {
@@ -62,8 +62,8 @@ if (!empty($_POST)) {
         WHERE id=?');
         $updateStatement->bindParam(1, $title);
         $updateStatement->bindParam(2, $total, PDO::PARAM_INT);
-        $updateStatement->bindParam(3, $validity_period);
-        $updateStatement->bindParam(4, $due_date);
+        $updateStatement->bindParam(3, $validityPeriod);
+        $updateStatement->bindParam(4, $dueDate);
         $updateStatement->bindParam(5, $status, PDO::PARAM_INT);
         $updateStatement->bindParam(6, $id, PDO::PARAM_INT);
         $updateStatement->execute();
@@ -111,14 +111,14 @@ if (!empty($_POST)) {
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">見積有効期限</h3>
-                        <div class="form-wrapper"><input class="icon-del" type="date" name="validity_period" value=<?= h($validity_period) ?>></div>
+                        <div class="form-wrapper"><input class="icon-del" type="date" name="validity_period" value=<?= h($validityPeriod) ?>></div>
                     </div>
                     <?php if (isset($error['validity_period'])) :?>
                         <p class="error"><?= $error['validity_period'] ?></p>
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">納期<span>(本日以降)</span></h3>
-                        <div class="form-wrapper"><input class="icon-del" type="date" name="due_date" value=<?= h($due_date) ?>></div>
+                        <div class="form-wrapper"><input class="icon-del" type="date" name="due_date" value=<?= h($dueDate) ?>></div>
                     </div>
                     <?php if (isset($error['due_date'])) :?>
                         <p class="error"><?= $error['due_date'] ?></p>

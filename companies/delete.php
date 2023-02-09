@@ -11,9 +11,9 @@ if (!preg_match('/^[0-9]*[1-9]+$/', $_POST['id'])) {
     exit();
 }
 
-$hasData = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=?');
-$hasData->execute(array($_POST['id']));
-$count = $hasData->fetch();
+$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=?');
+$countStmt->execute(array($_POST['id']));
+$count = $countStmt->fetch();
 if ($count['cnt']) {
     $id = $_POST['id'];
 } else {
@@ -21,8 +21,8 @@ if ($count['cnt']) {
     exit();
 }
 
-$statement = $db->prepare("UPDATE companies SET deleted=NOW(), modified=NOW() WHERE id=?");
-$statement->bindParam(1, $id, PDO::PARAM_INT);
-$statement->execute();
+$updateStmt = $db->prepare("UPDATE companies SET deleted=NOW(), modified=NOW() WHERE id=?");
+$updateStmt->bindParam(1, $id, PDO::PARAM_INT);
+$updateStmt->execute();
 header('Location: index.php');
 exit();

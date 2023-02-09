@@ -1,5 +1,5 @@
 <?php
-$prefectures = array(
+const PREFECTURES = array(
     '1'=>'北海道',
     '2'=>'青森県',
     '3'=>'岩手県',
