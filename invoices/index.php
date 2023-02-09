@@ -18,7 +18,7 @@ $countStatement = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE compa
 $countStatement->bindParam(1, $id, PDO::PARAM_INT);
 $countStatement->execute();
 $count = $countStatement->fetch();
-if (!$count['cnt'] > 0) {
+if ($count['cnt'] < 1) {
     $invoicesExist = false;
 } else {
     $invoicesExist = true;
