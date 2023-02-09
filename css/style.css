@@ -147,7 +147,7 @@ main {
 
 .list th:not(.link) {
     text-align: left;
-    padding-left: 15px;
+    padding-left: 5px;
 }
 
 .btn-delete input {
@@ -203,12 +203,22 @@ th a {
 }
 
 /* 会社一覧ページのth幅 */
+.th-id {
+    width: 5%;
+}
+
 .th-name {
     width: 20%;
 }
 .th-manager {
     width: 10%;
+    padding-left: 5px;
 }
+
+.th-tel {
+    width: 8%;
+}
+
 .th-address {
     width: 20%;
 }
@@ -218,7 +228,7 @@ th a {
 }
 
 /* 見積一覧ページのth幅 */
-.order {
+.th-q-id {
     width: 20%;
 }
 .th-q-name {
