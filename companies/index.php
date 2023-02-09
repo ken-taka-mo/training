@@ -2,8 +2,7 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
-
-const DATA_PER_PAGE = 10;
+require_once('../utils/data_per_page.php');
 
 $countStmt = $db->query('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL');
 $cnt = $countStmt->fetch();
@@ -36,7 +35,7 @@ if ($cnt['cnt'] < 1) {
         $page = min($page, $maxPage);
     }
 
-    $start = ($page - 1) * 10;
+    $start = ($page - 1) * DATA_PER_PAGE;
 
     $showButton = false;
     if ($maxPage > 1) {
