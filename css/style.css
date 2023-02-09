@@ -123,6 +123,7 @@ main {
     font-size: 13px;
     padding: 0 30px;
     background-color: white;
+    cursor: pointer;
 }
 
 .title {
