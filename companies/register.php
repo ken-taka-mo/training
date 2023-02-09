@@ -67,22 +67,22 @@ if (isset($_GET['action']) && $_GET['action'] == 'rewrite') {
 
 
 $name = '';
-$manager_name = '';
-$phone_number = '';
-$postal_code = '';
-$prefecture_code = '';
+$managerName = '';
+$phoneNumber = '';
+$postalCode = '';
+$prefectureCode = '';
 $address = '';
-$mail_address = '';
+$mailAddress = '';
 $prefix = '';
 
 if (!empty($_POST)) {
     $name = $_POST['name'];
-    $manager_name = $_POST['manager_name'];
-    $phone_number = $_POST['phone_number'];
-    $postal_code = $_POST['postal_code'];
-    $prefecture_code = intval($_POST['prefecture_code']);
+    $managerName = $_POST['manager_name'];
+    $phoneNumber = $_POST['phone_number'];
+    $postalCode = $_POST['postal_code'];
+    $prefectureCode = intval($_POST['prefecture_code']);
     $address = $_POST['address'];
-    $mail_address = $_POST['mail_address'];
+    $mailAddress = $_POST['mail_address'];
     $prefix = $_POST['prefix'];
 }
 
@@ -115,14 +115,14 @@ if (!empty($_POST)) {
                     <?php endif ?>
                     <div class="item">
                         <h3 class="item-title">担当者</h3>
-                        <div class="form-wrapper"><input type="text" name="manager_name" value=<?= h($manager_name) ?>></div>
+                        <div class="form-wrapper"><input type="text" name="manager_name" value=<?= h($managerName) ?>></div>
                     </div>
                     <?php if (isset($error['manager_name'])) :?>
                         <p class="error"><?= $error['manager_name'] ?></p>
                     <?php endif ?>
                     <div class="item">
                         <h3 class="item-title">電話番号</h3>
-                        <div class="form-wrapper"><input type="text" name="phone_number" value=<?= h($phone_number) ?>></div>
+                        <div class="form-wrapper"><input type="text" name="phone_number" value=<?= h($phoneNumber) ?>></div>
                     </div>
                     <?php if (isset($error['phone_number'])) :?>
                         <p class="error"><?= $error['phone_number'] ?></p>
@@ -132,14 +132,14 @@ if (!empty($_POST)) {
                         <div class="address-item-wrapper">
                             <div class="address-item">
                                 <h4>郵便番号</h4>
-                                <input type="text" name="postal_code" value=<?= h($postal_code) ?>>
+                                <input type="text" name="postal_code" value=<?= h($postalCode) ?>>
                             </div>
                             <div class="address-item">
                                 <h4>都道府県</h4>
                                 <select name="prefecture_code">
                                     <option value="">選択してください</option>
                                     <?php for ($i = 1; $i <= 47; $i++) :?>
-                                        <?php if ($prefecture_code == $i) :?>
+                                        <?php if ($prefectureCode == $i) :?>
                                             <option value=<?= $i ?> selected><?= $prefectures[$i] ?></option>
                                         <?php else :?>
                                             <option value=<?= $i ?>><?= $prefectures[$i] ?></option>
@@ -164,7 +164,7 @@ if (!empty($_POST)) {
                     <?php endif ?>
                     <div class="item">
                         <h3 class="item-title">メールアドレス</h3>
-                        <div class="form-wrapper"><input type="text" name="mail_address" value=<?= h($mail_address) ?>></div>
+                        <div class="form-wrapper"><input type="text" name="mail_address" value=<?= h($mailAddress) ?>></div>
                     </div>
                     <?php if (isset($error['mail_address'])) :?>
                         <p class="error"><?= $error['mail_address'] ?></p>

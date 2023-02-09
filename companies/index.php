@@ -4,32 +4,38 @@ require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
 
 const DATA_PER_PAGE = 10;
-$page = 1;
-$counts = $db->query('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL');
-$cnt = $counts->fetch();
+
+$countStmt = $db->query('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL');
+$cnt = $countStmt->fetch();
 if ($cnt['cnt'] < 1) {
     $companiesExist = false;
 } else {
     $companiesExist = true;
+
+    $page = 1;
     $maxPage = ceil($cnt['cnt'] / DATA_PER_PAGE);
+
     if ($maxPage == 0) {
         $maxPage = 1;
     }
+
     if (isset($_GET['page'])) {
         if (!preg_match('/^[0-9]+$/', $_GET['page']) || preg_match('/^[0]*$/', $_GET['page'])) {
             header('Location: index.php');
             exit();
         }
 
+
         if ($_GET['page'] > $maxPage) {
             header("Location: index.php?page={$maxPage}");
             exit();
-        } else {
-            $page = $_GET['page'];
-            $page = max($page, 1);
-            $page = min($page, $maxPage);
         }
+
+        $page = $_GET['page'];
+        $page = max($page, 1);
+        $page = min($page, $maxPage);
     }
+
     $start = ($page - 1) * 10;
 
     $showButton = false;
@@ -40,19 +46,19 @@ if ($cnt['cnt'] < 1) {
     if (isset($_GET['order'])) {
         if ($_GET['order'] == 'desc') {
             $desc = true;
-            $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL ORDER BY id DESC LIMIT ?,10');
+            $listStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL ORDER BY id DESC LIMIT ?,10');
         } else {
             header('Location: index.php');
             exit();
         }
     } else {
         $desc = false;
-        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL LIMIT ?,10');
+        $listStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL LIMIT ?,10');
     }
 
-    $statement->bindParam(1, $start, PDO::PARAM_INT);
-    $statement->execute();
-    $companies = $statement->fetchAll();
+    $listStmt->bindParam(1, $start, PDO::PARAM_INT);
+    $listStmt->execute();
+    $companies = $listStmt->fetchAll();
 }
 ?>
 

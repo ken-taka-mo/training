@@ -127,9 +127,9 @@ if (isset($_GET['order'])) {
             <table>
                 <tr class="title list-title">
                     <?php if ($desc) :?>
-                        <th class="order"><a href="search.php?id=<?= h($id) ?>&min=<?= $min?>&max=<?= $max?>">請求番号</a></th>
+                        <th class="order th-i-id"><a href="search.php?id=<?= h($id) ?>&min=<?= $min?>&max=<?= $max?>">請求番号</a></th>
                     <?php else :?>
-                        <th class="order"><a href="search.php?id=<?= h($id) ?>&min=<?= $min?>&max=<?= $max?>&order=desc">請求番号</a></th>
+                        <th class="order th-i-id"><a href="search.php?id=<?= h($id) ?>&min=<?= $min?>&max=<?= $max?>&order=desc">請求番号</a></th>
                     <?php endif ?>
                     <th class="th-name">請求名</th>
                     <th class="manager">担当者名</th>

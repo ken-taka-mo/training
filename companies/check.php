@@ -9,7 +9,7 @@ if (empty($_SESSION['register'])) {
     exit();
 } else {
     $register = $_SESSION['register'];
-    $prefecture_code = intval($register['prefecture_code']);
+    $prefectureCode = intval($register['prefecture_code']);
 }
 
 if (!empty($_POST)) {
@@ -28,7 +28,7 @@ if (!empty($_POST)) {
     $statement->bindParam(2, $register['manager_name']);
     $statement->bindParam(3, $register['phone_number']);
     $statement->bindParam(4, $register['postal_code']);
-    $statement->bindParam(5, $prefecture_code, PDO::PARAM_INT);
+    $statement->bindParam(5, $prefectureCode, PDO::PARAM_INT);
     $statement->bindParam(6, $register['address']);
     $statement->bindParam(7, $register['mail_address']);
     $statement->bindParam(8, $register['prefix']);

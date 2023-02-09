@@ -43,11 +43,10 @@ if (isset($_GET['page'])) {
     if ($_GET['page'] > $maxPage) {
         header("Location: index.php?id={$id}&page={$maxPage}");
         exit();
-    } else {
-        $page = $_GET['page'];
-        $page = max($page, 1);
-        $page = min($page, $maxPage);
     }
+    $page = $_GET['page'];
+    $page = max($page, 1);
+    $page = min($page, $maxPage);
 }
 
 $start = ($page - 1) * 10;

@@ -11,9 +11,9 @@ if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id']
     header('Location: ../companies/index.php');
     exit();
 }
-$hasData = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
-$hasData->execute(array($_GET['id']));
-$count = $hasData->fetch();
+$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
+$countStmt->execute(array($_GET['id']));
+$count = $countStmt->fetch();
 if ($count['cnt']) {
     $companyId = $_GET['id'];
 } else {
@@ -68,17 +68,17 @@ if (isset($_GET['action']) && $_GET['action'] == 'rewrite') {
 
 $title = '';
 $total = '';
-$payment_deadline = '';
-$date_of_issue = '';
-$quotation_no = '';
+$paymentDeadline = '';
+$dateOfIssue = '';
+$quotationNo = '';
 $status = '';
 
 if (!empty($_POST)) {
     $title = $_POST['title'];
     $total = $_POST['total'];
-    $payment_deadline = $_POST['payment_deadline'];
-    $date_of_issue = $_POST['date_of_issue'];
-    $quotation_no = $_POST['quotation_no'];
+    $paymentDeadline = $_POST['payment_deadline'];
+    $dateOfIssue = $_POST['date_of_issue'];
+    $quotationNo = $_POST['quotation_no'];
     $status = $_POST['status'];
 }
 
@@ -125,14 +125,14 @@ if (!empty($_POST)) {
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">支払い期限<span>(本日以降)</span></h3>
-                        <div class="form-wrapper"><input type="date" class="icon-del" name="payment_deadline" value=<?= h($payment_deadline) ?>></div>
+                        <div class="form-wrapper"><input type="date" class="icon-del" name="payment_deadline" value=<?= h($paymentDeadline) ?>></div>
                     </div>
                     <?php if (isset($error['payment_deadline'])) :?>
                         <p class="error"><?= $error['payment_deadline'] ?></p>
                     <?php endif?>
                     <div class="item">
                         <h3 class="item-title">請求日</h3>
-                        <div class="form-wrapper"><input type="date" class="icon-del" name="date_of_issue" value=<?= h($date_of_issue) ?>></div>
+                        <div class="form-wrapper"><input type="date" class="icon-del" name="date_of_issue" value=<?= h($dateOfIssue) ?>></div>
                     </div>
                     <?php if (isset($error['date_of_issue'])) :?>
                         <p class="error"><?= $error['date_of_issue'] ?></p>
@@ -141,7 +141,7 @@ if (!empty($_POST)) {
                         <h3 class="item-title">見積番号<span>(半角数字)</span></h3>
                         <div class="q-no-wrapper">
                             <p><?=$companyData['prefix'] . '-q-'?></p>
-                            <input type="text" name="quotation_no" maxlength="8" value=<?= h($quotation_no)?> >
+                            <input type="text" name="quotation_no" maxlength="8" value=<?= h($quotationNo)?> >
                         </div>
                     </div>
                     <?php if (isset($error['quotation_no'])) :?>
