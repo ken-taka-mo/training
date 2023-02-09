@@ -1,6 +1,7 @@
 <?php
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
+require_once('../utils/data_per_page.php');
 
 if (empty($_GET['id'])) {
     header('Location: ../companies/index.php');
@@ -40,7 +41,7 @@ if (!$count['cnt'] > 0) {
 }
 
 $page = 1;
-$maxPage = ceil($count['cnt'] / 10);
+$maxPage = ceil($count['cnt'] / DATA_PER_PAGE);
 if ($maxPage == 0) {
     $maxPage = 1;
 }
@@ -61,8 +62,8 @@ if (isset($_GET['page'])) {
     }
 }
 
-$start = ($page - 1) * 10;
-$end = $start + 9;
+$start = ($page - 1) * DATA_PER_PAGE;
+$end = $start + (DATA_PER_PAGE - 1);
 if ($end >= $count['cnt']) {
     $end = $count['cnt'] - 1;
 }

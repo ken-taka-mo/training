@@ -2,6 +2,7 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
+require_once('../utils/data_per_page.php');
 
 if (empty($_GET['name'])) {
     header('Location: index.php');
@@ -13,7 +14,6 @@ if (!preg_match('/^[\s\n\t]*$/', $_GET['name'])) {
     $nameKeyword = "%{$getName}%";
 }
 
-const DATA_PER_PAGE = 10;
 $counts = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL AND name collate utf8mb4_unicode_ci LIKE ? ');
 $counts->bindParam(1, $nameKeyword);
 $counts->execute();
@@ -44,7 +44,7 @@ if ($cnt['cnt'] < 1) {
         }
     }
 
-    $start = ($page - 1) * 10;
+    $start = ($page - 1) * DATA_PER_PAGE;
 
     $showButton = false;
     if ($maxPage > 1) {

@@ -1,6 +1,7 @@
 <?php
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
+require_once('../utils/deta_per_page.php');
 
 if (empty($_GET['id'])) {
     header('Location: ../companies/index.php');
@@ -12,8 +13,8 @@ if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id']
     exit();
 }
 
-$id = $_GET['id'];
 
+$id = $_GET['id'];
 $countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE company_id=? AND deleted is NULL');
 $countStmt->bindParam(1, $id, PDO::PARAM_INT);
 $countStmt->execute();
@@ -29,7 +30,7 @@ if ($count['cnt'] < 1) {
 }
 
 $page = 1;
-$maxPage = ceil($count['cnt'] / 10);
+$maxPage = ceil($count['cnt'] / DATA_PER_PAGE);
 if ($maxPage == 0) {
     $maxPage = 1;
 }
@@ -49,8 +50,8 @@ if (isset($_GET['page'])) {
     $page = min($page, $maxPage);
 }
 
-$start = ($page - 1) * 10;
-$end = $start + 9;
+$start = ($page - 1) * DATA_PER_PAGE;
+$end = $start + (DATA_PER_PAGE - 1);
 if ($end >= $count['cnt']) {
     $end = $count['cnt'] - 1;
 }
