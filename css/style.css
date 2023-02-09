@@ -217,6 +217,21 @@ th a {
     width: 15%;
 }
 
+/* 見積一覧ページのth幅 */
+.order {
+    width: 20%;
+}
+.th-q-name {
+    width: 20%;
+}
+
+.th-total, .th-validity, .th-due {
+    width: 10%;
+}
+.th-status {
+    width: 8%;
+}
+
 /* 登録ページ */
 
 .create-page, .edit-page {
