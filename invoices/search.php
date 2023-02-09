@@ -15,7 +15,6 @@ $id = $_GET['id'];
 $min = mb_convert_kana($_GET['min'], 'n', 'UTF-8');
 $max = mb_convert_kana($_GET['max'], 'n', 'UTF-8');
 
-
 if (!preg_match('/^[0-9]+$/', $min) || !preg_match('/^[0-9]+$/', $max)) {
     header("Location: index.php?id={$id}");
     exit();
@@ -120,8 +119,8 @@ if (isset($_GET['order'])) {
                         <span>~</span>
                         <input type="text" class="search-total" name="max" placeholder="上限" value=<?= $max?>>
                         <input class="btn-search" type="submit" value="検索">
+                        <a class="btn-back" href="index.php?id=<?= $id?>">条件クリア</a>
                     </form>
-                    <a href="index.php?id=<?= $id?>">条件クリア</a>
                 </div>
             </div>
             <?php if ($invoicesExist) :?>
