@@ -229,16 +229,26 @@ th a {
 
 /* 見積一覧ページのth幅 */
 .th-q-id {
-    width: 20%;
-}
-.th-q-name {
-    width: 20%;
+    width: 15%;
 }
 
-.th-total, .th-validity, .th-due {
+.th-total {
     width: 10%;
 }
+.th-date {
+    width: 8%;
+}
 .th-status {
+    width: 8%;
+}
+
+/* 請求一覧th */
+
+.th-i-id {
+    width: 15%;
+}
+
+.th-no {
     width: 8%;
 }
 

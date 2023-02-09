@@ -131,13 +131,13 @@ if (isset($_GET['order'])) {
                     <?php else :?>
                         <th class="order"><a href="search.php?id=<?= h($id) ?>&min=<?= $min?>&max=<?= $max?>&order=desc">請求番号</a></th>
                     <?php endif ?>
-                    <th>請求名</th>
-                    <th>担当者名</th>
-                    <th>金額</th>
-                    <th>支払期限</th>
-                    <th>請求日</th>
-                    <th>見積番号</th>
-                    <th>状態</th>
+                    <th class="th-name">請求名</th>
+                    <th class="manager">担当者名</th>
+                    <th class="th-total">金額</th>
+                    <th class="th-date">支払期限</th>
+                    <th class="th-date">請求日</th>
+                    <th class="th-no">見積番号</th>
+                    <th class="th-status">状態</th>
                     <th class="link">編集</th>
                     <th class="link">削除</th>
                 </tr>
