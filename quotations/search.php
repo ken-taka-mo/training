@@ -143,9 +143,9 @@ if (isset($_GET['order'])) {
             <table>
                 <tr class="title list-title">
                     <?php if ($desc) :?>
-                        <th class="order"><a href="search.php?id=<?= h($id) ?>&status=<?= $status?>">見積番号</a></th>
+                        <th class="order th-q-id"><a href="search.php?id=<?= h($id) ?>&status=<?= $status?>">見積番号</a></th>
                     <?php else :?>
-                        <th class="order"><a href="search.php?id=<?= h($id) ?>&status=<?= $status?>&order=desc">見積番号</a></th>
+                        <th class="order th-q-id"><a href="search.php?id=<?= h($id) ?>&status=<?= $status?>&order=desc">見積番号</a></th>
                     <?php endif ?>
                     <th class="th-q-name">見積名</th>
                     <th class="th-manager">担当者名</th>
