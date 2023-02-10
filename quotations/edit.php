@@ -3,7 +3,7 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 
 if (!isset($_GET['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-q-)[0-9]{8}$/', $_GET['no'])) {
-    header('Location: ../companies');
+    header('Location: ../companies/index.php');
     exit();
 }
 
