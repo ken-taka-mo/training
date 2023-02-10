@@ -1,12 +1,7 @@
 <?php
 require_once("../dbconnect.php");
 
-if (empty($_POST['id'])) {
-    header('Location: index.php');
-    exit();
-}
-
-if (!preg_match('/^[0-9]*[1-9]+$/', $_POST['id'])) {
+if (empty($_GET['id']) || !preg_match('/^\d*[1-9]+$/', $_GET['id'])) {
     header('Location: index.php');
     exit();
 }

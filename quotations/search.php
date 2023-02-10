@@ -3,8 +3,8 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/data_per_page.php');
 
-if (empty($_GET['id'])) {
-    header('Location: index.php');
+if (empty($_GET['id']) || !preg_match('/^\d*[1-9]+$/', $_GET['id'])) {
+    header('Location: ../companies/index.php');
     exit();
 }
 

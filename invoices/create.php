@@ -2,15 +2,11 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 session_start();
-if (empty($_GET['id'])) {
+if (empty($_GET['id']) || !preg_match('/^\d*[1-9]+$/', $_GET['id'])) {
     header('Location: ../companies/index.php');
     exit();
 }
 
-if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id'])) {
-    header('Location: ../companies/index.php');
-    exit();
-}
 $countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
 $countStmt->execute(array($_GET['id']));
 $count = $countStmt->fetch();
@@ -33,7 +29,7 @@ if (!empty($_POST)) {
     }
     if (preg_match('/^[\s\n\t]*$/', $_POST['total'])) {
         $error['total'] = '金額を入力してください';
-    } elseif (!preg_match('/^[1-9]+[0-9]*/', $_POST['total']) || strlen($_POST['total']) > 10) {
+    } elseif (!preg_match('/^[1-9]{1}\d{0,9}$/', $_POST['total'])) {
         $error['total'] = '金額は10桁以下の半角数字のみで入力してください';
     }
     if (preg_match('/^[\s\n\t]*$/', $_POST['payment_deadline'])) {
@@ -46,7 +42,7 @@ if (!empty($_POST)) {
     }
     if (preg_match('/^[\s\n\t]*$/', $_POST['quotation_no'])) {
         $error['quotation_no'] = '見積番号を入力してください';
-    } elseif (mb_strlen($_POST['quotation_no']) > 8 || !preg_match('/^[0]*[1-9]+$/', $_POST['quotation_no'])) {
+    } elseif (!preg_match('/^\d[1-9]{7}$/', $_POST['quotation_no'])) {
         $error['quotation_no'] = '見積番号は8桁の半角数字で入力して下さい';
     }
     if (preg_match('/^[\s\n\t]*$/', $_POST['status'])) {

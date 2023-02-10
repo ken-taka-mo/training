@@ -1,18 +1,12 @@
 <?php
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
-require_once('../utils/deta_per_page.php');
+require_once('../utils/data_per_page.php');
 
-if (empty($_GET['id'])) {
+if (empty($_GET['id']) || !preg_match('/^\d*[1-9]+$/', $_GET['id'])) {
     header('Location: ../companies/index.php');
     exit();
 }
-
-if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id'])) {
-    header('Location: ../companies/index.php');
-    exit();
-}
-
 
 $id = $_GET['id'];
 $countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE company_id=? AND deleted is NULL');

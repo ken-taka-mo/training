@@ -2,15 +2,12 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 session_start();
-if (empty($_GET['id'])) {
+
+if (empty($_GET['id']) || !preg_match('/^\d*[1-9]+$/', $_GET['id'])) {
     header('Location: ../companies/index.php');
     exit();
 }
 
-if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id'])) {
-    header('Location: ../companies/index.php');
-    exit();
-}
 $countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
 $countStmt->execute(array($_GET['id']));
 $count = $countStmt->fetch();
