@@ -3,10 +3,7 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
 
-if (empty($_GET['id'])) {
-    header('Location: index.php');
-    exit();
-} elseif (!preg_match('/^[0-9]*[1-9]+$/', $_GET['id'])) {
+if (empty($_GET['id']) || !preg_match('/^\d*[1-9]+$/', $_GET['id'])) {
     header('Location: index.php');
     exit();
 }

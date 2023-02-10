@@ -3,15 +3,11 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/data_per_page.php');
 
-if (empty($_GET['id'])) {
+if (empty($_GET['id']) || !preg_match('/^\d*[1-9]+$/', $_GET['id'])) {
     header('Location: ../companies/index.php');
     exit();
 }
 
-if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id'])) {
-    header('Location: ../companies/index.php');
-    exit();
-}
 $id = $_GET['id'];
 $min = mb_convert_kana($_GET['min'], 'n', 'UTF-8');
 $max = mb_convert_kana($_GET['max'], 'n', 'UTF-8');
