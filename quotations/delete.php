@@ -1,7 +1,7 @@
 <?php
 require_once('../dbconnect.php');
 if (!isset($_POST['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-q-)[0-9]{8}$/', $_POST['no'])) {
-    header('Location: ../companies');
+    header('Location: ../companies/index.php');
     exit();
 }
 
