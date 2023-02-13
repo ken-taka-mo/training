@@ -5,43 +5,43 @@ session_start();
 
 
 if (!empty($_POST)) {
-    if (preg_match('/^[\s|　]*$/', $_POST['name'])) {
+    if (preg_match('/^[\s]*$/', mb_convert_kana($_POST['name'], "s"))) {
         $error['name'] = '会社名を入力してください';
     } elseif (mb_strlen($_POST['name']) > 64) {
         $error['name'] = '会社名は64文字以内で入力してください';
     }
 
-    if (preg_match('/^[\s|　]*$/', $_POST['manager_name'])) {
+    if (preg_match('/^[\s]*$/', mb_convert_kana($_POST['manager_name'], "s"))) {
         $error['manager_name'] = '担当者名を入力してください';
     } elseif (mb_strlen($_POST['manager_name']) > 32) {
         $error['manager_name'] = '担当者名は32文字以内で入力してください';
     }
 
-    if (preg_match('/^[\s|　]*$/', $_POST['phone_number'])) {
+    if (preg_match('/^[\s]*$/', mb_convert_kana($_POST['phone_number'], "s"))) {
         $error['phone_number'] = '電話番号を入力してください';
     } elseif (mb_strlen($_POST['phone_number']) > 11 || !preg_match('/^\d+$/', $_POST['phone_number'])) {
         $error['phone_number'] = '電話番号はハイフンなしの11桁以下の半角整数で入力してください';
     }
 
-    if (preg_match('/^[\s|　]*$/', $_POST['postal_code'])) {
+    if (preg_match('/^[\s]*$/', mb_convert_kana($_POST['postal_code'], "s"))) {
         $error['postal_code'] = '郵便番号を入力してください';
     } elseif (!preg_match('/^\d{7}$/', $_POST['postal_code'])) {
         $error['postal_code'] = '郵便番号はハイフンなしの7桁の半角整数で入力してください';
     }
 
-    if (preg_match('/^[\s|　]*$/', $_POST['prefecture_code'])) {
+    if (preg_match('/^[\s]*$/', mb_convert_kana($_POST['prefecture_code'], "s"))) {
         $error['prefecture_code'] = '都道府県を選択してください';
     } elseif (mb_strlen($_POST['prefecture_code']) < 1 && mb_strlen($_POST['prefecture_code'] > 47)) {
         $error['prefecture_code'] = 'もう一度都道府県を選択してください';
     }
 
-    if (preg_match('/^[\s|　]*$/', $_POST['address'])) {
+    if (preg_match('/^[\s]*$/', mb_convert_kana($_POST['address'], "s"))) {
         $error['address'] = '市区町村を入力してください';
     } elseif (mb_strlen($_POST['address']) > 100) {
         $error['address'] = '市区町村は100字以内で入力してください';
     }
 
-    if (preg_match('/^[\s|　]*$/', $_POST['mail_address'])) {
+    if (preg_match('/^[\s]*$/', mb_convert_kana($_POST['mail_address'], "s"))) {
         $error['mail_address'] = 'メールアドレスを入力してください';
     } elseif (mb_strlen($_POST['mail_address']) > 100) {
         $error['mail_address'] = 'メールアドレスは100字以内で入力して下さい';
@@ -49,13 +49,19 @@ if (!empty($_POST)) {
         $error['mail_address'] = '正しいメールアドレスを入力してください';
     }
 
-    if (preg_match('/^[\s|　]*$/', $_POST['prefix'])) {
+    if (preg_match('/^[\s]*$/', mb_convert_kana($_POST['prefix'], "s"))) {
         $error['prefix'] = 'プレフィックスを入力してください';
     } elseif (mb_strlen($_POST['prefix']) > 8 || !preg_match('/^[a-zA-Z0-9]+$/', $_POST['prefix'])) {
         $error['prefix'] = 'プレフィックスは8字以内の半角英数字で入力してください';
     }
 
     if (!isset($error)) {
+        $_POST['name'] = preg_replace("/(^\s+)|(\s+$)/u", "", $_POST['name']);
+        $_POST['name'] = mb_convert_kana($_POST['name'], "n");
+        $_POST['manager_name'] = preg_replace("/(^\s+)|(\s+$)/u", "", $_POST['manager_name']);
+        $_POST['manager_name'] = mb_convert_kana($_POST['manager_name'], "n");
+        $_POST['address'] = preg_replace("/(^\s+)|(\s+$)/u", "", $_POST['address']);
+        $_POST['address'] = mb_convert_kana($_POST['address'], "n");
         $_SESSION['register'] = $_POST;
         header('Location: check.php');
         exit();
