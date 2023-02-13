@@ -80,41 +80,43 @@ if ($cnt['cnt'] < 1) {
                 </form>
             </div>
             <?php if ($companiesExist) :?>
-                <table>
-                    <tr class="list-title title">
-                        <?php if ($desc) :?>
-                            <th class="order t-id"><a href="index.php">会社番号</a></th>
-                        <?php else :?>
-                            <th class="order t-id"><a href="index.php?order=desc">会社番号</a></th>
-                        <?php endif ?>
-                        <th class="t-name">会社名</th>
-                        <th class="t-manager">担当者名</th>
-                        <th class="t-tel">電話番号</th>
-                        <th class="t-address">住所</th>
-                        <th class="t-mail">メールアドレス</th>
-                        <th class="link">見積一覧</th>
-                        <th class="link">請求一覧</th>
-                        <th class="link">編集</th>
-                        <th class="link">削除</th>
-                    </tr>
-                    <?php foreach ($companies as $company) :?>
-                        <tr>
-                            <td class="t-id"><?= h($company['id']) ?></td>
-                            <td class="t-name"><?= h($company['name']) ?></td>
-                            <td class="t-manager"><?= h($company['manager_name']) ?></td>
-                            <td class="t-tel"><?= h($company['phone_number']) ?></td>
-                            <td class="t-address"><?= '〒' . h(substr_replace($company['postal_code'], '-', 3, 0)) . "<br>" . PREFECTURES[h($company['prefecture_code'])] . h($company['address'])?></th>
-                            <td class="t-mail"><?= h($company['mail_address'])?></td>
-                            <td class="link to-list"><a href="../quotations/index.php?id=<?= h($company['id'])?>">見積一覧</a></td>
-                            <td class="link to-list"><a href="../invoices/index.php?id=<?= h($company['id'])?>">請求一覧</a></td>
-                            <td class="link"><a href="edit.php?id=<?= h($company['id'])?>">編集</a></td>
-                            <form action="delete.php" method="POST" onsubmit= "return confirmDelete()">
-                                <input type="hidden" name="id" value=<?= $company['id']?>>
-                                <td class="link btn-delete"><input type="submit" value="削除" ></td>
-                            </form>
+                <div class="table-wrapper">
+                    <table>
+                        <tr class="list-title title">
+                            <?php if ($desc) :?>
+                                <th class="order t-id"><a href="index.php">会社番号</a></th>
+                            <?php else :?>
+                                <th class="order t-id"><a href="index.php?order=desc">会社番号</a></th>
+                            <?php endif ?>
+                            <th class="t-name">会社名</th>
+                            <th class="t-manager">担当者名</th>
+                            <th class="t-tel">電話番号</th>
+                            <th class="t-address">住所</th>
+                            <th class="t-mail">メールアドレス</th>
+                            <th class="link">見積一覧</th>
+                            <th class="link">請求一覧</th>
+                            <th class="link">編集</th>
+                            <th class="link">削除</th>
                         </tr>
-                    <?php endforeach?>
-                </table>
+                        <?php foreach ($companies as $company) :?>
+                            <tr>
+                                <td class="t-id"><?= h($company['id']) ?></td>
+                                <td class="t-name"><?= h($company['name']) ?></td>
+                                <td class="t-manager"><?= h($company['manager_name']) ?></td>
+                                <td class="t-tel"><?= h($company['phone_number']) ?></td>
+                                <td class="t-address"><?= '〒' . h(substr_replace($company['postal_code'], '-', 3, 0)) . "<br>" . PREFECTURES[h($company['prefecture_code'])] . h($company['address'])?></th>
+                                <td class="t-mail"><?= h($company['mail_address'])?></td>
+                                <td class="link to-list"><a href="../quotations/index.php?id=<?= h($company['id'])?>">見積一覧</a></td>
+                                <td class="link to-list"><a href="../invoices/index.php?id=<?= h($company['id'])?>">請求一覧</a></td>
+                                <td class="link"><a href="edit.php?id=<?= h($company['id'])?>">編集</a></td>
+                                <form action="delete.php" method="POST" onsubmit= "return confirmDelete()">
+                                    <input type="hidden" name="id" value=<?= $company['id']?>>
+                                    <td class="link btn-delete"><input type="submit" value="削除" ></td>
+                                </form>
+                            </tr>
+                        <?php endforeach?>
+                    </table>
+                </div>
                 <div class="page-navigation">
                     <?php if ($showButton) :?>
                         <?php if ($desc) :?>

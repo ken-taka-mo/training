@@ -206,14 +206,7 @@ if (isset($_GET['order'])) {
                 <?php endif?>
             </div>
             <?php else :?>
-                <table>
-                <tr class="title list-title">
-                    <th>見積番号</th>
-                </tr>
-                <tr>
-                    <th style="">見積はありません</th>
-                </tr>
-            </table>
+                <?php include("../no_data.php") ?>
             <?php endif ?>
         </div>
     </main>
