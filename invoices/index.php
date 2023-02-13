@@ -122,24 +122,24 @@ if (isset($_GET['order'])) {
                 </tr>
                 <?php for ($i = $start; $i <= $end; $i++) :?>
                     <tr>
-                        <th><?= h($invoices[$i]['no']) ?></th>
-                        <th><?= h($invoices[$i]['title']) ?></th>
-                        <th><?= h($companyData['manager_name']) ?></th>
-                        <th><?= number_format(h($invoices[$i]['total'])) . '円'?></th>
-                        <th><?= h($invoices[$i]['payment_deadline']) ?></th>
-                        <th><?= h($invoices[$i]['date_of_issue']) ?></th>
-                        <th><?= h($invoices[$i]['quotation_no'])?></th>
+                        <td><?= h($invoices[$i]['no']) ?></td>
+                        <td><?= h($invoices[$i]['title']) ?></td>
+                        <td><?= h($companyData['manager_name']) ?></td>
+                        <td><?= number_format(h($invoices[$i]['total'])) . '円'?></td>
+                        <td><?= h($invoices[$i]['payment_deadline']) ?></td>
+                        <td><?= h($invoices[$i]['date_of_issue']) ?></td>
+                        <td><?= h($invoices[$i]['quotation_no'])?></td>
                         <?php if ($invoices[$i]['status'] == 1) :?>
-                            <th>下書き</th>
+                            <td>下書き</td>
                         <?php elseif ($invoices[$i]['status'] == 2) :?>
-                            <th>発行済み</th>
+                            <td>発行済み</td>
                         <?php else :?>
-                            <th>破棄</th>
+                            <td>破棄</td>
                         <?php endif?>
-                        <th class="link"><a href="edit.php?no=<?= h($invoices[$i]['no'])?>">編集</a></th>
+                        <td class="link"><a href="edit.php?no=<?= h($invoices[$i]['no'])?>">編集</a></td>
                         <form action="delete.php" method="POST" onsubmit="return confirmDelete()">
                             <input type="hidden" name="no" value=<?= h($invoices[$i]['no'])?>>
-                            <th class="link btn-delete"><input type="submit" value="削除" ></th>
+                            <td class="link btn-delete"><input type="submit" value="削除" ></td>
                         </form>
                     </tr>
                 <?php endfor ?>
@@ -171,10 +171,10 @@ if (isset($_GET['order'])) {
             <?php else :?>
             <table>
             <tr class="title list-title">
-                <th>見積番号</th>
+                <th>請求番号</th>
             </tr>
             <tr>
-                <th style="">見積はありません</th>
+                <td style="">請求はありません</td>
             </tr>
             </table>
             <?php endif ?>
