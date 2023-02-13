@@ -3,7 +3,7 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/data_per_page.php');
 
-if (empty($_GET['id']) || !preg_match('/^\d*[1-9]+$/', $_GET['id'])) {
+if (empty($_GET['id']) || !preg_match('/^[1-9]+[0]*$/', $_GET['id'])) {
     header('Location: ../companies/index.php');
     exit();
 }
@@ -93,7 +93,7 @@ if (isset($_GET['order'])) {
             </div>
             <div class="menu">
                 <a href="create.php?id=<?= $id ?>" class="btn">新規登録</a>
-                <form action="search.php" method="GET">
+                <form action="search.php" method="GET" class="search-total">
                     <input type="hidden" name="id" value=<?= $id?>>
                     <span>金額検索</span>
                     <input type="text" class="search-total" name="min"placeholder="下限">
@@ -169,14 +169,7 @@ if (isset($_GET['order'])) {
                 <?php endif?>
             </div>
             <?php else :?>
-            <table>
-            <tr class="title list-title">
-                <th>請求番号</th>
-            </tr>
-            <tr>
-                <td style="">請求はありません</td>
-            </tr>
-            </table>
+                <?php include("../no_data.php") ?>
             <?php endif ?>
         </div>
     </main>
