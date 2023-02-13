@@ -1,5 +1,4 @@
 html, body {
-    height: 100%;
     width: 100%;
     margin: 0;
     display: flex;
@@ -9,6 +8,14 @@ html, body {
 
 h1, h2, h3, h4, p {
     margin: 0;
+}
+
+h1 {
+    font-size: 20px;
+}
+
+h2 {
+    font-size: 16px;
 }
 
 a {
@@ -27,7 +34,7 @@ input {
 
 table {
     border-spacing: 0;
-    height: 500px;
+    min-height: 60%;
     width: 100%;
 }
 
@@ -46,19 +53,19 @@ main {
 
 
 .list {
+    min-height: 90%;
     width: 85%;
-    height: 900px;
+    margin: 2% 0;
 }
 
 .container {
-    width: 90%;
-    margin: 100px auto;
+    width: 95%;
+    margin: 2% auto;
 }
 
 .heading {
+    height: 7.5%;
     border-bottom: 2px solid gray;
-    margin-top: 30px;
-    padding-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -76,47 +83,62 @@ main {
 .btn-back {
     font-weight: bold;
     color: red;
+    font-size: 12px;
     border: red solid 3px;
     border-radius: 10px;
-    padding: 5px 20px;
+    padding: 1px 10px;
+}
+
+.clear {
+    margin-left: 5px;
 }
 
 .menu {
-    height: 80px;
+    height: 7.5%;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 .btn {
+    height: 50%;
     background-color: red;
     color: white;
-    padding: 0 50px;
-    font-size: 15px;
+    font-size: 12px;
     border-radius: 50px;
-    padding: 4px 40px;
+    padding: 0 30px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
 }
 
 .menu form {
     margin: 0;
-    height: 80px;
-    line-height: 80px;
+    height: 100%;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: right;
 }
 
-.menu select, .search-form {
-    height: 30px;
+.menu select, .search-form, .search-total input {
+    height: 50%;
     margin-right: 5px;
-    font-size: 15px;
+    font-size: 12px;
 }
 
 .search-form {
-    width: 300px;
+    width: 50%;
+}
+
+.search-total input {
+    margin-left: 5px;
 }
 
 .btn-search {
-    font-size: 13px;
-    padding: 0 30px;
+    height: 50%;
+    font-size: 12px;
+    padding: 0 8px;
     background-color: white;
     cursor: pointer;
 }
@@ -124,46 +146,52 @@ main {
 .title {
     background-color: red;
     color: white;
+    height: 30px;
 }
 
-.list-title {
-    height: 35px;
-}
-
-.list th:first-of-type {
-    border-left: 2px solid #efefef;
-}
-
-.list th {
-    font-size: 12px;
+th {
+    font-size: 10px;
     border-right: 2px solid #efefef;
     border-bottom: 2px solid #efefef;
 }
 
-.list th:not(.link) {
+td {
+    word-break:break-word;
+    font-size: 10px;
+    border-right: 2px solid #efefef;
+    border-bottom: 2px solid #efefef;
+}
+
+th:first-of-type, td:first-of-type{
+    border-left: 2px solid #efefef;
+}
+
+th:not(.link), td:not(.link) {
     text-align: left;
     padding-left: 5px;
+}
+
+.link {
+    text-align: center;
+}
+td a{
+    color: red;
 }
 
 .btn-delete input {
     color: red;
     background-color: white;
-    font-size: 12px;
-    font-weight: bold;
-    width: 25px;
+    font-size: 10px;
     padding: 0;
     border: none;
     cursor: pointer;
 }
 
-th a {
-    color: red;
-}
 
 .to-list a{
     border: 2px solid red;
     border-radius: 30px;
-    padding: 1px 20px;
+    padding: 1px 10px;
 }
 
 .order a{
@@ -172,9 +200,11 @@ th a {
 
 
 .page-navigation {
-    text-align: center;
-    padding: 30px 0;
+    height: 10%;
     border-bottom: 1px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .p-nav {
@@ -182,7 +212,7 @@ th a {
     padding: 0 10px;
     color: black;
     border-radius: 5px;
-    font-size: 13px;
+    font-size: 10px;
 }
 
 .next {
@@ -198,55 +228,72 @@ th a {
 }
 
 /* 会社一覧ページのth幅 */
-.th-id {
+.t-id {
     width: 5%;
 }
 
-.th-name {
-    width: 20%;
+.t-name {
+    width: 15%;
 }
-.th-manager {
+.t-manager {
     width: 10%;
-    padding-left: 5px;
 }
 
-.th-tel {
+.t-tel {
     width: 8%;
 }
 
-.th-address {
+.t-address {
     width: 20%;
 }
 
-.th-mail {
-    width: 15%;
+.t-mail {
+    width: 20%;
 }
 
+.link {
+    width: 2.5%;
+}
+
+.to-list {
+    width: 7%;
+}
 /* 見積一覧ページのth幅 */
-.th-q-id {
+.t-q-id {
     width: 15%;
 }
 
-.th-total {
+.t-total {
     width: 10%;
 }
-.th-date {
+.t-date {
     width: 8%;
 }
-.th-status {
+.t-status {
     width: 8%;
 }
 
 /* 請求一覧th */
 
-.th-i-id {
+.t-i-id {
     width: 15%;
 }
 
-.th-no {
+.t-no {
     width: 8%;
 }
 
+
+/* データがなかった時 */
+.no-data th {
+    background-color: red;
+    height: 30px;
+}
+.no-data td{
+    text-align: center;
+    font-size: 15px;
+    padding: 0;
+}
 /* 登録ページ */
 
 .create-page, .edit-page {

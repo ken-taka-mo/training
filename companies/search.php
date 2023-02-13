@@ -10,7 +10,7 @@ if (empty($_GET['name'])) {
 }
 
 if (!preg_match('/^[\s\n\t]*$/', $_GET['name'])) {
-    $getName = $_GET['name'];
+    $getName = mb_convert_kana($_GET['name'], "n");
     $nameKeyword = "%{$getName}%";
 }
 
@@ -90,22 +90,22 @@ if ($cnt['cnt'] < 1) {
                 <form action="search.php" method="GET">
                     <input type="text" class="search-form" name="name" value=<?= h($getName)?>>
                     <input class="btn-search" type="submit" value="検索">
-                    <a class="btn-back" href="index.php">条件クリア</a>
+                    <a class="btn-back clear" href="index.php">条件クリア</a>
                 </form>
             </div>
             <?php if ($companyExist) :?>
                 <table>
                     <tr class="list-title title">
                         <?php if ($desc) :?>
-                            <th class="order"><a href="search.php?name=<?= h($getName)?>">会社番号</a></th>
+                            <th class="order t-id"><a href="search.php?name=<?= h($getName)?>">会社番号</a></th>
                         <?php else :?>
-                            <th class="order"><a href="search.php?name=<?= h($getName)?>&order=desc">会社番号</a></th>
+                            <th class="order t-id"><a href="search.php?name=<?= h($getName)?>&order=desc">会社番号</a></th>
                         <?php endif ?>
-                        <th class="th-name">会社名</th>
-                        <th class="th-manager">担当者名</th>
-                        <th>電話番号</th>
-                        <th class="th-address">住所</th>
-                        <th class="th-mail">メールアドレス</th>
+                        <th class="t-name">会社名</th>
+                        <th class="t-manager">担当者名</th>
+                        <th class="t-tel">電話番号</th>
+                        <th class="t-address">住所</th>
+                        <th class="t-mail">メールアドレス</th>
                         <th class="link">見積一覧</th>
                         <th class="link">請求一覧</th>
                         <th class="link">編集</th>
@@ -113,18 +113,18 @@ if ($cnt['cnt'] < 1) {
                     </tr>
                     <?php foreach ($companies as $company) :?>
                         <tr>
-                            <th><?= h($company['id']) ?></th>
-                            <th><?= h($company['name']) ?></th>
-                            <th><?= h($company['manager_name']) ?></th>
-                            <th><?= h($company['phone_number']) ?></th>
-                            <th><?= '〒' . h(substr_replace($company['postal_code'], '-', 3, 0)) . "<br>" . PREFECTURES[h($company['prefecture_code'])] . h($company['address'])?></th>
-                            <th><?= h($company['mail_address'])?></th>
-                            <th class="link to-list"><a href="../quotations/index.php?id=<?= h($company['id'])?>">見積一覧</a></th>
-                            <th class="link to-list"><a href="../invoices/index.php?id=<?= h($company['id'])?>">請求一覧</a></th>
-                            <th class="link"><a href="edit.php?id=<?= h($company['id'])?>">編集</a></th>
+                            <td class="t-id"><?= h($company['id']) ?></td>
+                            <td class="t-name"><?= h($company['name']) ?></td>
+                            <td class="t-manager"><?= h($company['manager_name']) ?></td>
+                            <td class="t-tel"><?= h($company['phone_number']) ?></td>
+                            <td class="t-address"><?= '〒' . h(substr_replace($company['postal_code'], '-', 3, 0)) . "<br>" . PREFECTURES[h($company['prefecture_code'])] . h($company['address'])?></td>
+                            <td class="t-mail"><?= h($company['mail_address'])?></td>
+                            <td class="link to-list"><a href="../quotations/index.php?id=<?= h($company['id'])?>">見積一覧</a></td>
+                            <td class="link to-list"><a href="../invoices/index.php?id=<?= h($company['id'])?>">請求一覧</a></td>
+                            <td class="link"><a href="edit.php?id=<?= h($company['id'])?>">編集</a></td>
                             <form action="delete.php" method="POST" onsubmit= "return confirmDelete()">
                                 <input type="hidden" name="id" value=<?= h($company['id'])?>>
-                                <th class="link btn-delete"><input type="submit" value="削除" ></th>
+                                <td class="link btn-delete"><input type="submit" value="削除" ></td>
                             </form>
                         </tr>
                     <?php endforeach?>
@@ -154,32 +154,7 @@ if ($cnt['cnt'] < 1) {
                     <?php endif?>
                 </div>
             <?php else :?>
-                <table>
-                    <tr class="list-title title">
-                        <th>会社番号</th>
-                        <th>会社名</th>
-                        <th>担当者名</th>
-                        <th>電話番号</th>
-                        <th>住所</th>
-                        <th>メールアドレス</th>
-                        <th class="link">見積一覧</th>
-                        <th class="link">請求一覧</th>
-                        <th class="link">編集</th>
-                        <th class="link">削除</th>
-                    </tr>
-                    <tr>
-                        <th>該当する会社データはありません</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </table>
+                <?php include("../no_data.php"); ?>
             <?php endif ?>
         </div>
     </main>
