@@ -13,17 +13,13 @@ if ($cnt['cnt'] < 1) {
 
     $page = 1;
     $maxPage = ceil($cnt['cnt'] / DATA_PER_PAGE);
+    $maxPage ?? 1;
 
-    if ($maxPage == 0) {
-        $maxPage = 1;
-    }
-
-    if (isset($_GET['page'])) {
-        if (!preg_match('/^[0-9]+$/', $_GET['page']) || preg_match('/^[0]*$/', $_GET['page'])) {
+    if (!empty($_GET['page'])) {
+        if (!preg_match('/^[1-9]+[0]*$/', $_GET['page'])) {
             header('Location: index.php');
             exit();
         }
-
 
         if ($_GET['page'] > $maxPage) {
             header("Location: index.php?page={$maxPage}");
@@ -103,18 +99,18 @@ if ($cnt['cnt'] < 1) {
                     </tr>
                     <?php foreach ($companies as $company) :?>
                         <tr>
-                            <th><?= h($company['id']) ?></th>
-                            <th><?= h($company['name']) ?></th>
-                            <th><?= h($company['manager_name']) ?></th>
-                            <th><?= h($company['phone_number']) ?></th>
-                            <th><?= '〒' . h(substr_replace($company['postal_code'], '-', 3, 0)) . "<br>" . PREFECTURES[h($company['prefecture_code'])] . h($company['address'])?></th>
-                            <th><?= h($company['mail_address'])?></th>
-                            <th class="link to-list"><a href="../quotations/index.php?id=<?= h($company['id'])?>">見積一覧</a></th>
-                            <th class="link to-list"><a href="../invoices/index.php?id=<?= h($company['id'])?>">請求一覧</a></th>
-                            <th class="link"><a href="edit.php?id=<?= h($company['id'])?>">編集</a></th>
+                            <td class="th-id"><?= h($company['id']) ?></td>
+                            <td class="th-name"><?= h($company['name']) ?></td>
+                            <td class="th-manager"><?= h($company['manager_name']) ?></td>
+                            <td class="th-tel"><?= h($company['phone_number']) ?></td>
+                            <td class="th-address"><?= '〒' . h(substr_replace($company['postal_code'], '-', 3, 0)) . "<br>" . PREFECTURES[h($company['prefecture_code'])] . h($company['address'])?></th>
+                            <td class="th-mail"><?= h($company['mail_address'])?></td>
+                            <td class="link to-list"><a href="../quotations/index.php?id=<?= h($company['id'])?>">見積一覧</a></td>
+                            <td class="link to-list"><a href="../invoices/index.php?id=<?= h($company['id'])?>">請求一覧</a></td>
+                            <td class="link"><a href="edit.php?id=<?= h($company['id'])?>">編集</a></td>
                             <form action="delete.php" method="POST" onsubmit= "return confirmDelete()">
                                 <input type="hidden" name="id" value=<?= $company['id']?>>
-                                <th class="link btn-delete"><input type="submit" value="削除" ></th>
+                                <td class="link btn-delete"><input type="submit" value="削除" ></td>
                             </form>
                         </tr>
                     <?php endforeach?>
@@ -158,16 +154,16 @@ if ($cnt['cnt'] < 1) {
                         <th class="link">削除</th>
                     </tr>
                     <tr>
-                        <th>会社データはありません</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        <td>会社データはありません</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </table>
             <?php endif ?>
