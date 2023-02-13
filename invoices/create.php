@@ -29,8 +29,8 @@ if (!empty($_POST)) {
     }
     if (preg_match('/^[\s\n\t]*$/', $_POST['total'])) {
         $error['total'] = '金額を入力してください';
-    } elseif (!preg_match('/^[1-9]{1}\d{0,9}$/', $_POST['total'])) {
-        $error['total'] = '金額は10桁以下の半角数字のみで入力してください';
+    } elseif (!preg_match('/^[1-9]{1}\d{0,8}$/', $_POST['total'])) {
+        $error['total'] = '金額は9桁以下の半角数字のみで入力してください';
     }
     if (preg_match('/^[\s\n\t]*$/', $_POST['payment_deadline'])) {
         $error['payment_deadline'] = '支払い期限を入力してください';
