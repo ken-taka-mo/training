@@ -266,18 +266,26 @@ td a{
     width: 7%;
 }
 /* 見積一覧ページのth幅 */
-.t-q-id {
+.q-id {
     width: 15%;
 }
 
-.t-total {
+.q-name {
+    width: 20%;
+}
+
+.q-manager {
+    width: 15%;
+}
+
+.q-total {
     width: 10%;
 }
-.t-date {
-    width: 8%;
+.q-date {
+    width: 10%;
 }
-.t-status {
-    width: 8%;
+.q-status {
+    width: 10%;
 }
 
 /* 請求一覧th */

@@ -143,40 +143,44 @@ if (isset($_GET['order'])) {
             <?php if ($quotationExist) :?>
             <table>
                 <tr class="title list-title">
-                    <?php if ($desc) :?>
-                        <th class="order th-q-id"><a href="search.php?id=<?= h($id) ?>&status=<?= $status?>">見積番号</a></th>
+                    <?php if ($count['cnt'] == 1) :?>
+                        <th class="order q-id">見積番号</th>
                     <?php else :?>
-                        <th class="order th-q-id"><a href="search.php?id=<?= h($id) ?>&status=<?= $status?>&order=desc">見積番号</a></th>
-                    <?php endif ?>
-                    <th class="th-name">見積名</th>
-                    <th class="th-manager">担当者名</th>
-                    <th class="th-total">金額</th>
-                    <th class="th-date">見積書有効期限</th>
-                    <th class="th-date">納期</th>
-                    <th class="th-status">状態</th>
+                        <?php if ($desc) :?>
+                            <th class="order q-id"><a href="index.php?id=<?= h($id) ?>">見積番号</a></th>
+                        <?php else :?>
+                            <th class="order q-id"><a href="index.php?id=<?= h($id) ?>&order=desc">見積番号</a></th>
+                        <?php endif ?>
+                    <?php endif?>
+                    <th class="q-name">見積名</th>
+                    <th class="q-manager">担当者名</th>
+                    <th class="q-total">金額</th>
+                    <th class="q-date">見積書有効期限</th>
+                    <th class="q-date">納期</th>
+                    <th class="q-status">状態</th>
                     <th class="link">編集</th>
                     <th class="link">削除</th>
                 </tr>
                 <?php for ($i = $start; $i <= $end; $i++) :?>
                     <tr>
-                        <th><?= h($quotations[$i]['no']) ?></th>
-                        <th><?= h($quotations[$i]['title']) ?></th>
-                        <th><?= h($companyData['manager_name']) ?></th>
-                        <th><?= number_format(h($quotations[$i]['total'])) . '円'?></th>
-                        <th><?= h($quotations[$i]['validity_period']) ?></th>
-                        <th><?= h($quotations[$i]['due_date']) ?></th>
+                        <td class="q-no"><?= h($quotations[$i]['no']) ?></td>
+                        <td class="q-name"><?= h($quotations[$i]['title']) ?></td>
+                        <td class="q-manager"><?= h($companyData['manager_name']) ?></td>
+                        <td class="q-total"><?= number_format(h($quotations[$i]['total'])) . '円'?></td>
+                        <td class="q-date"><?= h($quotations[$i]['validity_period']) ?></td>
+                        <td class="q-date"><?= h($quotations[$i]['due_date']) ?></td>
                         <?php if ($quotations[$i]['status'] == 1) :?>
-                            <th>下書き</th>
+                            <td class="status">下書き</td>
                         <?php elseif ($quotations[$i]['status'] == 2) :?>
-                            <th>発行済み</th>
+                            <td class="status">発行済み</td>
                         <?php else :?>
-                            <th>破棄</th>
+                            <td class="status">破棄</td>
                         <?php endif?>
-                        <th class="link"><a href="edit.php?no=<?= h($quotations[$i]['no'])?>">編集</a></th>
+                        <td class="link"><a href="edit.php?no=<?= h($quotations[$i]['no'])?>">編集</a></td>
                         <form action="delete.php" method="POST" onsubmit="return confirmDelete()">
                             <input type="hidden" name="status" value=<?= $status ?>>
                             <input type="hidden" name="no" value=<?= h($quotations[$i]['no'])?>>
-                            <th class="link btn-delete"><input type="submit" value="削除" ></th>
+                            <td class="link btn-delete"><input type="submit" value="削除" ></td>
                         </form>
                     </tr>
                 <?php endfor ?>
