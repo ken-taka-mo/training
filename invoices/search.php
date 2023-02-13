@@ -108,62 +108,62 @@ if (isset($_GET['order'])) {
             </div>
             <div class="menu">
                 <a href="create.php?id=<?= $id ?>" class="btn">新規登録</a>
-                <div>
-                    <form action="search.php" method="GET">
-                        <input type="hidden" name="id" value=<?= $id?>>
-                        <span>金額検索</span>
-                        <input type="text" class="search-total" name="min"placeholder="下限" value=<?= $min?>>
-                        <span>~</span>
-                        <input type="text" class="search-total" name="max" placeholder="上限" value=<?= $max?>>
-                        <input class="btn-search" type="submit" value="検索">
-                        <a class="btn-back" href="index.php?id=<?= $id?>">条件クリア</a>
-                    </form>
-                </div>
+                <form action="search.php" method="GET" class="search-total">
+                    <input type="hidden" name="id" value=<?= $id?>>
+                    <span>金額検索</span>
+                    <input type="text" class="search-total" name="min"placeholder="下限" value=<?= $min?>>
+                    <span>~</span>
+                    <input type="text" class="search-total" name="max" placeholder="上限" value=<?= $max?>>
+                    <input class="btn-search" type="submit" value="検索">
+                    <a class="btn-back clear" href="index.php?id=<?= $id?>">条件クリア</a>
+                </form>
             </div>
             <?php if ($invoicesExist) :?>
-            <table>
-                <tr class="title list-title">
-                    <?php if ($desc) :?>
-                        <th class="order th-i-id"><a href="search.php?id=<?= h($id) ?>&min=<?= $min?>&max=<?= $max?>">請求番号</a></th>
-                    <?php else :?>
-                        <th class="order th-i-id"><a href="search.php?id=<?= h($id) ?>&min=<?= $min?>&max=<?= $max?>&order=desc">請求番号</a></th>
-                    <?php endif ?>
-                    <th class="th-name">請求名</th>
-                    <th class="manager">担当者名</th>
-                    <th class="th-total">金額</th>
-                    <th class="th-date">支払期限</th>
-                    <th class="th-date">請求日</th>
-                    <th class="th-no">見積番号</th>
-                    <th class="th-status">状態</th>
-                    <th class="link">編集</th>
-                    <th class="link">削除</th>
-                </tr>
-                <?php for ($i = $start; $i <= $end; $i++) :?>
-                    <tr>
-                        <th><?= h($invoices[$i]['no']) ?></th>
-                        <th><?= h($invoices[$i]['title']) ?></th>
-                        <th><?= h($companyData['manager_name']) ?></th>
-                        <th><?= number_format(h($invoices[$i]['total'])) . '円'?></th>
-                        <th><?= h($invoices[$i]['payment_deadline']) ?></th>
-                        <th><?= h($invoices[$i]['date_of_issue']) ?></th>
-                        <th><?= h($invoices[$i]['quotation_no'])?></th>
-                        <?php if ($invoices[$i]['status'] == 1) :?>
-                            <th>下書き</th>
-                        <?php elseif ($invoices[$i]['status'] == 2) :?>
-                            <th>発行済み</th>
+            <div class="table-wrapper">
+                <table>
+                    <tr class="title list-title">
+                        <?php if ($desc) :?>
+                            <th class="order th-i-id"><a href="search.php?id=<?= h($id) ?>&min=<?= $min?>&max=<?= $max?>">請求番号</a></th>
                         <?php else :?>
-                            <th>破棄</th>
-                        <?php endif?>
-                        <th class="link"><a href="edit.php?no=<?= h($invoices[$i]['no'])?>">編集</a></th>
-                        <form action="delete.php" method="POST" onsubmit="return confirmDelete()">
-                            <input type="hidden" name="min" value=<?= $min?>>
-                            <input type="hidden" name="max" value=<?= $max?>>
-                            <input type="hidden" name="no" value=<?= h($invoices[$i]['no'])?>>
-                            <th class="link btn-delete"><input type="submit" value="削除" ></th>
-                        </form>
+                            <th class="order th-i-id"><a href="search.php?id=<?= h($id) ?>&min=<?= $min?>&max=<?= $max?>&order=desc">請求番号</a></th>
+                        <?php endif ?>
+                        <th class="th-name">請求名</th>
+                        <th class="manager">担当者名</th>
+                        <th class="th-total">金額</th>
+                        <th class="th-date">支払期限</th>
+                        <th class="th-date">請求日</th>
+                        <th class="th-no">見積番号</th>
+                        <th class="th-status">状態</th>
+                        <th class="link">編集</th>
+                        <th class="link">削除</th>
                     </tr>
-                <?php endfor ?>
-            </table>
+                    <?php for ($i = $start; $i <= $end; $i++) :?>
+                        <tr>
+                            <td><?= h($invoices[$i]['no']) ?></td>
+                            <td><?= h($invoices[$i]['title']) ?></td>
+                            <td><?= h($companyData['manager_name']) ?></td>
+                            <td><?= number_format(h($invoices[$i]['total'])) . '円'?></td>
+                            <td><?= h($invoices[$i]['payment_deadline']) ?></td>
+                            <td><?= h($invoices[$i]['date_of_issue']) ?></td>
+                            <td><?= h($invoices[$i]['quotation_no'])?></td>
+                            <?php if ($invoices[$i]['status'] == 1) :?>
+                                <td>下書き</td>
+                            <?php elseif ($invoices[$i]['status'] == 2) :?>
+                                <td>発行済み</td>
+                            <?php else :?>
+                                <td>破棄</td>
+                            <?php endif?>
+                            <td class="link"><a href="edit.php?no=<?= h($invoices[$i]['no'])?>">編集</a></td>
+                            <form action="delete.php" method="POST" onsubmit="return confirmDelete()">
+                                <input type="hidden" name="min" value=<?= $min?>>
+                                <input type="hidden" name="max" value=<?= $max?>>
+                                <input type="hidden" name="no" value=<?= h($invoices[$i]['no'])?>>
+                                <td class="link btn-delete"><input type="submit" value="削除" ></td>
+                            </form>
+                        </tr>
+                    <?php endfor ?>
+                </table>
+            </div>
             <div class="page-navigation">
                 <?php if ($showButton) :?>
                     <?php if ($desc) :?>
