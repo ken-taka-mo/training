@@ -83,15 +83,15 @@ if ($cnt['cnt'] < 1) {
                 <table>
                     <tr class="list-title title">
                         <?php if ($desc) :?>
-                            <th class="order th-id"><a href="index.php">会社番号</a></th>
+                            <th class="order t-id"><a href="index.php">会社番号</a></th>
                         <?php else :?>
-                            <th class="order th-id"><a href="index.php?order=desc">会社番号</a></th>
+                            <th class="order t-id"><a href="index.php?order=desc">会社番号</a></th>
                         <?php endif ?>
-                        <th class="th-name">会社名</th>
-                        <th class="th-manager">担当者名</th>
-                        <th class="th-tel">電話番号</th>
-                        <th class="th-address">住所</th>
-                        <th class="th-mail">メールアドレス</th>
+                        <th class="t-name">会社名</th>
+                        <th class="t-manager">担当者名</th>
+                        <th class="t-tel">電話番号</th>
+                        <th class="t-address">住所</th>
+                        <th class="t-mail">メールアドレス</th>
                         <th class="link">見積一覧</th>
                         <th class="link">請求一覧</th>
                         <th class="link">編集</th>
@@ -99,12 +99,12 @@ if ($cnt['cnt'] < 1) {
                     </tr>
                     <?php foreach ($companies as $company) :?>
                         <tr>
-                            <td class="th-id"><?= h($company['id']) ?></td>
-                            <td class="th-name"><?= h($company['name']) ?></td>
-                            <td class="th-manager"><?= h($company['manager_name']) ?></td>
-                            <td class="th-tel"><?= h($company['phone_number']) ?></td>
-                            <td class="th-address"><?= '〒' . h(substr_replace($company['postal_code'], '-', 3, 0)) . "<br>" . PREFECTURES[h($company['prefecture_code'])] . h($company['address'])?></th>
-                            <td class="th-mail"><?= h($company['mail_address'])?></td>
+                            <td class="t-id"><?= h($company['id']) ?></td>
+                            <td class="t-name"><?= h($company['name']) ?></td>
+                            <td class="t-manager"><?= h($company['manager_name']) ?></td>
+                            <td class="t-tel"><?= h($company['phone_number']) ?></td>
+                            <td class="t-address"><?= '〒' . h(substr_replace($company['postal_code'], '-', 3, 0)) . "<br>" . PREFECTURES[h($company['prefecture_code'])] . h($company['address'])?></th>
+                            <td class="t-mail"><?= h($company['mail_address'])?></td>
                             <td class="link to-list"><a href="../quotations/index.php?id=<?= h($company['id'])?>">見積一覧</a></td>
                             <td class="link to-list"><a href="../invoices/index.php?id=<?= h($company['id'])?>">請求一覧</a></td>
                             <td class="link"><a href="edit.php?id=<?= h($company['id'])?>">編集</a></td>
@@ -140,32 +140,7 @@ if ($cnt['cnt'] < 1) {
                     <?php endif?>
                 </div>
             <?php else :?>
-                <table>
-                    <tr class="list-title title">
-                        <th>会社番号</th>
-                        <th>会社名</th>
-                        <th>担当者名</th>
-                        <th>電話番号</th>
-                        <th>住所</th>
-                        <th>メールアドレス</th>
-                        <th class="link">見積一覧</th>
-                        <th class="link">請求一覧</th>
-                        <th class="link">編集</th>
-                        <th class="link">削除</th>
-                    </tr>
-                    <tr>
-                        <td>会社データはありません</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </table>
+                <?php include("../no_data.php"); ?>
             <?php endif ?>
         </div>
     </main>
