@@ -9,6 +9,14 @@ if (!isset($_GET['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-i-)[0-9]{8}$/', $_G
 
 $no = $_GET['no'];
 
+$invoiceCntStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE no=?');
+$invoiceCntStmt->execute(array($no));
+$invoiceCnt = $invoiceCntStmt->fetch();
+if ($invoiceCnt['cnt'] < 1) {
+    header('Location: ../companies/index.php');
+    exit();
+}
+
 $invoiceDataStmt = $db->prepare('SELECT id, title, company_id, total, payment_deadline, date_of_issue, no, quotation_no, status FROM invoices WHERE no=?');
 $invoiceDataStmt->execute(array($no));
 $invoiceData = $invoiceDataStmt->fetch();
