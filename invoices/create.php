@@ -2,7 +2,7 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 session_start();
-if (empty($_GET['id']) || !preg_match('/^\d*[1-9]+$/', $_GET['id'])) {
+if (empty($_GET['id']) || !preg_match('/^[1-9]+[0]*$/', $_GET['id'])) {
     header('Location: ../companies/index.php');
     exit();
 }
