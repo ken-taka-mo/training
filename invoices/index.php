@@ -9,6 +9,16 @@ if (empty($_GET['id']) || !preg_match('/^[1-9]+[0]*$/', $_GET['id'])) {
 }
 
 $id = $_GET['id'];
+
+$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
+$companyCountStmt-> bindParam(1, $id, PDO::PARAM_INT);
+$companyCountStmt->execute();
+$companyCnt = $companyCountStmt->fetch();
+if ($companyCnt['cnt'] < 1) {
+    header('Location: ../companies/index.php');
+    exit();
+}
+
 $countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE company_id=? AND deleted is NULL');
 $countStmt->bindParam(1, $id, PDO::PARAM_INT);
 $countStmt->execute();
