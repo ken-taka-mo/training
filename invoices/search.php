@@ -120,10 +120,10 @@ if (isset($_GET['order'])) {
                 <a href="create.php?id=<?= $id ?>" class="btn">新規登録</a>
                 <form action="search.php" method="GET" class="search-total">
                     <input type="hidden" name="id" value=<?= $id?>>
-                    <span>金額検索</span>
-                    <input type="text" class="search-total" name="min"placeholder="下限" value=<?= $min?>>
+                    <span>金額検索(半角)</span>
+                    <input type="text" class="search-total" name="min" maxlength="9" placeholder="下限" value=<?= $min?>>
                     <span>~</span>
-                    <input type="text" class="search-total" name="max" placeholder="上限" value=<?= $max?>>
+                    <input type="text" class="search-total" name="max" maxlength="9" placeholder="上限" value=<?= $max?>>
                     <input class="btn-search" type="submit" value="検索">
                     <a class="btn-back clear" href="index.php?id=<?= $id?>">条件クリア</a>
                 </form>
