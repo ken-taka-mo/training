@@ -16,14 +16,14 @@ if ($count['cnt']) {
     exit();
 }
 
-$updateStmt = $db->prepare("UPDATE companies SET deleted=NOW(), modified=NOW() WHERE id=?");
-$updateStmt->bindParam(1, $id, PDO::PARAM_INT);
-$updateStmt->execute();
 $delQuotationStmt = $db->prepare("UPDATE quotations SET deleted=NOW(), modified=NOW() WHERE company_id=?");
 $delQuotationStmt->bindParam(1, $id, PDO::PARAM_INT);
 $delQuotationStmt->execute();
 $delInvoiceStmt = $db->prepare("UPDATE invoices SET deleted=NOW(), modified=NOW() WHERE company_id=?");
 $delInvoiceStmt->bindParam(1, $id, PDO::PARAM_INT);
 $delInvoiceStmt->execute();
+$updateStmt = $db->prepare("UPDATE companies SET deleted=NOW(), modified=NOW() WHERE id=?");
+$updateStmt->bindParam(1, $id, PDO::PARAM_INT);
+$updateStmt->execute();
 header('Location: index.php');
 exit();
