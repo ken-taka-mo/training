@@ -22,6 +22,11 @@ $companyDataStmt->execute(array($companyId));
 $companyData = $companyDataStmt->fetch();
 
 if (!empty($_POST)) {
+    $preQuotationNo = "{$companyData['prefix']}-q-{$_POST['quotation_no']}";
+    $quotaionCntStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE no=?');
+    $quotaionCntStmt->execute(array($preQuotationNo));
+    $quotationCount = $quotaionCntStmt->fetch();
+
     if (preg_match('/^[\s\n\t]*$/', $_POST['title'])) {
         $error['title'] = '請求名を入力してください';
     } elseif (mb_strlen($_POST['title']) > 64) {
@@ -42,8 +47,10 @@ if (!empty($_POST)) {
     }
     if (preg_match('/^[\s\n\t]*$/', $_POST['quotation_no'])) {
         $error['quotation_no'] = '見積番号を入力してください';
-    } elseif (!preg_match('/^\d[1-9]{7}$/', $_POST['quotation_no'])) {
+    } elseif (!preg_match('/^\d{8}$/', $_POST['quotation_no'])) {
         $error['quotation_no'] = '見積番号は8桁の半角数字で入力して下さい';
+    } elseif (!$quotationCount['cnt']) {
+        $error['quotation_no'] = '入力された見積番号は存在しません';
     }
     if (preg_match('/^[\s\n\t]*$/', $_POST['status'])) {
         $error['status'] = '状態を入力してください';
