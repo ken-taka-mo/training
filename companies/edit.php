@@ -146,8 +146,8 @@ if (empty($_POST)) {
                         <p class="error"><?= $error['manager_name'] ?></p>
                     <?php endif ?>
                     <div class="item">
-                        <h3 class="item-title">電話番号</h3>
-                        <div class="form-wrapper"><input type="text" name="phone_number" value=<?= h($phoneNumber) ?>></div>
+                        <h3 class="item-title">電話番号<span>(半角)</span></h3>
+                        <div class="form-wrapper"><input type="text" name="phone_number" class="tel-input" maxlength="11" value=<?= h($phoneNumber) ?>></div>
                     </div>
                     <?php if (isset($error['phone_number'])) :?>
                         <p class="error"><?= $error['phone_number'] ?></p>
@@ -156,8 +156,8 @@ if (empty($_POST)) {
                         <h3 class="item-title">住所</h3>
                         <div class="address-item-wrapper">
                             <div class="address-item">
-                                <h4>郵便番号</h4>
-                                <input type="text" name="postal_code" value=<?= h($postalCode) ?>>
+                                <h4>郵便番号<span>(半角)</span></h4>
+                                <input type="text" name="postal_code" class="short-input" maxlength="7" value=<?= h($postalCode) ?>>
                             </div>
                             <div class="address-item">
                                 <h4>都道府県</h4>

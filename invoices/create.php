@@ -120,8 +120,8 @@ if (!empty($_POST)) {
                         <div class="form-wrapper"><p><?= $companyData['name']?></p></div>
                     </div>
                     <div class="item">
-                        <h3 class="item-title">金額<span>(半角数字)</span></h3>
-                        <div class="form-wrapper"><input type="text" name="total" value=<?= h($total) ?>>円</div>
+                        <h3 class="item-title">金額<span>(半角9桁以下)</span></h3>
+                        <div class="form-wrapper"><input type="text" name="total" class="total-input" maxlength="9" value=<?= h($total) ?>>円</div>
                     </div>
                     <?php if (isset($error['total'])) :?>
                         <p class="error"><?= $error['total'] ?></p>

@@ -51,7 +51,7 @@ if (!empty($_POST)) {
 
     if (preg_match('/^[\s]*$/', mb_convert_kana($_POST['prefix'], "s"))) {
         $error['prefix'] = 'プレフィックスを入力してください';
-    } elseif (mb_strlen($_POST['prefix']) > 8 || !preg_match('/^[a-zA-Z0-9]+$/', $_POST['prefix'])) {
+    } elseif (!preg_match('/^[a-zA-Z0-9]{1,8}$/', $_POST['prefix'])) {
         $error['prefix'] = 'プレフィックスは8字以内の半角英数字で入力してください';
     }
 
@@ -128,8 +128,8 @@ if (!empty($_POST)) {
                         <p class="error"><?= $error['manager_name'] ?></p>
                     <?php endif ?>
                     <div class="item">
-                        <h3 class="item-title">電話番号</h3>
-                        <div class="form-wrapper"><input type="text" name="phone_number" value=<?= h($phoneNumber) ?>></div>
+                        <h3 class="item-title">電話番号<span>(半角)</span></h3>
+                        <div class="form-wrapper"><input type="text" name="phone_number" class="tel-input" maxlength="11" value=<?= h($phoneNumber) ?>></div>
                     </div>
                     <?php if (isset($error['phone_number'])) :?>
                         <p class="error"><?= $error['phone_number'] ?></p>
@@ -138,8 +138,8 @@ if (!empty($_POST)) {
                         <h3 class="item-title">住所</h3>
                         <div class="address-item-wrapper">
                             <div class="address-item">
-                                <h4>郵便番号</h4>
-                                <input type="text" name="postal_code" value=<?= h($postalCode) ?>>
+                                <h4>郵便番号<span>(半角)</span></h4>
+                                <input type="text" name="postal_code" class="short-input" maxlength="7" value=<?= h($postalCode) ?>>
                             </div>
                             <div class="address-item">
                                 <h4>都道府県</h4>
@@ -178,7 +178,7 @@ if (!empty($_POST)) {
                     <?php endif ?>
                     <div class="item">
                         <h3 class="item-title">プレフィックス</h3>
-                        <div class="form-wrapper"><input type="text" name="prefix" value=<?= h($prefix) ?>></div>
+                        <div class="form-wrapper"><input type="text" name="prefix" class="short-input" maxlength="8" value=<?= h($prefix) ?>><span class="prefix-span">(半角8桁以下)</soan></div>
                     </div>
                     <?php if (isset($error['prefix'])) :?>
                         <p class="error"><?= $error['prefix'] ?></p>
