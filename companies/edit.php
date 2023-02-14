@@ -128,7 +128,7 @@ if (empty($_POST)) {
             <form action="" method="POST" class="edit-form">
                 <div class="form-items">
                     <div class="item">
-                        <h1 class="item-title">ID</h1>
+                        <h3 class="item-title">ID</h3>
                         <div class="form-wrapper"><p><?= h($details['id'])?></p></div>
                     </div>
                     <div class="item">
