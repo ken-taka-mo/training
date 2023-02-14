@@ -17,14 +17,14 @@ if (!preg_match('/^[\s\n\t]*$/', $_GET['name'])) {
 $counts = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL AND name LIKE ? ');
 $counts->bindParam(1, $nameKeyword);
 $counts->execute();
-$cnt = $counts->fetch();
+$count = $counts->fetch();
 
-if ($cnt['cnt'] < 1) {
+if ($count['cnt'] < 1) {
     $companyExist = false;
 } else {
     $companyExist = true;
     $page = 1;
-    $maxPage = ceil($cnt['cnt'] / DATA_PER_PAGE);
+    $maxPage = ceil($count['cnt'] / DATA_PER_PAGE);
     if ($maxPage == 0) {
         $maxPage = 1;
     }
@@ -97,11 +97,15 @@ if ($cnt['cnt'] < 1) {
                 <div class="table-wrapper">
                     <table>
                         <tr class="list-title title">
-                            <?php if ($desc) :?>
-                                <th class="order t-id"><a href="search.php?name=<?= h($getName)?>">会社番号</a></th>
+                            <?php if ($count['cnt'] == 1) :?>
+                                <th class="order t-id">会社番号</th>
                             <?php else :?>
-                                <th class="order t-id"><a href="search.php?name=<?= h($getName)?>&order=desc">会社番号</a></th>
-                            <?php endif ?>
+                                <?php if ($desc) :?>
+                                    <th class="order t-id"><a href="search.php?name=<?= h($getName)?>">会社番号  ▼</a></th>
+                                <?php else :?>
+                                    <th class="order t-id"><a href="search.php?name=<?= h($getName)?>&order=desc">会社番号  ▲</a></th>
+                                <?php endif ?>
+                            <?php endif?>
                             <th class="t-name">会社名</th>
                             <th class="t-manager">担当者名</th>
                             <th class="t-tel">電話番号</th>

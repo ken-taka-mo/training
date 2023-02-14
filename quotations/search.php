@@ -157,9 +157,9 @@ if (isset($_GET['order'])) {
                             <th class="order q-id">見積番号</th>
                         <?php else :?>
                             <?php if ($desc) :?>
-                                <th class="order q-id"><a href="index.php?id=<?= h($id) ?>">見積番号</a></th>
+                                <th class="order q-id"><a href="index.php?id=<?= h($id) ?>">見積番号  ▼</a></th>
                             <?php else :?>
-                                <th class="order q-id"><a href="index.php?id=<?= h($id) ?>&order=desc">見積番号</a></th>
+                                <th class="order q-id"><a href="index.php?id=<?= h($id) ?>&order=desc">見積番号  ▲</a></th>
                             <?php endif ?>
                         <?php endif?>
                         <th class="q-name">見積名</th>
