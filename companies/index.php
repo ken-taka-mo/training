@@ -5,14 +5,14 @@ require_once('../utils/prefectures.php');
 require_once('../utils/data_per_page.php');
 
 $countStmt = $db->query('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL');
-$cnt = $countStmt->fetch();
-if ($cnt['cnt'] < 1) {
+$count = $countStmt->fetch();
+if ($count['cnt'] < 1) {
     $companiesExist = false;
 } else {
     $companiesExist = true;
 
     $page = 1;
-    $maxPage = ceil($cnt['cnt'] / DATA_PER_PAGE);
+    $maxPage = ceil($count['cnt'] / DATA_PER_PAGE);
     $maxPage ?? 1;
 
     if (!empty($_GET['page'])) {
@@ -83,11 +83,15 @@ if ($cnt['cnt'] < 1) {
                 <div class="table-wrapper">
                     <table>
                         <tr class="list-title title">
-                            <?php if ($desc) :?>
-                                <th class="order t-id"><a href="index.php">会社番号</a></th>
+                            <?php if ($count['cnt'] == 1) :?>
+                                <th class="order t-id">会社番号</th>
                             <?php else :?>
-                                <th class="order t-id"><a href="index.php?order=desc">会社番号</a></th>
-                            <?php endif ?>
+                                <?php if ($desc) :?>
+                                    <th class="order t-id"><a href="index.php">会社番号  ▼</a></th>
+                                <?php else :?>
+                                    <th class="order t-id"><a href="index.php?order=desc">会社番号  ▲</a></th>
+                                <?php endif ?>
+                            <?php endif?>
                             <th class="t-name">会社名</th>
                             <th class="t-manager">担当者名</th>
                             <th class="t-tel">電話番号</th>
