@@ -39,6 +39,7 @@ input {
 
 table {
     border-spacing: 0;
+    width: 100%;
 }
 
 main {
@@ -271,33 +272,38 @@ td a{
 }
 
 .q-name {
-    width: 20%;
+    width: 30%;
 }
 
 .q-manager {
-    width: 15%;
+    width: 20%;
 }
 
-.q-total {
-    width: 10%;
-}
-.q-date {
-    width: 10%;
-}
-.q-status {
-    width: 10%;
+.q-date, .q-status, .q-total {
+    width: 7.5%;
 }
 
 /* 請求一覧th */
 
-.t-i-id {
+.i-id {
     width: 15%;
 }
 
-.t-no {
-    width: 8%;
+.i-name {
+    width: 25%;
 }
 
+.i-manager {
+    width: 15%;
+}
+
+.i-total {
+    width: 10%;
+}
+
+.i-date, .i-q-no, .i-status {
+    width: 7.5%;
+}
 
 /* データがなかった時 */
 .no-data {
