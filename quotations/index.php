@@ -8,7 +8,7 @@ if (empty($_GET['id'])) {
     exit();
 }
 
-if (!preg_match('/^[0-9]+$/', $_GET['id']) || preg_match('/^[0]*$/', $_GET['id'])) {
+if (!preg_match('/^[1-9]+[0]*$/', $_GET['id'])) {
     header('Location: ../companies/index.php');
     exit();
 }

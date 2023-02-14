@@ -9,6 +9,14 @@ if (!isset($_GET['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-q-)[0-9]{8}$/', $_G
 
 $no = $_GET['no'];
 
+$quotationCntStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE no=?');
+$quotationCntStmt->execute(array($no));
+$quotationCnt = $quotationCntStmt->fetch();
+if ($quotationCnt['cnt'] < 1) {
+    header('Location: ../companies/index.php');
+    exit();
+}
+
 $quotationDataStmt = $db->prepare('SELECT id, title, company_id, total, validity_period, due_date, status FROM quotations WHERE no=?');
 $quotationDataStmt->execute(array($no));
 $quotationData = $quotationDataStmt->fetch();
