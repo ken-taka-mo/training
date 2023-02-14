@@ -242,7 +242,7 @@ td a{
 
 /* 会社一覧ページのth幅 */
 .t-id {
-    width: 5%;
+    width: 7%;
 }
 
 .t-name {
@@ -261,7 +261,7 @@ td a{
 }
 
 .t-mail {
-    width: 20%;
+    width: 18%;
 }
 
 .link {
@@ -277,7 +277,7 @@ td a{
 }
 
 .q-name {
-    width: 27.5%;
+    width: 25%;
 }
 
 .q-manager {
@@ -288,8 +288,11 @@ td a{
     width: 10%;
 }
 
-.q-date, .q-status {
-    width: 7.5%;
+.q-date {
+    width: 8.5%;
+}
+.q-status {
+    width: 8%;
 }
 
 /* 請求一覧th */
