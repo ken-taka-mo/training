@@ -1,6 +1,5 @@
 <?php
 ?>
-<!DOCTYPE html>
 <div class="table-wrapper">
     <table class="no-data">
         <tr>
