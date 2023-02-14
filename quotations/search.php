@@ -11,6 +11,15 @@ if (empty($_GET['id']) || !preg_match('/^\d*[1-9]+$/', $_GET['id'])) {
 $id = $_GET['id'];
 $status = $_GET['status'];
 
+$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
+$companyCountStmt-> bindParam(1, $id, PDO::PARAM_INT);
+$companyCountStmt->execute();
+$companyCnt = $companyCountStmt->fetch();
+if ($companyCnt['cnt'] < 1) {
+    header('Location: ../companies/index.php');
+    exit();
+}
+
 switch ($status) {
     case "下書き":
         $sqlStatus = 1;
