@@ -1,5 +1,5 @@
 <?php
-const PREFECTURES = array(
+const PREFECTURES = [
     '1'=>'北海道',
     '2'=>'青森県',
     '3'=>'岩手県',
@@ -47,4 +47,4 @@ const PREFECTURES = array(
     '45'=>'宮崎県',
     '46'=>'鹿児島県',
     '47'=>'沖縄県'
-);
+];
