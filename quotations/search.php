@@ -141,50 +141,52 @@ if (isset($_GET['order'])) {
                 </form>
             </div>
             <?php if ($quotationExist) :?>
-            <table>
-                <tr class="title list-title">
-                    <?php if ($count['cnt'] == 1) :?>
-                        <th class="order q-id">見積番号</th>
-                    <?php else :?>
-                        <?php if ($desc) :?>
-                            <th class="order q-id"><a href="index.php?id=<?= h($id) ?>">見積番号</a></th>
+            <div class="table-wrapper">
+                <table>
+                    <tr class="title list-title">
+                        <?php if ($count['cnt'] == 1) :?>
+                            <th class="order q-id">見積番号</th>
                         <?php else :?>
-                            <th class="order q-id"><a href="index.php?id=<?= h($id) ?>&order=desc">見積番号</a></th>
-                        <?php endif ?>
-                    <?php endif?>
-                    <th class="q-name">見積名</th>
-                    <th class="q-manager">担当者名</th>
-                    <th class="q-total">金額</th>
-                    <th class="q-date">見積書有効期限</th>
-                    <th class="q-date">納期</th>
-                    <th class="q-status">状態</th>
-                    <th class="link">編集</th>
-                    <th class="link">削除</th>
-                </tr>
-                <?php for ($i = $start; $i <= $end; $i++) :?>
-                    <tr>
-                        <td class="q-no"><?= h($quotations[$i]['no']) ?></td>
-                        <td class="q-name"><?= h($quotations[$i]['title']) ?></td>
-                        <td class="q-manager"><?= h($companyData['manager_name']) ?></td>
-                        <td class="q-total"><?= number_format(h($quotations[$i]['total'])) . '円'?></td>
-                        <td class="q-date"><?= h($quotations[$i]['validity_period']) ?></td>
-                        <td class="q-date"><?= h($quotations[$i]['due_date']) ?></td>
-                        <?php if ($quotations[$i]['status'] == 1) :?>
-                            <td class="status">下書き</td>
-                        <?php elseif ($quotations[$i]['status'] == 2) :?>
-                            <td class="status">発行済み</td>
-                        <?php else :?>
-                            <td class="status">破棄</td>
+                            <?php if ($desc) :?>
+                                <th class="order q-id"><a href="index.php?id=<?= h($id) ?>">見積番号</a></th>
+                            <?php else :?>
+                                <th class="order q-id"><a href="index.php?id=<?= h($id) ?>&order=desc">見積番号</a></th>
+                            <?php endif ?>
                         <?php endif?>
-                        <td class="link"><a href="edit.php?no=<?= h($quotations[$i]['no'])?>">編集</a></td>
-                        <form action="delete.php" method="POST" onsubmit="return confirmDelete()">
-                            <input type="hidden" name="status" value=<?= $status ?>>
-                            <input type="hidden" name="no" value=<?= h($quotations[$i]['no'])?>>
-                            <td class="link btn-delete"><input type="submit" value="削除" ></td>
-                        </form>
+                        <th class="q-name">見積名</th>
+                        <th class="q-manager">担当者名</th>
+                        <th class="q-total">金額</th>
+                        <th class="q-date">見積書有効期限</th>
+                        <th class="q-date">納期</th>
+                        <th class="q-status">状態</th>
+                        <th class="link">編集</th>
+                        <th class="link">削除</th>
                     </tr>
-                <?php endfor ?>
-            </table>
+                    <?php for ($i = $start; $i <= $end; $i++) :?>
+                        <tr>
+                            <td class="q-no"><?= h($quotations[$i]['no']) ?></td>
+                            <td class="q-name"><?= h($quotations[$i]['title']) ?></td>
+                            <td class="q-manager"><?= h($companyData['manager_name']) ?></td>
+                            <td class="q-total"><?= number_format(h($quotations[$i]['total'])) . '円'?></td>
+                            <td class="q-date"><?= h($quotations[$i]['validity_period']) ?></td>
+                            <td class="q-date"><?= h($quotations[$i]['due_date']) ?></td>
+                            <?php if ($quotations[$i]['status'] == 1) :?>
+                                <td class="q-status">下書き</td>
+                            <?php elseif ($quotations[$i]['status'] == 2) :?>
+                                <td class="q-status">発行済み</td>
+                            <?php else :?>
+                                <td class="q-status">破棄</td>
+                            <?php endif?>
+                            <td class="link"><a href="edit.php?no=<?= h($quotations[$i]['no'])?>">編集</a></td>
+                            <form action="delete.php" method="POST" onsubmit="return confirmDelete()">
+                                <input type="hidden" name="status" value=<?= $status ?>>
+                                <input type="hidden" name="no" value=<?= h($quotations[$i]['no'])?>>
+                                <td class="link btn-delete"><input type="submit" value="削除" ></td>
+                            </form>
+                        </tr>
+                    <?php endfor ?>
+                </table>
+            </div>
             <div class="page-navigation">
                 <?php if ($showButton) :?>
                     <?php if ($desc) :?>

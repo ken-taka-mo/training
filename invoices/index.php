@@ -106,36 +106,40 @@ if (isset($_GET['order'])) {
             <div class="table-wrapper">
                 <table>
                     <tr class="title list-title">
-                        <?php if ($desc) :?>
-                            <th class="order th-i-id"><a href="index.php?id=<?= h($id) ?>">請求番号</a></th>
+                        <?php if ($count['cnt'] == 1) :?>
+                            <th class="order i-id">請求番号</th>
                         <?php else :?>
-                            <th class="order th-i-id"><a href="index.php?id=<?= h($id) ?>&order=desc">請求番号</a></th>
-                        <?php endif ?>
-                        <th class="th-name">請求名</th>
-                        <th class="manager">担当者名</th>
-                        <th class="th-total">金額</th>
-                        <th class="th-date">支払期限</th>
-                        <th class="th-date">請求日</th>
-                        <th class="th-no">見積番号</th>
-                        <th class="th-status">状態</th>
+                            <?php if ($desc) :?>
+                                <th class="order i-id"><a href="index.php?id=<?= h($id) ?>">請求番号</a></th>
+                            <?php else :?>
+                                <th class="order i-id"><a href="index.php?id=<?= h($id) ?>&order=desc">請求番号</a></th>
+                            <?php endif ?>
+                        <?php endif?>
+                        <th class="i-name">請求名</th>
+                        <th class="i-manager">担当者名</th>
+                        <th class="i-total">金額</th>
+                        <th class="i-date">支払期限</th>
+                        <th class="i-date">請求日</th>
+                        <th class="i-no">見積番号</th>
+                        <th class="i-status">状態</th>
                         <th class="link">編集</th>
                         <th class="link">削除</th>
                     </tr>
                     <?php for ($i = $start; $i <= $end; $i++) :?>
                         <tr>
-                            <td><?= h($invoices[$i]['no']) ?></td>
-                            <td><?= h($invoices[$i]['title']) ?></td>
-                            <td><?= h($companyData['manager_name']) ?></td>
-                            <td><?= number_format(h($invoices[$i]['total'])) . '円'?></td>
-                            <td><?= h($invoices[$i]['payment_deadline']) ?></td>
-                            <td><?= h($invoices[$i]['date_of_issue']) ?></td>
-                            <td><?= h($invoices[$i]['quotation_no'])?></td>
+                            <td class="i-id"><?= h($invoices[$i]['no']) ?></td>
+                            <td class="i-title"><?= h($invoices[$i]['title']) ?></td>
+                            <td class="i-manager"><?= h($companyData['manager_name']) ?></td>
+                            <td class="i-total"><?= number_format(h($invoices[$i]['total'])) . '円'?></td>
+                            <td class="date"><?= h($invoices[$i]['payment_deadline']) ?></td>
+                            <td class="date"><?= h($invoices[$i]['date_of_issue']) ?></td>
+                            <td class="i-q-no"><?= h($invoices[$i]['quotation_no'])?></td>
                             <?php if ($invoices[$i]['status'] == 1) :?>
-                                <td>下書き</td>
+                                <td class="i-status">下書き</td>
                             <?php elseif ($invoices[$i]['status'] == 2) :?>
-                                <td>発行済み</td>
+                                <td class="i-status">発行済み</td>
                             <?php else :?>
-                                <td>破棄</td>
+                                <td class="i-status">破棄</td>
                             <?php endif?>
                             <td class="link"><a href="edit.php?no=<?= h($invoices[$i]['no'])?>">編集</a></td>
                             <form action="delete.php" method="POST" onsubmit="return confirmDelete()">
