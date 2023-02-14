@@ -30,11 +30,10 @@ select {
     background-color: #dddddd7a;
 }
 
-/* input {
-    height: 35px;
-    font-size: 20px;
+input {
+    background-color: #eff2f5;
     border-radius: 5px;
-} */
+}
 
 .table-wrapper {
     min-height: 50%;
@@ -371,13 +370,25 @@ form {
     height: 30px;
 }
 
-.form-wrapper input[type="text"] {
+.form-wrapper input {
     width: 95%;
     vertical-align: bottom;
 }
 
 .form-wrapper input[type="date"] {
-    width: 40%;
+    width: 100px;
+}
+
+.form-wrapper .tel-input {
+    width: 110px;
+}
+
+.form-wrapper .short-input {
+    width: 100px;
+}
+
+.form-wrapper .total-input {
+    width: 100px;
 }
 
 .form-wrapper p {
@@ -396,11 +407,19 @@ form {
     font-size: 16px;
 }
 
+
 .item span {
     color: white;
     font-size: 12px;
     float: right;
     padding-right: 5px;
+}
+
+.item .prefix-span {
+    color: black;
+    font-size: 12px;
+    padding-left: 5px;
+    float: none;
 }
 
 .icon-del::-webkit-calendar-picker-indicator {
@@ -473,8 +492,19 @@ form {
     margin-top: 5px;
 }
 
+.address-item .short-input {
+    width: 80px;
+}
+
+.address-item span {
+    color: black;
+    font-size: 8px;
+    float: right;
+    padding-right: 5px;
+}
+
 .search-total {
-    width: 150px;
+    width: 80px;
     font-size: 14px;
 }
 
