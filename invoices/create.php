@@ -2,71 +2,20 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 session_start();
-if (empty($_GET['id']) || !preg_match('/^[1-9]+[0]*$/', $_GET['id'])) {
+
+$companyId = $_GET['id'];
+
+if (empty($companyId) || !preg_match('/^[1-9]+[0]*$/', $companyId)) {
     header('Location: ../companies/index.php');
     exit();
 }
 
 $countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
-$countStmt->execute(array($_GET['id']));
+$countStmt->execute([$companyId]);
 $count = $countStmt->fetch();
-if ($count['cnt']) {
-    $companyId = $_GET['id'];
-} else {
+if ($count['cnt'] < 1) {
     header('Location: ../companies/index.php');
     exit();
-}
-
-$companyDataStmt = $db->prepare('SELECT name, manager_name, prefix FROM companies WHERE id=?');
-$companyDataStmt->execute(array($companyId));
-$companyData = $companyDataStmt->fetch();
-
-if (!empty($_POST)) {
-    $preQuotationNo = "{$companyData['prefix']}-q-{$_POST['quotation_no']}";
-    $quotaionCntStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE no=?');
-    $quotaionCntStmt->execute(array($preQuotationNo));
-    $quotationCount = $quotaionCntStmt->fetch();
-
-    if (preg_match('/^[\s\n\t]*$/', $_POST['title'])) {
-        $error['title'] = '請求名を入力してください';
-    } elseif (mb_strlen($_POST['title']) > 64) {
-        $error['title'] = '請求名は64字以下で入力してください';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['total'])) {
-        $error['total'] = '金額を入力してください';
-    } elseif (!preg_match('/^[1-9]{1}\d{0,8}$/', $_POST['total'])) {
-        $error['total'] = '金額は9桁以下の半角数字のみで入力してください';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['payment_deadline'])) {
-        $error['payment_deadline'] = '支払い期限を入力してください';
-    } elseif ($_POST['payment_deadline'] <= date("Y-m-d")) {
-        $error['payment_deadline'] = '本日以降の日付を入力してください';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['date_of_issue'])) {
-        $error['date_of_issue'] = '請求日を入力してください';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['quotation_no'])) {
-        $error['quotation_no'] = '見積番号を入力してください';
-    } elseif (!preg_match('/^\d{8}$/', $_POST['quotation_no'])) {
-        $error['quotation_no'] = '見積番号は8桁の半角数字で入力して下さい';
-    } elseif (!$quotationCount['cnt']) {
-        $error['quotation_no'] = '入力された見積番号は存在しません';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['status'])) {
-        $error['status'] = '状態を入力してください';
-    } elseif (!preg_match('/^[129]$/', $_POST['status'])) {
-        $error['status'] = '状態をもう一度選択してください';
-    }
-
-    if (!isset($error)) {
-        $_SESSION['new_invoice'] = $_POST;
-        header('Location: check.php');
-        exit();
-    }
-}
-
-if (isset($_GET['action']) && $_GET['action'] == 'rewrite') {
-    $_POST = $_SESSION['new_invoice'];
 }
 
 $title = '';
@@ -76,13 +25,45 @@ $dateOfIssue = '';
 $quotationNo = '';
 $status = '';
 
-if (!empty($_POST)) {
-    $title = $_POST['title'];
-    $total = $_POST['total'];
-    $paymentDeadline = $_POST['payment_deadline'];
-    $dateOfIssue = $_POST['date_of_issue'];
-    $quotationNo = $_POST['quotation_no'];
-    $status = $_POST['status'];
+$companyDataStmt = $db->prepare('SELECT name, manager_name, prefix FROM companies WHERE id=?');
+$companyDataStmt->execute([$companyId]);
+$companyData = $companyDataStmt->fetch();
+
+$quotationsNoStmt = $db->prepare('SELECT no FROM quotations WHERE company_id=?');
+$quotationsNoStmt->execute([$companyId]);
+$quotationsNoArray = $quotationsNoStmt->fetchAll(PDO::FETCH_ASSOC);
+$qNoArray = [];
+for ($x = 0; $x < count($quotationsNoArray); $x++) {
+    array_push($qNoArray, substr($quotationsNoArray[$x]['no'], -8));
+}
+
+$post = $_POST;
+$items = [];
+$error = [];
+
+if (!empty($post)) {
+    $items = convert_half_width($post);
+    $error = check_invoice($items);
+
+    if (empty($error)) {
+        $_SESSION['new_invoice'] = $items;
+        header('Location: check.php');
+        exit();
+    }
+}
+
+if (isset($_GET['action']) && $_GET['action'] == 'rewrite') {
+    $items = $_SESSION['new_invoice'];
+}
+
+
+if (!empty($items)) {
+    $title = $items['title'];
+    $total = $items['total'];
+    $paymentDeadline = $items['payment_deadline'];
+    $dateOfIssue = $items['date_of_issue'];
+    $quotationNo = $items['quotation_no'];
+    $status = $items['status'];
 }
 
 ?>
@@ -143,8 +124,21 @@ if (!empty($_POST)) {
                     <div class="item">
                         <h3 class="item-title">見積番号<span>(半角数字)</span></h3>
                         <div class="q-no-wrapper">
-                            <p><?=$companyData['prefix'] . '-q-'?></p>
-                            <input type="text" name="quotation_no" maxlength="8" value=<?= h($quotationNo)?> >
+                            <?php if (count($qNoArray) < 1) :?>
+                                <p class="error">見積が作成されていません</p>
+                            <?php else :?>
+                                <p><?=$companyData['prefix'] . '-q-'?></p>
+                                <select name="quotation_no" class="no-select" id="">
+                                    <option value="">選択してください</option>
+                                    <?php for ($y = 0; $y < count($qNoArray); $y++) :?>
+                                        <?php if ($quotationNo == $qNoArray[$y]) :?>
+                                            <option value=<?=$qNoArray[$y]?> selected><?=$qNoArray[$y]?></option>
+                                        <?php else :?>
+                                            <option value=<?=$qNoArray[$y]?>><?=$qNoArray[$y]?></option>
+                                        <?php endif?>
+                                    <?php endfor ?>
+                                </select>
+                            <?php endif?>
                         </div>
                     </div>
                     <?php if (isset($error['quotation_no'])) :?>
@@ -179,7 +173,9 @@ if (!empty($_POST)) {
                         <p class="error"><?= $error['status'] ?></p>
                     <?php endif?>
                     </div>
-                <input class="btn btn-form" type="submit" value="請求作成">
+                <?php if (count($qNoArray) > 0) :?>
+                    <input class="btn btn-form" type="submit" value="請求作成">
+                <?php endif?>
             </form>
         </div>
     </main>

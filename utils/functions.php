@@ -97,6 +97,30 @@ function check_quotation($array)
     return $checkedArray;
 }
 
+function check_invoice($array)
+{
+    $invalidValArray = [];
+
+    if (!preg_match('/^[1-9]{1}\d{0,8}$/', $array['total'])) {
+        $invalidValArray['total'] = '金額は9桁以下の半角数字のみで入力してください';
+    }
+    if ($array['payment_deadline'] <= date("Y-m-d")) {
+        $invalidValArray['payment_deadline'] = '本日以降の日付を入力してください';
+    }
+    if (isset($array['quotation_no'])) {
+        if (!preg_match('/^\d{8}$/', $array['quotation_no'])) {
+            $invalidValArray['quotation_no'] = '見積番号は8桁の半角数字で入力して下さい';
+        }
+    }
+    if (!preg_match('/^[129]$/', $array['status'])) {
+        $invalidValArray['status'] = '状態をもう一度選択してください';
+    }
+    $invalidValArray += check_length_over($array, 'title', 64);
+    $checkedArray = [];
+    $checkedArray += check_empty($array);
+    $checkedArray += $invalidValArray;
+    return $checkedArray;
+}
 
 ?>
 
