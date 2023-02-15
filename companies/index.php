@@ -113,7 +113,7 @@ if ($count['cnt'] < 1) {
                                 <td class="link to-list"><a href="../quotations/index.php?id=<?= h($company['id'])?>">見積一覧</a></td>
                                 <td class="link to-list"><a href="../invoices/index.php?id=<?= h($company['id'])?>">請求一覧</a></td>
                                 <td class="link"><a href="edit.php?id=<?= h($company['id'])?>">編集</a></td>
-                                <form action="delete.php" method="POST" onsubmit= "return confirmDelete()">
+                                <form action="delete.php" method="POST" onsubmit= "return confirm_delete()">
                                     <input type="hidden" name="id" value=<?= $company['id']?>>
                                     <td class="link btn-delete"><input type="submit" value="削除" ></td>
                                 </form>
