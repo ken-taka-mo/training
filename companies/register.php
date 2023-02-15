@@ -14,13 +14,11 @@ $address = '';
 $mailAddress = '';
 $prefix = '';
 
+$post = $_POST;
 $items = [];
-if (!empty($_POST)) {
+if (!empty($post)) {
     // 入力された値の全角スペース、全角数字を半角に変換
-    foreach ($_POST as $key => $value) {
-        $items[$key] = preg_replace("/(^\s+)|(\s+$)/u", "", $value);
-        $items[$key] = mb_convert_kana($items[$key], "n");
-    }
+    $items = convert_half_width($post);
 
     if (mb_strlen($items['name']) > 64) {
         $error['name'] = '会社名は64文字以内で入力してください';
