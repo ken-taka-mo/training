@@ -15,4 +15,5 @@ const COLUMNS = [
     'status' => '状態',
     'payment_deadline' => '支払期限',
     'date_of_issue' => '請求日',
+    'quotation_no' => '見積番号'
 ];
