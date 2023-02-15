@@ -394,6 +394,12 @@ form {
     width: 100px;
 }
 
+.no-select {
+    height: 30px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
 .form-wrapper p {
     line-height: 30px;
 }
