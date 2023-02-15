@@ -3,15 +3,15 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/data_per_page.php');
 
-if (empty($_GET['id']) || !preg_match('/^[1-9]+[0]*$/', $_GET['id'])) {
+$id = $_GET['id'];
+if (empty($id) || !preg_match('/^[1-9]+[0]*$/', $id)) {
     header('Location: ../companies/index.php');
     exit();
 }
 
-$id = $_GET['id'];
 
-$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
-$companyCountStmt-> bindParam(1, $id, PDO::PARAM_INT);
+$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
+$companyCountStmt-> bindParam(':id', $id, PDO::PARAM_INT);
 $companyCountStmt->execute();
 $companyCnt = $companyCountStmt->fetch();
 if ($companyCnt['cnt'] < 1) {
@@ -19,16 +19,16 @@ if ($companyCnt['cnt'] < 1) {
     exit();
 }
 
-$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE company_id=? AND deleted is NULL');
-$countStmt->bindParam(1, $id, PDO::PARAM_INT);
+$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE company_id=:company_id AND deleted is NULL');
+$countStmt->bindParam('company_id', $id, PDO::PARAM_INT);
 $countStmt->execute();
 $count = $countStmt->fetch();
 if ($count['cnt'] < 1) {
     $invoicesExist = false;
 } else {
     $invoicesExist = true;
-    $listStmt = $db->prepare('SELECT no, title, total, payment_deadline, date_of_issue, quotation_no, status FROM invoices WHERE company_id=? AND deleted is NULL');
-    $listStmt->bindParam(1, $id, PDO::PARAM_INT);
+    $listStmt = $db->prepare('SELECT no, title, total, payment_deadline, date_of_issue, quotation_no, status FROM invoices WHERE company_id=:company_id AND deleted is NULL');
+    $listStmt->bindParam('company_id', $id, PDO::PARAM_INT);
     $listStmt->execute();
     $invoices = $listStmt->fetchAll();
 }
@@ -65,8 +65,8 @@ if ($maxPage > 1) {
     $showButton = true;
 }
 
-$companyDataStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=?');
-$companyDataStmt->execute(array($id));
+$companyDataStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=:id');
+$companyDataStmt->execute(['id' => $id]);
 $companyData = $companyDataStmt->fetch();
 
 if (isset($_GET['order'])) {
