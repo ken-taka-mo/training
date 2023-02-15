@@ -187,7 +187,7 @@ if (isset($_GET['order'])) {
                                 <td class="q-status">破棄</td>
                             <?php endif?>
                             <td class="link"><a href="edit.php?no=<?= h($quotations[$i]['no'])?>">編集</a></td>
-                            <form action="delete.php" method="POST" onsubmit="return confirmDelete()">
+                            <form action="delete.php" method="POST" onsubmit="return confirm_delete()">
                                 <input type="hidden" name="status" value=<?= $status ?>>
                                 <input type="hidden" name="no" value=<?= h($quotations[$i]['no'])?>>
                                 <td class="link btn-delete"><input type="submit" value="削除" ></td>

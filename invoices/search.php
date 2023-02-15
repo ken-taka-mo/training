@@ -168,7 +168,7 @@ if (isset($_GET['order'])) {
                                 <td class="i-status">破棄</td>
                             <?php endif?>
                             <td class="link"><a href="edit.php?no=<?= h($invoices[$i]['no'])?>">編集</a></td>
-                            <form action="delete.php" method="POST" onsubmit="return confirmDelete()">
+                            <form action="delete.php" method="POST" onsubmit="return confirm_delete()">
                                 <input type="hidden" name="min" value=<?= $min?>>
                                 <input type="hidden" name="max" value=<?= $max?>>
                                 <input type="hidden" name="no" value=<?= h($invoices[$i]['no'])?>>
