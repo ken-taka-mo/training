@@ -2,15 +2,15 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 
-if (!isset($_GET['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-i-)[0-9]{8}$/', $_GET['no'])) {
+$no = $_GET['no'];
+if (!isset($no) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-i-)[0-9]{8}$/', $no)) {
     header('Location: ../companies/index.php');
     exit();
 }
 
-$no = $_GET['no'];
 
 $invoiceCntStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE no=?');
-$invoiceCntStmt->execute(array($no));
+$invoiceCntStmt->execute([$no]);
 $invoiceCnt = $invoiceCntStmt->fetch();
 if ($invoiceCnt['cnt'] < 1) {
     header('Location: ../companies/index.php');
@@ -18,7 +18,7 @@ if ($invoiceCnt['cnt'] < 1) {
 }
 
 $invoiceDataStmt = $db->prepare('SELECT id, title, company_id, total, payment_deadline, date_of_issue, no, quotation_no, status FROM invoices WHERE no=?');
-$invoiceDataStmt->execute(array($no));
+$invoiceDataStmt->execute([$no]);
 $invoiceData = $invoiceDataStmt->fetch();
 
 $companyDataStmt = $db->prepare('SELECT name, prefix FROM companies WHERE id = ?');
@@ -32,36 +32,20 @@ $dateOfIssue = $invoiceData['date_of_issue'];
 $status = $invoiceData['status'];
 $id = $invoiceData['id'];
 
-if (!empty($_POST)) {
-    $title = $_POST['title'];
-    $total = $_POST['total'];
-    $paymentDeadline = $_POST['payment_deadline'];
-    $dateOfIssue = $_POST['date_of_issue'];
-    $status = $_POST['status'];
+$post = $_POST;
+$items = [];
+$error = [];
 
-    if (preg_match('/^[\s\n\t]*$/', $_POST['title'])) {
-        $error['title'] = '請求名を入力してください';
-    } elseif (mb_strlen($_POST['title']) > 64) {
-        $error['title'] = '請求名は64以下で入力してください';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['total'])) {
-        $error['total'] = '金額を入力してください';
-    } elseif (!preg_match('/^[1-9]{1}\d{0,8}$/', $_POST['total'])) {
-        $error['total'] = '金額は9桁以下の半角数字のみで入力してください';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['payment_deadline'])) {
-        $error['payment_deadline'] = '支払い期限を入力してください';
-    } elseif ($_POST['payment_deadline'] <= date("Y-m-d")) {
-        $error['payment_deadline'] = '本日以降の日付を入力してください';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['date_of_issue'])) {
-        $error['date_of_issue'] = '請求日を入力してください';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['status'])) {
-        $error['status'] = '状態を入力してください';
-    } elseif (!preg_match('/^[129]$/', $_POST['status'])) {
-        $error['status'] = '状態をもう一度選択してください';
-    }
+if (!empty($post)) {
+    $items = convert_half_width($post);
+    $error = check_invoice($items);
+
+    $title = $items['title'];
+    $total = $items['total'];
+    $paymentDeadline = $items['payment_deadline'];
+    $dateOfIssue = $items['date_of_issue'];
+    $status = $items['status'];
+
 
     if (empty($error)) {
         $updateStmt = $db->prepare('UPDATE invoices SET
