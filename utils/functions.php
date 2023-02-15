@@ -75,6 +75,28 @@ function check_company($array)
     return $checkedArray;
 }
 
+function check_quotation($array)
+{
+    $invalidValArray = [];
+    if (!preg_match('/^[1-9]\d{0,8}$/', $array['total'])) {
+        $invalidValArray['total'] = '金額は9桁以下の半角数字のみで入力してください';
+    }
+    if ($array['due_date'] <= date("Y-m-d")) {
+        $invalidValArray['due_date'] = '本日以降の日付を入力してください';
+    }
+    if (!preg_match('/^[129]$/', $array['status'])) {
+        $invalidValArray['status'] = '状態をもう一度選択してください';
+    }
+
+    $invalidValArray += check_length_over($array, 'title', 64);
+    $invalidValArray += check_length_over($array, 'validity_period', 32);
+
+    $checkedArray = [];
+    $checkedArray += check_empty($array);
+    $checkedArray += $invalidValArray;
+    return $checkedArray;
+}
+
 
 ?>
 
