@@ -1,4 +1,5 @@
 <?php
+require_once('columns.php');
 // htmlタグの入力を変換する
 function h($value)
 {
@@ -14,6 +15,17 @@ function convert_half_width($array)
         $halvedArray[$key] = mb_convert_kana($halvedArray[$key], "n");
     }
     return $halvedArray;
+}
+
+function check_empty($array)
+{
+    $chekedArray = [];
+    foreach ($array as $key => $value) {
+        if (preg_match('/^[\s]*$/', $value)) {
+            $chekedArray[$key] = COLUMNS[$key] . 'を入力してください';
+        }
+    }
+    return $chekedArray;
 }
 ?>
 
