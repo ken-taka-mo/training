@@ -4,7 +4,7 @@ require_once('../utils/functions.php');
 require_once('../utils/columns.php');
 session_start();
 
-// 各入力データを初期化（フォームの初期値））
+// 各入力データを初期化（フォームの初期値)
 $name = '';
 $managerName = '';
 $phoneNumber = '';
@@ -16,47 +16,16 @@ $prefix = '';
 
 $post = $_POST;
 $items = [];
+$error = [];
 if (!empty($post)) {
     // 入力された値の全角スペース、全角数字を半角に変換
     $items = convert_half_width($post);
 
-    if (mb_strlen($items['name']) > 64) {
-        $error['name'] = '会社名は64文字以内で入力してください';
-    }
-    if (mb_strlen($items['manager_name']) > 32) {
-        $error['manager_name'] = '担当者名は32文字以内で入力してください';
-    }
-
-    if (!preg_match('/^\d{1,11}$/', $items['phone_number'])) {
-        $error['phone_number'] = '電話番号は11桁以下の整数で入力してください';
-    }
-
-    if (!preg_match('/^\d{7}$/', $items['postal_code'])) {
-        $error['postal_code'] = '郵便番号は7桁の整数で入力してください';
-    }
-
-    if ($items['prefecture_code'] < 1 && $items['prefecture_code'] > 47) {
-        $error['prefecture_code'] = 'もう一度都道府県を選択してください';
-    }
-
-    if (mb_strlen($items['address']) > 100) {
-        $error['address'] = '市区町村は100字以内で入力してください';
-    }
-
-    if (mb_strlen($items['mail_address']) > 100) {
-        $error['mail_address'] = 'メールアドレスは100字以内で入力して下さい';
-    } elseif (!preg_match('/^[a-zA-Z0-9_+-]+(\.[a-zA-Z0-9_+-]+)*@[a-zA-Z0-9_+-]+(\.[a-zA-Z0-9_+-]+)*$/', $items['mail_address'])) {
-        $error['mail_address'] = '正しいメールアドレスを入力してください';
-    }
-
-    if (!preg_match('/^[a-zA-Z0-9]{1,8}$/', $items['prefix'])) {
-        $error['prefix'] = 'プレフィックスは8字以内の英数字で入力してください';
-    }
-    // 値が入力されているか
-    $error = check_empty($items);
+    // 会社テーブルのバリデーションチェック
+    $error = check_company($items);
 
     // バリデーションチェックで問題がなかった場合セッションに値を代入し確認ページへ遷移
-    if (!isset($error)) {
+    if (empty($error)) {
         $_SESSION['register'] = $items;
         header('Location: check.php');
         exit();
