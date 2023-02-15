@@ -11,12 +11,11 @@ if (empty($_GET['name'])) {
 
 if (!preg_match('/^[\s\n\t]*$/', $_GET['name'])) {
     $getName = mb_convert_kana($_GET['name'], "n");
-    $nameKeyword = "%{$getName}%";
+    $keyword = "%{$getName}%";
 }
 
-$counts = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL AND name LIKE ? ');
-$counts->bindParam(1, $nameKeyword);
-$counts->execute();
+$counts = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL AND name LIKE :keyword ');
+$counts->execute([':keyword' => $keyword]);
 $count = $counts->fetch();
 
 if ($count['cnt'] < 1) {
@@ -54,18 +53,18 @@ if ($count['cnt'] < 1) {
     if (isset($_GET['order'])) {
         if ($_GET['order'] == 'desc') {
             $desc = true;
-            $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL AND name LIKE ? ORDER BY id DESC LIMIT ?,10');
+            $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL AND name LIKE :keyword ORDER BY id DESC LIMIT :start,10');
         } else {
             header('Location: search.php?name=' . h($getName));
             exit();
         }
     } else {
         $desc = false;
-        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL AND name LIKE ? LIMIT ?,10');
+        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL AND name LIKE :keyword LIMIT :start,10');
     }
 
-    $statement->bindParam(1, $nameKeyword);
-    $statement->bindParam(2, $start, PDO::PARAM_INT);
+    $statement->bindParam(':keyword', $keyword);
+    $statement->bindParam(':start', $start, PDO::PARAM_INT);
     $statement->execute();
     $companies = $statement->fetchAll();
 }

@@ -33,6 +33,7 @@ if ($count['cnt'] < 1) {
 
     $start = ($page - 1) * DATA_PER_PAGE;
 
+    // ??
     $showButton = false;
     if ($maxPage > 1) {
         $showButton = true;
@@ -41,17 +42,17 @@ if ($count['cnt'] < 1) {
     if (isset($_GET['order'])) {
         if ($_GET['order'] == 'desc') {
             $desc = true;
-            $listStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL ORDER BY id DESC LIMIT ?,10');
+            $listStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL ORDER BY id DESC LIMIT :start,10');
         } else {
             header('Location: index.php');
             exit();
         }
     } else {
         $desc = false;
-        $listStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL LIMIT ?,10');
+        $listStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL LIMIT :start,10');
     }
 
-    $listStmt->bindParam(1, $start, PDO::PARAM_INT);
+    $listStmt->bindParam(':start', $start, PDO::PARAM_INT);
     $listStmt->execute();
     $companies = $listStmt->fetchAll();
 }
