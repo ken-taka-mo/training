@@ -32,38 +32,19 @@ $dueDate = $quotationData['due_date'];
 $status = $quotationData['status'];
 $id = $quotationData['id'];
 
-if (!empty($_POST)) {
-    $title = $_POST['title'];
-    $total = $_POST['total'];
-    $validityPeriod = $_POST['validity_period'];
-    $dueDate = $_POST['due_date'];
-    $status = $_POST['status'];
+$post = $_POST;
+$items = [];
+$error = [];
 
-    if (preg_match('/^[\s\n\t]*$/', $_POST['title'])) {
-        $error['title'] = '見積名を入力してください';
-    } elseif (mb_strlen($_POST['title']) > 64) {
-        $error['title'] = '見積名は64以下で入力してください';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['total'])) {
-        $error['total'] = '金額を入力してください';
-    } elseif (!preg_match('/^[1-9]{1}\d{0,8}/', $_POST['total'])) {
-        $error['total'] = '金額は9桁以下の半角数字のみで入力してください';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['validity_period'])) {
-        $error['validity_period'] = '見積有効期限を入力してください';
-    } elseif (mb_strlen($_POST['validity_period']) > 32) {
-        $error['validity_period'] = '見積有効期限を入力しなおしてください';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['due_date'])) {
-        $error['due_date'] = '納期を入力してください';
-    } elseif ($_POST['due_date'] <= date("Y-m-d")) {
-        $error['due_date'] = '本日以降の日付を入力してください';
-    }
-    if (preg_match('/^[\s\n\t]*$/', $_POST['status'])) {
-        $error['status'] = '状態を入力してください';
-    } elseif (!preg_match('/^[129]$/', $_POST['status'])) {
-        $error['status'] = '状態をもう一度選択してください';
-    }
+if (!empty($post)) {
+    $items = convert_half_width($post);
+    $error = check_quotation($items);
+
+    $title = $items['title'];
+    $total = $items['total'];
+    $validityPeriod = $items['validity_period'];
+    $dueDate = $items['due_date'];
+    $status = $items['status'];
 
     if (empty($error)) {
         $updateStmt = $db->prepare('UPDATE quotations SET
