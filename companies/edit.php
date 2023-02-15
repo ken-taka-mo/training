@@ -3,23 +3,25 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
 
-if (empty($_GET['id']) || !preg_match('/^[1-9]+[0]*$/', $_GET['id'])) {
+$id = $_GET['id'];
+
+if (empty($id) || !preg_match('/^[1-9]+[0]*$/', $id)) {
     header('Location: index.php');
     exit();
 }
 
-$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
-$countStmt->execute(array($_GET['id']));
+$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
+$countStmt->execute([':id' => $id]);
 $count = $countStmt->fetch();
 if ($count['cnt'] < 1) {
     header('Location: index.php');
     exit();
 }
 
-$id = $_GET['id'];
 
-$detailStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix FROM companies WHERE id=?');
-$detailStmt->bindParam(1, $id, PDO::PARAM_INT);
+
+$detailStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix FROM companies WHERE id=:id');
+$detailStmt->bindParam(':id', $id, PDO::PARAM_INT);
 $detailStmt->execute();
 $details = $detailStmt->fetch();
 
@@ -52,22 +54,22 @@ if (empty($post)) {
 
     if (empty($error)) {
         $updateStmt = $db->prepare('UPDATE companies SET
-        name=?,
-        manager_name=?,
-        phone_number=?,
-        postal_code=?,
-        prefecture_code=?,
-        address=?,
-        mail_address=?,
-        modified=NOW() WHERE id=?');
-        $updateStmt->bindParam(1, $name);
-        $updateStmt->bindParam(2, $managerName);
-        $updateStmt->bindParam(3, $phoneNumber);
-        $updateStmt->bindParam(4, $postalCode);
-        $updateStmt->bindParam(5, $prefectureCode, PDO::PARAM_INT);
-        $updateStmt->bindParam(6, $address);
-        $updateStmt->bindParam(7, $mailAddress);
-        $updateStmt->bindParam(8, $id, PDO::PARAM_INT);
+        name=:name,
+        manager_name=:manager_name,
+        phone_number=:phone_number,
+        postal_code=:postal_code,
+        prefecture_code=:prefecture_code,
+        address=:address,
+        mail_address=:mail_address,
+        modified=NOW() WHERE id=:id');
+        $updateStmt->bindParam(':name', $name);
+        $updateStmt->bindParam(':manager_name', $managerName);
+        $updateStmt->bindParam(':phone_number', $phoneNumber);
+        $updateStmt->bindParam(':postal_code', $postalCode);
+        $updateStmt->bindParam(':prefecture_code', $prefectureCode, PDO::PARAM_INT);
+        $updateStmt->bindParam(':address', $address);
+        $updateStmt->bindParam(':mail_address', $mailAddress);
+        $updateStmt->bindParam(':id', $id, PDO::PARAM_INT);
         $updateStmt->execute();
         header('Location: index.php');
         exit();

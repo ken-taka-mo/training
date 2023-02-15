@@ -14,24 +14,24 @@ if (empty($_SESSION['register'])) {
 
 if (!empty($_POST)) {
     $insertStmt = $db->prepare('INSERT INTO companies SET
-    name=?,
-    manager_name=?,
-    phone_number=?,
-    postal_code=?,
-    prefecture_code=?,
-    address=?,
-    mail_address=?,
-    prefix=?,
+    name=:name,
+    manager_name=:manager_name,
+    phone_number=:phone_number,
+    postal_code=:postal_code,
+    prefecture_code=:prefecture_code,
+    address=:address,
+    mail_address=:mail_address,
+    prefix=:prefix,
     created=NOW(),
     modified=NOW()');
-    $insertStmt->bindParam(1, $register['name']);
-    $insertStmt->bindParam(2, $register['manager_name']);
-    $insertStmt->bindParam(3, $register['phone_number']);
-    $insertStmt->bindParam(4, $register['postal_code']);
-    $insertStmt->bindParam(5, $prefectureCode, PDO::PARAM_INT);
-    $insertStmt->bindParam(6, $register['address']);
-    $insertStmt->bindParam(7, $register['mail_address']);
-    $insertStmt->bindParam(8, $register['prefix']);
+    $insertStmt->bindParam(':name', $register['name']);
+    $insertStmt->bindParam(':manager_name', $register['manager_name']);
+    $insertStmt->bindParam(':phone_number', $register['phone_number']);
+    $insertStmt->bindParam(':postal_code', $register['postal_code']);
+    $insertStmt->bindParam(':prefecture_code', $prefectureCode, PDO::PARAM_INT);
+    $insertStmt->bindParam(':address', $register['address']);
+    $insertStmt->bindParam(':mail_address', $register['mail_address']);
+    $insertStmt->bindParam(':prefix', $register['prefix']);
     $insertStmt->execute();
     unset($_SESSION['register']);
     header('Location: index.php');
