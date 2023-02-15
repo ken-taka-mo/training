@@ -320,12 +320,12 @@ td a{
 /* データがなかった時 */
 .no-data {
     width: 100%;
-    height: 60%;
+    height: 330px;
 }
 
 .no-data th {
     background-color: red;
-    height: 10%;
+    height: 30px;
 }
 
 .no-data td{
