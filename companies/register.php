@@ -14,13 +14,11 @@ $address = '';
 $mailAddress = '';
 $prefix = '';
 
+$post = $_POST;
 $items = [];
-if (!empty($_POST)) {
+if (!empty($post)) {
     // 入力された値の全角スペース、全角数字を半角に変換
-    foreach ($_POST as $key => $value) {
-        $items[$key] = preg_replace("/(^\s+)|(\s+$)/u", "", $value);
-        $items[$key] = mb_convert_kana($items[$key], "n");
-    }
+    $items = convert_half_width($post);
 
     if (mb_strlen($items['name']) > 64) {
         $error['name'] = '会社名は64文字以内で入力してください';
@@ -54,12 +52,9 @@ if (!empty($_POST)) {
     if (!preg_match('/^[a-zA-Z0-9]{1,8}$/', $items['prefix'])) {
         $error['prefix'] = 'プレフィックスは8字以内の英数字で入力してください';
     }
-    // スペース以外の値が入っているか＝入力されているか
-    foreach ($items as $key => $value) {
-        if (preg_match('/^[\s]*$/', $value)) {
-            $error[$key] = COLUMNS[$key] . 'を入力してください';
-        }
-    }
+    // 値が入力されているか
+    $error = check_empty($items);
+
     // バリデーションチェックで問題がなかった場合セッションに値を代入し確認ページへ遷移
     if (!isset($error)) {
         $_SESSION['register'] = $items;
