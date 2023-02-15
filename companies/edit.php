@@ -11,12 +11,12 @@ if (empty($_GET['id']) || !preg_match('/^[1-9]+[0]*$/', $_GET['id'])) {
 $countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
 $countStmt->execute(array($_GET['id']));
 $count = $countStmt->fetch();
-if ($count['cnt']) {
-    $id = $_GET['id'];
-} else {
+if ($count['cnt'] < 1) {
     header('Location: index.php');
     exit();
 }
+
+$id = $_GET['id'];
 
 $detailStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix FROM companies WHERE id=?');
 $detailStmt->bindParam(1, $id, PDO::PARAM_INT);
