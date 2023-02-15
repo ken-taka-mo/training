@@ -23,7 +23,11 @@ $detailStmt->bindParam(1, $id, PDO::PARAM_INT);
 $detailStmt->execute();
 $details = $detailStmt->fetch();
 
-if (empty($_POST)) {
+$post = $_POST;
+$items = [];
+$error = [];
+
+if (empty($post)) {
     $name = $details['name'];
     $managerName = $details['manager_name'];
     $phoneNumber = $details['phone_number'];
@@ -32,59 +36,21 @@ if (empty($_POST)) {
     $address = $details['address'];
     $mailAddress = $details['mail_address'];
 } else {
-    $name = $_POST['name'];
-    $managerName = $_POST['manager_name'];
-    $phoneNumber = $_POST['phone_number'];
-    $postalCode = $_POST['postal_code'];
-    $prefectureCode = $_POST['prefecture_code'];
-    $address = $_POST['address'];
-    $mailAddress = $_POST['mail_address'];
+    // 入力された値の全角スペース、全角数字を半角に変換
+    $items = convert_half_width($post);
 
-    if (preg_match('/^[\s\n\t]*$/', $name)) {
-        $error['name'] = '会社名を入力してください';
-    } elseif (mb_strlen($name) > 64) {
-        $error['name'] = '会社名は64文字以内で入力してください';
-    }
+    // 会社テーブルのバリデーションチェック
+    $error = check_company($items);
 
-    if (preg_match('/^[\s\n\t]*$/', $managerName)) {
-        $error['manager_name'] = '担当者名を入力してください';
-    } elseif (mb_strlen($managerName) > 32) {
-        $error['manager_name'] = '担当者名は32文字以内で入力してください';
-    }
+    $name = $items['name'];
+    $managerName = $items['manager_name'];
+    $phoneNumber = $items['phone_number'];
+    $postalCode = $items['postal_code'];
+    $prefectureCode = $items['prefecture_code'];
+    $address = $items['address'];
+    $mailAddress = $items['mail_address'];
 
-    if (preg_match('/^[\s\n\t]*$/', $phoneNumber)) {
-        $error['phone_number'] = '電話番号を入力してください';
-    } elseif (mb_strlen($phoneNumber) > 11 || !preg_match('/^\d+$/', $phoneNumber)) {
-        $error['phone_number'] = '電話番号はハイフンなしの11桁以下の半角整数で入力してください';
-    }
-
-    if (preg_match('/^[\s\n\t]*$/', $postalCode)) {
-        $error['postal_code'] = '郵便番号を入力してください';
-    } elseif (mb_strlen($postalCode) != 7 || !preg_match('/^\d+$/', $postalCode)) {
-        $error['postal_code'] = '郵便番号はハイフンなしの7桁の半角整数で入力してください';
-    }
-
-    if (preg_match('/^[\s\n\t]*$/', $prefectureCode)) {
-        $error['prefecture_code'] = 'もう一度都道府県を選択してください';
-    } elseif (mb_strlen($prefectureCode) < 1 && mb_strlen($prefectureCode > 47)) {
-        $error['prefecture_code'] = 'もう一度都道府県を選択してください';
-    }
-
-    if (preg_match('/^[\s\n\t]*$/', $address)) {
-        $error['address'] = '市区町村を入力してください';
-    } elseif (mb_strlen($address) > 100) {
-        $error['address'] = '市区町村は100字以内で入力してください';
-    }
-
-    if (preg_match('/^[\s\n\t]*$/', $mailAddress)) {
-        $error['mail_address'] = 'メールアドレスを入力してください';
-    } elseif (mb_strlen($mailAddress) > 100) {
-        $error['mail_address'] = 'メールアドレスは100字以内で入力して下さい';
-    } elseif (!preg_match('/^[a-zA-Z0-9_+-]+(\.[a-zA-Z0-9_+-]+)*@[a-zA-Z0-9_+-]+(\.[a-zA-Z0-9_+-]+)*$/', $mailAddress)) {
-        $error['mail_address'] = '正しいメールアドレスを入力してください';
-    }
-
-    if (!isset($error)) {
+    if (empty($error)) {
         $updateStmt = $db->prepare('UPDATE companies SET
         name=?,
         manager_name=?,
