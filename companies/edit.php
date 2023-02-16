@@ -10,10 +10,10 @@ if (!is_exact_id($_GET['id'])) {
 }
 $id = $_GET['id'];
 // 受け取ったidの会社データが存在するかチェック
-$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
-$countStmt->execute([':id' => $id]);
-$count = $countStmt->fetch(PDO::FETCH_ASSOC);
-if (!$count['cnt']) {
+$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
+$companyCountStmt->execute([':id' => $id]);
+$companyCount = $companyCountStmt->fetch(PDO::FETCH_ASSOC);
+if (!$companyCount['cnt']) {
     header('Location: index.php');
     exit();
 }

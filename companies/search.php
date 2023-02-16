@@ -14,14 +14,14 @@ $getName = mb_convert_kana($_GET['name'], "n");
 // sql文用にgetNameを変換
 $keyword = "%{$getName}%";
 // 検索ワードを含んだ会社名を持つデータ数を求める
-$counts = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL AND name LIKE :keyword ');
-$counts->execute([':keyword' => $keyword]);
-$count = $counts->fetch();
+$hasKeywordcounts = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL AND name LIKE :keyword ');
+$hasKeywordcounts->execute([':keyword' => $keyword]);
+$companyCount = $hasKeywordcounts->fetch();
 
 $companyExist = false;
-if ($count['cnt']) {
+if ($companyCount['cnt']) {
     $companyExist = true;
-    $maxPage = ceil($count['cnt'] / DATA_PER_PAGE);
+    $maxPage = ceil($companyCount['cnt'] / DATA_PER_PAGE);
     // pageクエリのバリデーション
     if (isset($_GET['page'])) {
         if (!preg_match('/^[1-9]+\d*$/', $_GET['page'])) {
@@ -39,7 +39,7 @@ if ($count['cnt']) {
     $showButton = $maxPage > 1 ? true : false;
 
     $desc = false;
-    $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL AND name LIKE :keyword LIMIT :start,10');
+    $companiesStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL AND name LIKE :keyword LIMIT :start,10');
     // 降順切り替えの処理
     if (isset($_GET['order'])) {
         if (!$_GET['order'] == 'desc') {
@@ -47,13 +47,13 @@ if ($count['cnt']) {
             exit();
         }
         $desc = true;
-        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL AND name LIKE :keyword ORDER BY id DESC LIMIT :start,10');
+        $companiesStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL AND name LIKE :keyword ORDER BY id DESC LIMIT :start,10');
     }
-
-    $statement->bindParam(':keyword', $keyword);
-    $statement->bindParam(':start', $start, PDO::PARAM_INT);
-    $statement->execute();
-    $companies = $statement->fetchAll();
+    // 会社データ取得
+    $companiesStmt->bindParam(':keyword', $keyword);
+    $companiesStmt->bindParam(':start', $start, PDO::PARAM_INT);
+    $companiesStmt->execute();
+    $companies = $companiesStmt->fetchAll();
 }
 ?>
 <!DOCTYPE html>
@@ -83,7 +83,7 @@ if ($count['cnt']) {
                 <div class="table-wrapper">
                     <table>
                         <tr class="list-title title">
-                            <?php if ($count['cnt'] == 1) :?>
+                            <?php if ($companyCount['cnt'] == 1) :?>
                                 <th class="order t-id">会社番号</th>
                             <?php else :?>
                                 <?php if ($desc) :?>

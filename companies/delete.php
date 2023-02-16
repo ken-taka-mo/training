@@ -9,11 +9,11 @@ if (!is_exact_id($_POST['id'])) {
 $companyId = $_POST['id'];
 
 // 受け取ったidが存在するかチェック
-$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
-$countStmt->execute([':id' => $companyId]);
-$count = $countStmt->fetch(PDO::FETCH_ASSOC);
+$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
+$companyCountStmt->execute([':id' => $companyId]);
+$companyCount = $companyCountStmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$count['cnt']) {
+if (!$companyCount['cnt']) {
     header('Location: index.php');
     exit();
 }
