@@ -15,15 +15,12 @@ $mailAddress = '';
 $prefix = '';
 
 $post = $_POST;
-$items = [];
-$error = [];
 if (!empty($post)) {
     // 入力された値の全角スペース、全角数字を半角に変換
     $items = convert_half_width($post);
 
     // 会社テーブルのバリデーションチェック
     $error = check_company($items);
-
     // バリデーションチェックで問題がなかった場合セッションに値を代入し確認ページへ遷移
     if (empty($error)) {
         $_SESSION['register'] = $items;
