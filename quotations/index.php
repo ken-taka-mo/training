@@ -3,20 +3,22 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/data_per_page.php');
 
-if (empty($_GET['id'])) {
-    header('Location: ../companies/index.php');
-    exit();
-}
-
-if (!preg_match('/^[1-9]+[0]*$/', $_GET['id'])) {
-    header('Location: ../companies/index.php');
-    exit();
-}
-
 $id = $_GET['id'];
 
-$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
-$companyCountStmt-> bindParam(1, $id, PDO::PARAM_INT);
+if (empty($id)) {
+    header('Location: ../companies/index.php');
+    exit();
+}
+
+if (!preg_match('/^[1-9]+\d*$/', $id)) {
+    header('Location: ../companies/index.php');
+    exit();
+}
+
+
+
+$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
+$companyCountStmt-> bindParam(':id', $id, PDO::PARAM_INT);
 $companyCountStmt->execute();
 $companyCnt = $companyCountStmt->fetch();
 if ($companyCnt['cnt'] < 1) {
@@ -25,16 +27,16 @@ if ($companyCnt['cnt'] < 1) {
 }
 
 
-$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE company_id=? AND deleted is NULL');
-$countStmt->bindParam(1, $id, PDO::PARAM_INT);
+$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE company_id=:company_id AND deleted is NULL');
+$countStmt->bindParam(':company_id', $id, PDO::PARAM_INT);
 $countStmt->execute();
 $count = $countStmt->fetch();
 if (!$count['cnt'] > 0) {
     $quotationExist = false;
 } else {
     $quotationExist = true;
-    $listStmt = $db->prepare('SELECT no, title, total, validity_period, due_date, status FROM quotations WHERE company_id=? AND deleted is NULL');
-    $listStmt->bindParam(1, $id, PDO::PARAM_INT);
+    $listStmt = $db->prepare('SELECT no, title, total, validity_period, due_date, status FROM quotations WHERE company_id=:company_id AND deleted is NULL');
+    $listStmt->bindParam(':company_id', $id, PDO::PARAM_INT);
     $listStmt->execute();
     $quotations = $listStmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -46,7 +48,7 @@ if ($maxPage == 0) {
 }
 
 if (isset($_GET['page'])) {
-    if (!preg_match('/^[0-9]+$/', $_GET['page']) || preg_match('/^[0]*$/', $_GET['page'])) {
+    if (!preg_match('/^[1-9]+\d*$/', $_GET['page'])) {
         header("Location: index.php?id={$id}");
         exit();
     }
@@ -54,11 +56,10 @@ if (isset($_GET['page'])) {
     if ($_GET['page'] > $maxPage) {
         header("Location: index.php?id={$id}&page={$maxPage}");
         exit();
-    } else {
-        $page = $_GET['page'];
-        $page = max($page, 1);
-        $page = min($page, $maxPage);
     }
+    $page = $_GET['page'];
+    $page = max($page, 1);
+    $page = min($page, $maxPage);
 }
 
 $start = ($page - 1) * DATA_PER_PAGE;
@@ -72,14 +73,15 @@ if ($maxPage > 1) {
     $showButton = true;
 }
 
-$companyStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=?');
-$companyStmt->execute(array($id));
+$companyStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=:id');
+$companyStmt->execute([':id' => $id]);
 $companyData = $companyStmt->fetch();
 
+$desc = false;
 if (isset($_GET['order'])) {
     if ($_GET['order'] == 'desc') {
         $desc = true;
-        $descQuotations = array($quotations[0]);
+        $descQuotations = [$quotations[0]];
         for ($x = 1; $x < count($quotations); $x++) {
             if ($descQuotations[0]['no'] <= $quotations[$x]['no']) {
                 array_unshift($descQuotations, $quotations[$x]);
@@ -88,7 +90,7 @@ if (isset($_GET['order'])) {
             } else {
                 for ($y = 1; $y < count($descQuotations); $y++) {
                     if ($descQuotations[$y]['no'] <= $quotations[$x]['no']) {
-                        array_splice($descQuotations, $y, 0, array($quotations[$x]));
+                        array_splice($descQuotations, $y, 0, [$quotations[$x]]);
                         break;
                     }
                 }
@@ -99,8 +101,6 @@ if (isset($_GET['order'])) {
         header('Location: index.php');
         exit();
     }
-} else {
-    $desc = false;
 }
 
 ?>

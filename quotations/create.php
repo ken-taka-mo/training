@@ -3,23 +3,22 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 session_start();
 
-if (empty($_GET['id']) || !preg_match('/^[1-9]+[0]*$/', $_GET['id'])) {
+$companyId = $_GET['id'];
+if (empty($companyId) || !preg_match('/^[1-9]+[0]*$/', $companyId)) {
     header('Location: ../companies/index.php');
     exit();
 }
 
-$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
-$countStmt->execute(array($_GET['id']));
+$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
+$countStmt->execute([':id' => $companyId]);
 $count = $countStmt->fetch();
-if ($count['cnt']) {
-    $companyId = $_GET['id'];
-} else {
+if ($count['cnt'] < 1) {
     header('Location: ../companies/index.php');
     exit();
 }
 
-$companyDataStmt = $db->prepare('SELECT name, manager_name, prefix FROM companies WHERE id=?');
-$companyDataStmt->execute(array($companyId));
+$companyDataStmt = $db->prepare('SELECT name, manager_name, prefix FROM companies WHERE id=:id');
+$companyDataStmt->execute([':id' => $companyId]);
 $companyData = $companyDataStmt->fetch();
 
 $post = $_POST;
