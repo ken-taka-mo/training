@@ -3,32 +3,36 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 session_start();
 
+// idのバリデーション
+if (!is_exact_id($_GET['id'])) {
+    header('Location: ../companies/index.php');
+    exit();
+}
 $companyId = $_GET['id'];
-if (empty($companyId) || !preg_match('/^[1-9]+[0]*$/', $companyId)) {
-    header('Location: ../companies/index.php');
-    exit();
-}
-
-$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
-$countStmt->execute([':id' => $companyId]);
-$count = $countStmt->fetch();
-if ($count['cnt'] < 1) {
-    header('Location: ../companies/index.php');
-    exit();
-}
-
+// 会社データの取得
 $companyDataStmt = $db->prepare('SELECT name, manager_name, prefix FROM companies WHERE id=:id');
 $companyDataStmt->execute([':id' => $companyId]);
-$companyData = $companyDataStmt->fetch();
+$companyData = $companyDataStmt->fetch(PDO::FETCH_ASSOC);
+// 会社データがなかった場合会社一覧ページに遷移
+if (!$companyData) {
+    header('Location: ../companies/index.php');
+    exit();
+}
+// フォームの初期値の変数を定義
+$title = '';
+$total = '';
+$validityPeriod = '';
+$dueDate = '';
+$status = '';
 
 $post = $_POST;
-$items = [];
-$error = [];
-
+// 見積作成ボタンクリック後
 if (!empty($post)) {
+    // 入力データの全角数字、全角スペースを半角に変換
     $items = convert_half_width($post);
+    // 見積データのバリデーション
     $error = check_quotation($items);
-
+    // バリデーションで何も問題がなかった場合、セッションにデータ代入後確認ページに遷移
     if (empty($error)) {
         $_SESSION['new_quotation'] = $items;
         header('Location: check.php');
@@ -36,16 +40,12 @@ if (!empty($post)) {
     }
 }
 
+// 書き戻しで遷移してきた場合セッションの値を$itemsに代入する
 if (isset($_GET['action']) && $_GET['action'] == 'rewrite') {
     $items = $_SESSION['new_quotation'];
 }
 
-$title = '';
-$total = '';
-$validityPeriod = '';
-$dueDate = '';
-$status = '';
-
+// フォームの初期値に$itemsを代入
 if (!empty($items)) {
     $title = $items['title'];
     $total = $items['total'];

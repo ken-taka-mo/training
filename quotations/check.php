@@ -1,26 +1,27 @@
 <?php
 require_once('../utils/functions.php');
 require_once('../dbconnect.php');
-
 session_start();
+
 if (empty($_SESSION['new_quotation'])) {
     header('Location: index.php');
     exit();
-} else {
-    $newQuotation = $_SESSION['new_quotation'];
-    $lastIdStmt = $db->prepare('SELECT no FROM quotations WHERE company_id =:company_id ORDER BY id DESC LIMIT 1');
-    $lastIdStmt->bindParam(':company_id', $newQuotation['company_id'], PDO::PARAM_INT);
-    $lastIdStmt->execute();
-    $lastId = $lastIdStmt->fetch();
-    if (isset($lastId['no'])) {
-        $nextNo = intval(substr($lastId['no'], -8)) + 1;
-    } else {
-        $nextNo = 1;
-    }
-    $tailNumber = sprintf('%08d', $nextNo);
-    $no = $newQuotation['prefix'] . '-q-' . $tailNumber;
 }
 
+$newQuotation = $_SESSION['new_quotation'];
+// :company_idを持つ見積データの末尾データの見積番号を取得
+$lastNoStmt = $db->prepare('SELECT no FROM quotations WHERE company_id =:company_id ORDER BY id DESC LIMIT 1');
+$lastNoStmt->bindParam(':company_id', $newQuotation['company_id'], PDO::PARAM_INT);
+$lastNoStmt->execute();
+$lastNo = $lastNoStmt->fetch();
+// 見積番号の下8桁(数字部分)に+1して$nextNoに代入する $lastNo存在しない場合1を代入
+$nextNo = !empty($lastNo) ? $nextNo = intval(substr($lastNo['no'], -8)) + 1 : 1;
+// 八桁になるまで0を先頭に代入
+$tailNumber = sprintf('%08d', $nextNo);
+// prefixと指定記号と$tailNumberで見積番号の作成
+$no = $newQuotation['prefix'] . '-q-' . $tailNumber;
+
+// 作成ボタンクリック後見積テーブルにinsert
 if (!empty($_POST)) {
     $insertStmt = $db->prepare('INSERT INTO quotations SET company_id=:company_id, no=:no, title=:title, total=:total, validity_period=:validity_period, due_date=:due_date, status=:status, created=NOW(), modified=NOW()');
     $insertStmt->bindParam(':company_id', $newQuotation['company_id']);
@@ -31,6 +32,7 @@ if (!empty($_POST)) {
     $insertStmt->bindParam(':due_date', $newQuotation['due_date']);
     $insertStmt->bindParam(':status', $newQuotation['status'], PDO::PARAM_INT);
     $insertStmt->execute();
+    // insert後セッションの値を消去する
     unset($_SESSION['new_quotation']);
     header("Location: index.php?id={$newQuotation['company_id']}");
     exit();
