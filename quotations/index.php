@@ -2,92 +2,77 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/data_per_page.php');
-
+// クエリパラメータのidをバリデーション後受け取る
+if (!is_exact_id($_GET['id'])) {
+    header('Location: ../companies/index.php');
+    exit();
+}
 $id = $_GET['id'];
 
-if (empty($id)) {
+// 会社データの取得
+$companyDataStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=:id');
+$companyDataStmt->execute([':id' => $id]);
+$companyData = $companyDataStmt->fetch(PDO::FETCH_ASSOC);
+if (!$companyData) {
     header('Location: ../companies/index.php');
     exit();
 }
 
-if (!preg_match('/^[1-9]+\d*$/', $id)) {
-    header('Location: ../companies/index.php');
-    exit();
-}
+$quotationsStmt = $db->prepare('SELECT no, title, total, validity_period, due_date, status FROM quotations WHERE company_id=:company_id AND deleted is NULL');
+$quotationsStmt->bindParam(':company_id', $id, PDO::PARAM_INT);
+$quotationsStmt->execute();
+$quotations = $quotationsStmt->fetchAll(PDO::FETCH_ASSOC);
+$count = count($quotations) ?? 0;
 
-
-
-$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
-$companyCountStmt-> bindParam(':id', $id, PDO::PARAM_INT);
-$companyCountStmt->execute();
-$companyCnt = $companyCountStmt->fetch();
-if ($companyCnt['cnt'] < 1) {
-    header('Location: ../companies/index.php');
-    exit();
-}
-
-
-$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE company_id=:company_id AND deleted is NULL');
-$countStmt->bindParam(':company_id', $id, PDO::PARAM_INT);
-$countStmt->execute();
-$count = $countStmt->fetch();
-if (!$count['cnt'] > 0) {
-    $quotationExist = false;
-} else {
+$quotationExist = false;
+// 見積データが存在する場合の処理
+if ($count) {
     $quotationExist = true;
-    $listStmt = $db->prepare('SELECT no, title, total, validity_period, due_date, status FROM quotations WHERE company_id=:company_id AND deleted is NULL');
-    $listStmt->bindParam(':company_id', $id, PDO::PARAM_INT);
-    $listStmt->execute();
-    $quotations = $listStmt->fetchAll(PDO::FETCH_ASSOC);
-}
+    // 最大ページ = データの総数 / 1ページの表示データ数 小数点以下切り上げる
+    $maxPage = ceil($count / DATA_PER_PAGE);
+    // ページクエリのバリデーション
+    if (isset($_GET['page'])) {
+        if (!preg_match('/^[1-9]+\d*$/', $_GET['page'])) {
+            header("Location: index.php?id={$id}");
+            exit();
+        }
 
-$page = 1;
-$maxPage = ceil($count['cnt'] / DATA_PER_PAGE);
-if ($maxPage == 0) {
-    $maxPage = 1;
-}
-
-if (isset($_GET['page'])) {
-    if (!preg_match('/^[1-9]+\d*$/', $_GET['page'])) {
-        header("Location: index.php?id={$id}");
-        exit();
+        if ($_GET['page'] > $maxPage) {
+            header("Location: index.php?id={$id}&page={$maxPage}");
+            exit();
+        }
+    }
+    $page = $_GET['page'] ?? 1;
+    // 各ページの先頭のデータのインデックス
+    $start = ($page - 1) * DATA_PER_PAGE;
+    // 各ページの最後のデータのインデックス
+    $end = $start + (DATA_PER_PAGE - 1);
+    // 見積データの最大数より$endの数が大きかった場合$endの数を最後のデータのインデックスにする
+    if ($end >= $count) {
+        $end = $count - 1;
     }
 
-    if ($_GET['page'] > $maxPage) {
-        header("Location: index.php?id={$id}&page={$maxPage}");
-        exit();
-    }
-    $page = $_GET['page'];
-    $page = max($page, 1);
-    $page = min($page, $maxPage);
-}
+    $showButton = $maxPage > 1 ? true : false;
 
-$start = ($page - 1) * DATA_PER_PAGE;
-$end = $start + (DATA_PER_PAGE - 1);
-if ($end >= $count['cnt']) {
-    $end = $count['cnt'] - 1;
-}
-
-$showButton = false;
-if ($maxPage > 1) {
-    $showButton = true;
-}
-
-$companyStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=:id');
-$companyStmt->execute([':id' => $id]);
-$companyData = $companyStmt->fetch();
-
-$desc = false;
-if (isset($_GET['order'])) {
-    if ($_GET['order'] == 'desc') {
+    $desc = false;
+    if (isset($_GET['order'])) {
+        if (!$_GET['order'] == 'desc') {
+            header('Location: index.php');
+            exit();
+        }
+        // noを基準に配列を降順にする処理
         $desc = true;
+        // $descQuotations(並び替え後の配列)に$quotations(見積データ)の最初のデータを挿入
         $descQuotations = [$quotations[0]];
         for ($x = 1; $x < count($quotations); $x++) {
+            // $descQuotationsの先頭のnoの値より大きければ先頭に挿入
             if ($descQuotations[0]['no'] <= $quotations[$x]['no']) {
                 array_unshift($descQuotations, $quotations[$x]);
+            // $descQuotationsの最後のnoの値より小さければ末尾に挿入
             } elseif (end($descQuotations)['no'] > $quotations[$x]['no']) {
                 array_push($descQuotations, $quotations[$x]);
             } else {
+                // descQuotationsの２番目のデータから順番に比べ$quotationsよりも小さい値を見つけたらそのデータの前に挿入
                 for ($y = 1; $y < count($descQuotations); $y++) {
                     if ($descQuotations[$y]['no'] <= $quotations[$x]['no']) {
                         array_splice($descQuotations, $y, 0, [$quotations[$x]]);
@@ -97,12 +82,8 @@ if (isset($_GET['order'])) {
             }
         }
         $quotations = $descQuotations;
-    } else {
-        header('Location: index.php');
-        exit();
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -126,22 +107,24 @@ if (isset($_GET['order'])) {
             </div>
             <div class="menu">
                 <a href="create.php?id=<?= h($id)?>" class="btn">新規作成</a>
-                <form action="search.php" method="GET">
-                    <input type="hidden" name="id" value=<?= $id?>>
-                    <select name="status" id="">
-                        <option value="">全て</option>
-                        <option value="下書き">下書き</option>
-                        <option value="発行済み">発行済み</option>
-                        <option value="破棄">破棄</option>
-                    </select>
-                    <input class="btn-search" type="submit" value="検索">
-                </form>
+                <?php if ($quotationExist) :?>
+                    <form action="search.php" method="GET">
+                        <input type="hidden" name="id" value=<?= $id?>>
+                        <select name="status" id="">
+                            <option value="">全て</option>
+                            <option value="下書き">下書き</option>
+                            <option value="発行済み">発行済み</option>
+                            <option value="破棄">破棄</option>
+                        </select>
+                        <input class="btn-search" type="submit" value="検索">
+                    </form>
+                <?php endif?>
             </div>
             <?php if ($quotationExist) :?>
             <div class="table-wrapper">
                 <table>
                     <tr class="title list-title">
-                        <?php if ($count['cnt'] == 1) :?>
+                        <?php if ($count == 1) :?>
                             <th class="order q-id">見積番号</th>
                         <?php else :?>
                             <?php if ($desc) :?>

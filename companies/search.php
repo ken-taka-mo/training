@@ -16,7 +16,7 @@ $keyword = "%{$getName}%";
 // 検索ワードを含んだ会社名を持つデータ数を求める
 $hasKeywordcounts = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL AND name LIKE :keyword ');
 $hasKeywordcounts->execute([':keyword' => $keyword]);
-$companyCount = $hasKeywordcounts->fetch();
+$companyCount = $hasKeywordcounts->fetch(PDO::FETCH_ASSOC);
 
 $companyExist = false;
 if ($companyCount['cnt']) {
@@ -53,7 +53,7 @@ if ($companyCount['cnt']) {
     $companiesStmt->bindParam(':keyword', $keyword);
     $companiesStmt->bindParam(':start', $start, PDO::PARAM_INT);
     $companiesStmt->execute();
-    $companies = $companiesStmt->fetchAll();
+    $companies = $companiesStmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 <!DOCTYPE html>

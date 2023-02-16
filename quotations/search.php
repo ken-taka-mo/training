@@ -5,22 +5,12 @@ require_once('../utils/data_per_page.php');
 
 $id = $_GET['id'];
 $status = $_GET['status'];
-
-if (empty($id) || !preg_match('/^[1-9]+[0]*$/', $id)) {
+// クエリパラメータのバリデーション
+if (!is_exact_id($id)) {
     header('Location: ../companies/index.php');
     exit();
 }
-
-
-$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
-$companyCountStmt-> bindParam(':id', $id, PDO::PARAM_INT);
-$companyCountStmt->execute();
-$companyCnt = $companyCountStmt->fetch();
-if ($companyCnt['cnt'] < 1) {
-    header('Location: ../companies/index.php');
-    exit();
-}
-
+// 画面上の表示の値をクエリ文用に変換
 switch ($status) {
     case "下書き":
         $sqlStatus = 1;
@@ -32,81 +22,65 @@ switch ($status) {
         $sqlStatus = 9;
         break;
     default:
-        $sqlStatus = "";
+        header("Location: index.php?id={$id}");
+        exit();
         break;
 }
 
-if (!preg_match('/^[129]$/', $sqlStatus)) {
-    header("Location: index.php?id={$id}");
+// 会社名、担当者名を取得
+$companyDataStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=:id');
+$companyDataStmt->execute([':id' => $id]);
+$companyData = $companyDataStmt->fetch(PDO::FETCH_ASSOC);
+if (!$companyData) {
+    header('Location: ../companies/index.php');
     exit();
 }
 
-$companyDataStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=:id');
-$companyDataStmt->execute([':id' => $id]);
-$companyData = $companyDataStmt->fetch();
+// 指定の状態に当てはまる見積データを取得
+$quotationStmt = $db->prepare('SELECT no, title, total, validity_period, due_date, status FROM quotations WHERE company_id=:company_id AND status=:status AND deleted is NULL');
+$quotationStmt->bindParam(':company_id', $id, PDO::PARAM_INT);
+$quotationStmt->bindParam(':status', $sqlStatus, PDO::PARAM_INT);
+$quotationStmt->execute();
+$quotations = $quotationStmt->fetchAll(PDO::FETCH_ASSOC);
+// データ数を取得なければ0を代入
+$count = count($quotations) ?? 0;
 
-$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE company_id=:company_id AND status=:status AND deleted is NULL');
-$countStmt->bindParam(':company_id', $id, PDO::PARAM_INT);
-$countStmt->bindParam(':status', $sqlStatus, PDO::PARAM_INT);
-$countStmt->execute();
-$count = $countStmt->fetch();
-
-if ($count['cnt'] < 1) {
-    $quotationExist = false;
-} else {
+$quotationExist = false;
+if ($count) {
     $quotationExist = true;
-    $quotationStmt = $db->prepare('SELECT no, title, total, validity_period, due_date, status FROM quotations WHERE company_id=:company_id AND status=:status AND deleted is NULL');
-    $quotationStmt->bindParam(':company_id', $id, PDO::PARAM_INT);
-    $quotationStmt->bindParam(':status', $sqlStatus, PDO::PARAM_INT);
-    $quotationStmt->execute();
-    $quotations = $quotationStmt->fetchAll();
-}
+    // 最大ページ = データの総数 / 1ページの表示データ数 小数点以下切り上げる
+    $maxPage = ceil($count / DATA_PER_PAGE);
 
-$page = 1;
-$maxPage = ceil($count['cnt'] / DATA_PER_PAGE);
-if ($maxPage == 0) {
-    $maxPage = 1;
-}
+    if (isset($_GET['page'])) {
+        if (!preg_match('/^[1-9]+\d*$/', $_GET['page'])) {
+            header("Location: index.php?id={$id}&status={$status}");
+            exit();
+        }
 
-if (isset($_GET['page'])) {
-    if (!preg_match('/^[0-9]+$/', $_GET['page']) || preg_match('/^[0]*$/', $_GET['page'])) {
-        header("Location: index.php?id={$id}&status={$status}");
-        exit();
+        if ($_GET['page'] > $maxPage) {
+            header("Location: index.php?id={$id}&page={$maxPage}&status={$status}");
+            exit();
+        }
     }
 
-    if ($_GET['page'] > $maxPage) {
-        header("Location: index.php?id={$id}&page={$maxPage}&status={$status}");
-        exit();
-    } else {
-        $page = $_GET['page'];
-        $page = max($page, 1);
-        $page = min($page, $maxPage);
+    $page = $_GET['page'] ?? 1;
+    $start = ($page - 1) * DATA_PER_PAGE;
+    $end = $start + (DATA_PER_PAGE - 1);
+    if ($end >= $count) {
+        $end = $count - 1;
     }
-}
+    $showButton = $maxPage > 1 ? true : false;
 
-$start = ($page - 1) * DATA_PER_PAGE;
-$end = $start + (DATA_PER_PAGE - 1);
-if ($end >= $count['cnt']) {
-    $end = $count['cnt'] - 1;
-}
-
-$showButton = false;
-if ($maxPage > 1) {
-    $showButton = true;
-}
-
-if (isset($_GET['order'])) {
-    if ($_GET['order'] == 'desc') {
+    $desc = false;
+    if (isset($_GET['order'])) {
+        if (!$_GET['order'] == 'desc') {
+            header("Location: search.php?id={$id}&status={$status}");
+            exit();
+        }
         $desc = true;
         $quotations = array_reverse($quotations);
-    } else {
-        header("Location: search.php?id={$id}&status={$status}");
-        exit();
     }
-} else {
-    $desc = false;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -154,7 +128,7 @@ if (isset($_GET['order'])) {
             <div class="table-wrapper">
                 <table>
                     <tr class="title list-title">
-                        <?php if ($count['cnt'] == 1) :?>
+                        <?php if ($count == 1) :?>
                             <th class="order q-id">見積番号</th>
                         <?php else :?>
                             <?php if ($desc) :?>
