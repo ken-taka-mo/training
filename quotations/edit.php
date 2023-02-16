@@ -35,8 +35,6 @@ $status = $quotationData['status'];
 $id = $quotationData['id'];
 
 $post = $_POST;
-$items = [];
-$error = [];
 
 if (!empty($post)) {
     $items = convert_half_width($post);
