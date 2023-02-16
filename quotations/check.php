@@ -8,8 +8,8 @@ if (empty($_SESSION['new_quotation'])) {
     exit();
 } else {
     $newQuotation = $_SESSION['new_quotation'];
-    $lastIdStmt = $db->prepare('SELECT no FROM quotations WHERE company_id =? ORDER BY id DESC LIMIT 1');
-    $lastIdStmt->bindParam(1, $newQuotation['company_id'], PDO::PARAM_INT);
+    $lastIdStmt = $db->prepare('SELECT no FROM quotations WHERE company_id =:company_id ORDER BY id DESC LIMIT 1');
+    $lastIdStmt->bindParam(':company_id', $newQuotation['company_id'], PDO::PARAM_INT);
     $lastIdStmt->execute();
     $lastId = $lastIdStmt->fetch();
     if (isset($lastId['no'])) {
@@ -22,14 +22,14 @@ if (empty($_SESSION['new_quotation'])) {
 }
 
 if (!empty($_POST)) {
-    $insertStmt = $db->prepare('INSERT INTO quotations SET company_id=?, no=?, title=?, total=?, validity_period=?, due_date=?, status=?, created=NOW(), modified=NOW()');
-    $insertStmt->bindParam(1, $newQuotation['company_id']);
-    $insertStmt->bindParam(2, $no);
-    $insertStmt->bindParam(3, $newQuotation['title']);
-    $insertStmt->bindParam(4, $newQuotation['total'], PDO::PARAM_INT);
-    $insertStmt->bindParam(5, $newQuotation['validity_period']);
-    $insertStmt->bindParam(6, $newQuotation['due_date']);
-    $insertStmt->bindParam(7, $newQuotation['status'], PDO::PARAM_INT);
+    $insertStmt = $db->prepare('INSERT INTO quotations SET company_id=:company_id, no=:no, title=:title, total=:total, validity_period=:validity_period, due_date=:due_date, status=:status, created=NOW(), modified=NOW()');
+    $insertStmt->bindParam(':company_id', $newQuotation['company_id']);
+    $insertStmt->bindParam(':no', $no);
+    $insertStmt->bindParam(':title', $newQuotation['title']);
+    $insertStmt->bindParam(':total', $newQuotation['total'], PDO::PARAM_INT);
+    $insertStmt->bindParam(':validity_period', $newQuotation['validity_period']);
+    $insertStmt->bindParam(':due_date', $newQuotation['due_date']);
+    $insertStmt->bindParam(':status', $newQuotation['status'], PDO::PARAM_INT);
     $insertStmt->execute();
     unset($_SESSION['new_quotation']);
     header("Location: index.php?id={$newQuotation['company_id']}");

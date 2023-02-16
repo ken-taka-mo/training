@@ -2,27 +2,29 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 
-if (!isset($_GET['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-q-)[0-9]{8}$/', $_GET['no'])) {
+$no = $_GET['no'];
+
+if (!isset($no) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-q-)[0-9]{8}$/', $no)) {
     header('Location: ../companies/index.php');
     exit();
 }
 
-$no = $_GET['no'];
 
-$quotationCntStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE no=?');
-$quotationCntStmt->execute(array($no));
+
+$quotationCntStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE no=:no');
+$quotationCntStmt->execute([':no' => $no]);
 $quotationCnt = $quotationCntStmt->fetch();
 if ($quotationCnt['cnt'] < 1) {
     header('Location: ../companies/index.php');
     exit();
 }
 
-$quotationDataStmt = $db->prepare('SELECT id, title, company_id, total, validity_period, due_date, status FROM quotations WHERE no=?');
-$quotationDataStmt->execute(array($no));
+$quotationDataStmt = $db->prepare('SELECT id, title, company_id, total, validity_period, due_date, status FROM quotations WHERE no=:no');
+$quotationDataStmt->execute([':no' => $no]);
 $quotationData = $quotationDataStmt->fetch();
 
-$companyNameStmt = $db->prepare('SELECT name FROM companies WHERE id = ?');
-$companyNameStmt->execute(array($quotationData['company_id']));
+$companyNameStmt = $db->prepare('SELECT name FROM companies WHERE id=:id');
+$companyNameStmt->execute([':id' => $quotationData['company_id']]);
 $companyName = $companyNameStmt->fetch();
 
 $title = $quotationData['title'];
@@ -48,14 +50,14 @@ if (!empty($post)) {
 
     if (empty($error)) {
         $updateStmt = $db->prepare('UPDATE quotations SET
-        title=?, total=?, validity_period=?, due_date=?, status=?, modified=NOW()
-        WHERE id=?');
-        $updateStmt->bindParam(1, $title);
-        $updateStmt->bindParam(2, $total, PDO::PARAM_INT);
-        $updateStmt->bindParam(3, $validityPeriod);
-        $updateStmt->bindParam(4, $dueDate);
-        $updateStmt->bindParam(5, $status, PDO::PARAM_INT);
-        $updateStmt->bindParam(6, $id, PDO::PARAM_INT);
+        title=:title, total=:total, validity_period=:validity_period, due_date=:due_date, status=:status, modified=NOW()
+        WHERE id=:id');
+        $updateStmt->bindParam(':title', $title);
+        $updateStmt->bindParam(':total', $total, PDO::PARAM_INT);
+        $updateStmt->bindParam(':validity_period', $validityPeriod);
+        $updateStmt->bindParam(':due_date', $dueDate);
+        $updateStmt->bindParam(':status', $status, PDO::PARAM_INT);
+        $updateStmt->bindParam(':id', $id, PDO::PARAM_INT);
         $updateStmt->execute();
         header("Location: index.php?id={$quotationData['company_id']}");
         exit();

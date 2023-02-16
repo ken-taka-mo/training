@@ -3,16 +3,17 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/data_per_page.php');
 
-if (empty($_GET['id']) || !preg_match('/^[1-9]+[0]*$/', $_GET['id'])) {
+$id = $_GET['id'];
+$status = $_GET['status'];
+
+if (empty($id) || !preg_match('/^[1-9]+[0]*$/', $id)) {
     header('Location: ../companies/index.php');
     exit();
 }
 
-$id = $_GET['id'];
-$status = $_GET['status'];
 
-$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
-$companyCountStmt-> bindParam(1, $id, PDO::PARAM_INT);
+$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
+$companyCountStmt-> bindParam(':id', $id, PDO::PARAM_INT);
 $companyCountStmt->execute();
 $companyCnt = $companyCountStmt->fetch();
 if ($companyCnt['cnt'] < 1) {
@@ -40,13 +41,13 @@ if (!preg_match('/^[129]$/', $sqlStatus)) {
     exit();
 }
 
-$companyDataStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=?');
-$companyDataStmt->execute(array($id));
+$companyDataStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=:id');
+$companyDataStmt->execute([':id' => $id]);
 $companyData = $companyDataStmt->fetch();
 
-$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE company_id=? AND status=? AND deleted is NULL');
-$countStmt->bindParam(1, $id, PDO::PARAM_INT);
-$countStmt->bindParam(2, $sqlStatus, PDO::PARAM_INT);
+$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM quotations WHERE company_id=:company_id AND status=:status AND deleted is NULL');
+$countStmt->bindParam(':company_id', $id, PDO::PARAM_INT);
+$countStmt->bindParam(':status', $sqlStatus, PDO::PARAM_INT);
 $countStmt->execute();
 $count = $countStmt->fetch();
 
@@ -54,9 +55,9 @@ if ($count['cnt'] < 1) {
     $quotationExist = false;
 } else {
     $quotationExist = true;
-    $quotationStmt = $db->prepare('SELECT no, title, total, validity_period, due_date, status FROM quotations WHERE company_id=? AND status=? AND deleted is NULL');
-    $quotationStmt->bindParam(1, $id, PDO::PARAM_INT);
-    $quotationStmt->bindParam(2, $sqlStatus, PDO::PARAM_INT);
+    $quotationStmt = $db->prepare('SELECT no, title, total, validity_period, due_date, status FROM quotations WHERE company_id=:company_id AND status=:status AND deleted is NULL');
+    $quotationStmt->bindParam(':company_id', $id, PDO::PARAM_INT);
+    $quotationStmt->bindParam(':status', $sqlStatus, PDO::PARAM_INT);
     $quotationStmt->execute();
     $quotations = $quotationStmt->fetchAll();
 }
