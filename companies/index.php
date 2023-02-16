@@ -5,15 +5,15 @@ require_once('../utils/prefectures.php');
 require_once('../utils/data_per_page.php');
 
 // 会社テーブルにデータがあるかチェック（$companyiesExistでHTML表示を切り替える）
-$countStmt = $db->query('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL');
-$count = $countStmt->fetch(PDO::FETCH_ASSOC);
 $companiesExist = false;
+$companiesCountStmt = $db->query('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL');
+$companyCount = $companiesCountStmt->fetch(PDO::FETCH_ASSOC);
 
 // 会社データが存在する場合の処理
-if ($count['cnt']) {
+if ($companyCount['cnt']) {
     $companiesExist = true;
     // 会社データの総数を１ページに表示するデータ数で割り、最大ページ数を出す
-    $maxPage = ceil($count['cnt'] / DATA_PER_PAGE);
+    $maxPage = ceil($companyCount['cnt'] / DATA_PER_PAGE);
     // pageパラメータの値をバリデーション
     if (isset($_GET['page'])) {
         if (!preg_match('/^[1-9]+\d*$/', $_GET['page'])) {
@@ -32,7 +32,7 @@ if ($count['cnt']) {
     $showButton = $maxPage > 1 ? true : false;
 
     $desc = false;
-    $listStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL LIMIT :start,10');
+    $companiesStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL LIMIT :start,10');
     // クエリパラメータにorderがあった場合の処理
     if (isset($_GET['order'])) {
         if ($_GET['order'] !== 'desc') {
@@ -40,12 +40,12 @@ if ($count['cnt']) {
             exit();
         }
         $desc = true;
-        $listStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL ORDER BY id DESC LIMIT :start,10');
+        $companiesStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL ORDER BY id DESC LIMIT :start,10');
     }
 
-    $listStmt->bindParam(':start', $start, PDO::PARAM_INT);
-    $listStmt->execute();
-    $companies = $listStmt->fetchAll(PDO::FETCH_ASSOC);
+    $companiesStmt->bindParam(':start', $start, PDO::PARAM_INT);
+    $companiesStmt->execute();
+    $companies = $companiesStmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 
@@ -75,7 +75,7 @@ if ($count['cnt']) {
                 <div class="table-wrapper">
                     <table>
                         <tr class="list-title title">
-                            <?php if ($count['cnt'] == 1) :?>
+                            <?php if ($companyCount['cnt'] == 1) :?>
                                 <th class="order t-id">会社番号</th>
                             <?php else :?>
                                 <?php if ($desc) :?>
