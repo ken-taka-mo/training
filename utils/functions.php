@@ -122,6 +122,11 @@ function check_invoice($array)
     return $checkedArray;
 }
 
+function is_exact_id($id)
+{
+    return preg_match('/^[1-9]+\d*$/', $id);
+}
+
 ?>
 
 <script type="text/javascript">
