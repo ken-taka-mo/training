@@ -4,19 +4,19 @@ require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
 require_once('../utils/data_per_page.php');
 
+// 会社テーブルにデータがあるかチェック（$companyiesExistでHTML表示を切り替える）
 $countStmt = $db->query('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL');
-$count = $countStmt->fetch();
-if ($count['cnt'] < 1) {
-    $companiesExist = false;
-} else {
+$count = $countStmt->fetch(PDO::FETCH_ASSOC);
+$companiesExist = false;
+
+// 会社データが存在する場合の処理
+if ($count['cnt']) {
     $companiesExist = true;
-
-    $page = 1;
+    // 会社データの総数を１ページに表示するデータ数で割り、最大ページ数を出す
     $maxPage = ceil($count['cnt'] / DATA_PER_PAGE);
-    $maxPage ?? 1;
-
-    if (!empty($_GET['page'])) {
-        if (!preg_match('/^[1-9]+[0]*$/', $_GET['page'])) {
+    // pageパラメータの値をバリデーション
+    if (isset($_GET['page'])) {
+        if (!preg_match('/^[1-9]+\d*$/', $_GET['page'])) {
             header('Location: index.php');
             exit();
         }
@@ -25,36 +25,27 @@ if ($count['cnt'] < 1) {
             header("Location: index.php?page={$maxPage}");
             exit();
         }
-
-        $page = $_GET['page'];
-        $page = max($page, 1);
-        $page = min($page, $maxPage);
     }
 
+    $page = $_GET['page'] ?? 1;
     $start = ($page - 1) * DATA_PER_PAGE;
+    $showButton = $maxPage > 1 ? true : false;
 
-    // ??
-    $showButton = false;
-    if ($maxPage > 1) {
-        $showButton = true;
-    }
-
+    $desc = false;
+    $listStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL LIMIT :start,10');
+    // クエリパラメータにorderがあった場合の処理
     if (isset($_GET['order'])) {
-        if ($_GET['order'] == 'desc') {
-            $desc = true;
-            $listStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL ORDER BY id DESC LIMIT :start,10');
-        } else {
+        if ($_GET['order'] !== 'desc') {
             header('Location: index.php');
             exit();
         }
-    } else {
-        $desc = false;
-        $listStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL LIMIT :start,10');
+        $desc = true;
+        $listStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL ORDER BY id DESC LIMIT :start,10');
     }
 
     $listStmt->bindParam(':start', $start, PDO::PARAM_INT);
     $listStmt->execute();
-    $companies = $listStmt->fetchAll();
+    $companies = $listStmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 
