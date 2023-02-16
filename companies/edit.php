@@ -19,9 +19,6 @@ if (!$companyCount['cnt']) {
 }
 
 $post = $_POST;
-$items = [];
-$error = [];
-
 if (empty($post)) {
     // idの会社データを取得（会社名、担当者名、電話番号、郵便番号、都道府県コード、住所、メールアドレス、プレフィックス）
     $detailStmt = $db->prepare('SELECT name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix FROM companies WHERE id=:id');
