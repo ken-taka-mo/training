@@ -3,33 +3,33 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
 
-$id = $_GET['id'];
-
-if (empty($id) || !preg_match('/^[1-9]+[0]*$/', $id)) {
+// クエリパラメータからidを受け取る
+if (!is_exact_id($_GET['id'])) {
     header('Location: index.php');
     exit();
 }
-
+$id = $_GET['id'];
+// 受け取ったidの会社データが存在するかチェック
 $countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
 $countStmt->execute([':id' => $id]);
-$count = $countStmt->fetch();
-if ($count['cnt'] < 1) {
+$count = $countStmt->fetch(PDO::FETCH_ASSOC);
+if (!$count['cnt']) {
     header('Location: index.php');
     exit();
 }
-
-
-
-$detailStmt = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix FROM companies WHERE id=:id');
-$detailStmt->bindParam(':id', $id, PDO::PARAM_INT);
-$detailStmt->execute();
-$details = $detailStmt->fetch();
 
 $post = $_POST;
 $items = [];
 $error = [];
 
 if (empty($post)) {
+    // idの会社データを取得（会社名、担当者名、電話番号、郵便番号、都道府県コード、住所、メールアドレス、プレフィックス）
+    $detailStmt = $db->prepare('SELECT name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix FROM companies WHERE id=:id');
+    $detailStmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $detailStmt->execute();
+    $details = $detailStmt->fetch(PDO::FETCH_ASSOC);
+
+    // 会社データをフォームの初期値に設定する
     $name = $details['name'];
     $managerName = $details['manager_name'];
     $phoneNumber = $details['phone_number'];
@@ -44,6 +44,7 @@ if (empty($post)) {
     // 会社テーブルのバリデーションチェック
     $error = check_company($items);
 
+    // 入力された値をフォームの初期値に設定する
     $name = $items['name'];
     $managerName = $items['manager_name'];
     $phoneNumber = $items['phone_number'];
@@ -52,6 +53,7 @@ if (empty($post)) {
     $address = $items['address'];
     $mailAddress = $items['mail_address'];
 
+    // バリデーションで問題がなければidの会社データをupdate
     if (empty($error)) {
         $updateStmt = $db->prepare('UPDATE companies SET
         name=:name,
@@ -97,7 +99,7 @@ if (empty($post)) {
                 <div class="form-items">
                     <div class="item">
                         <h3 class="item-title">ID</h3>
-                        <div class="form-wrapper"><p><?= h($details['id'])?></p></div>
+                        <div class="form-wrapper"><p><?= h($id)?></p></div>
                     </div>
                     <div class="item">
                         <h3 class="item-title">会社名</h3>

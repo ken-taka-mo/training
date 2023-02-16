@@ -4,63 +4,50 @@ require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
 require_once('../utils/data_per_page.php');
 
-if (empty($_GET['name'])) {
+if (!isset($_GET['name']) || preg_match('/^[\s]*$/', $_GET['name'])) {
     header('Location: index.php');
     exit();
 }
 
-if (!preg_match('/^[\s\n\t]*$/', $_GET['name'])) {
-    $getName = mb_convert_kana($_GET['name'], "n");
-    $keyword = "%{$getName}%";
-}
-
+// 全角数字を半角数字に変換後getNameに代入
+$getName = mb_convert_kana($_GET['name'], "n");
+// sql文用にgetNameを変換
+$keyword = "%{$getName}%";
+// 検索ワードを含んだ会社名を持つデータ数を求める
 $counts = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE deleted is NULL AND name LIKE :keyword ');
 $counts->execute([':keyword' => $keyword]);
 $count = $counts->fetch();
 
-if ($count['cnt'] < 1) {
-    $companyExist = false;
-} else {
+$companyExist = false;
+if ($count['cnt']) {
     $companyExist = true;
-    $page = 1;
     $maxPage = ceil($count['cnt'] / DATA_PER_PAGE);
-    if ($maxPage == 0) {
-        $maxPage = 1;
-    }
+    // pageクエリのバリデーション
     if (isset($_GET['page'])) {
-        if (!preg_match('/^[0-9]+$/', $_GET['page']) || preg_match('/^[0]*$/', $_GET['page'])) {
+        if (!preg_match('/^[1-9]+\d*$/', $_GET['page'])) {
             header('Location: serach.php?name=' . h($getName));
             exit();
         }
-
         if ($_GET['page'] > $maxPage) {
             header('Location: search.php?name=' . h($getName) . '&page=' . h($maxPage));
             exit();
-        } else {
-            $page = $_GET['page'];
-            $page = max($page, 1);
-            $page = min($page, $maxPage);
         }
     }
 
+    $page = $_GET['page'] ?? 1;
     $start = ($page - 1) * DATA_PER_PAGE;
+    $showButton = $maxPage > 1 ? true : false;
 
-    $showButton = false;
-    if ($maxPage > 1) {
-        $showButton = true;
-    }
-
+    $desc = false;
+    $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL AND name LIKE :keyword LIMIT :start,10');
+    // 降順切り替えの処理
     if (isset($_GET['order'])) {
-        if ($_GET['order'] == 'desc') {
-            $desc = true;
-            $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL AND name LIKE :keyword ORDER BY id DESC LIMIT :start,10');
-        } else {
+        if (!$_GET['order'] == 'desc') {
             header('Location: search.php?name=' . h($getName));
             exit();
         }
-    } else {
-        $desc = false;
-        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL AND name LIKE :keyword LIMIT :start,10');
+        $desc = true;
+        $statement = $db->prepare('SELECT id, name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address FROM companies WHERE deleted is NULL AND name LIKE :keyword ORDER BY id DESC LIMIT :start,10');
     }
 
     $statement->bindParam(':keyword', $keyword);

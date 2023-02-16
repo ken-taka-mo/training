@@ -4,14 +4,15 @@ require_once('../utils/prefectures.php');
 require_once('../dbconnect.php');
 session_start();
 
+// 会社登録ページで入力した値をセッションで受け取る。空だった場合は一覧ページに遷移。
 if (empty($_SESSION['register'])) {
     header('Location: index.php');
     exit();
-} else {
-    $register = $_SESSION['register'];
-    $prefectureCode = intval($register['prefecture_code']);
 }
+$register = $_SESSION['register'];
+$prefectureCode = intval($register['prefecture_code']);
 
+// 登録ボタンが押されたら会社テーブルにインサート
 if (!empty($_POST)) {
     $insertStmt = $db->prepare('INSERT INTO companies SET
     name=:name,
