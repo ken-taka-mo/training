@@ -9,22 +9,18 @@ if (!is_exact_id($_GET['id'])) {
     exit();
 }
 $id = $_GET['id'];
-// 受け取ったidの会社データが存在するかチェック
-$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
-$companyCountStmt->execute([':id' => $id]);
-$companyCount = $companyCountStmt->fetch(PDO::FETCH_ASSOC);
-if (!$companyCount['cnt']) {
-    header('Location: index.php');
-    exit();
-}
-
 $post = $_POST;
 if (empty($post)) {
     // idの会社データを取得（会社名、担当者名、電話番号、郵便番号、都道府県コード、住所、メールアドレス、プレフィックス）
     $detailStmt = $db->prepare('SELECT name, manager_name, phone_number, postal_code, prefecture_code, address, mail_address, prefix FROM companies WHERE id=:id');
     $detailStmt->bindParam(':id', $id, PDO::PARAM_INT);
     $detailStmt->execute();
+    // 受け取ったidの会社データが存在するかチェック
     $details = $detailStmt->fetch(PDO::FETCH_ASSOC);
+    if (!$details) {
+        header('Location: index.php');
+        exit();
+    }
 
     // 会社データをフォームの初期値に設定する
     $name = $details['name'];
