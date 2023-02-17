@@ -2,36 +2,38 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 session_start();
-
+// セッションに値がなければ会社一覧ページに遷移
 if (empty($_SESSION['new_invoice'])) {
-    header('Location: index.php');
+    header('Location: ../companeies/index.php');
     exit();
-} else {
-    $newInvoice = $_SESSION['new_invoice'];
-    $lastIdStmt = $db->prepare('SELECT no FROM invoices WHERE company_id=? ORDER BY id DESC LIMIT 1');
-    $lastIdStmt->bindParam(1, $newInvoice['company_id'], PDO::PARAM_INT);
-    $lastIdStmt->execute();
-    $lastId = $lastIdStmt->fetch();
-    if (isset($lastId['no'])) {
-        $nextNo = intval(substr($lastId['no'], -8)) + 1;
-    } else {
-        $nextNo = 1;
-    }
-    $tailNumber = sprintf('%08d', $nextNo);
-    $no = $newInvoice['prefix'] . '-i-' . $tailNumber;
 }
+$newInvoice = $_SESSION['new_invoice'];
+// 請求番号の下８桁を作成
+// 同じcompany_idを持つ末尾の請求データのnoを取得する
+$lastIdStmt = $db->prepare('SELECT no FROM invoices WHERE company_id=:company_id ORDER BY id DESC LIMIT 1');
+$lastIdStmt->bindParam('company_id', $newInvoice['company_id'], PDO::PARAM_INT);
+$lastIdStmt->execute();
+$lastId = $lastIdStmt->fetch(PDO::FETCH_ASSOC);
+// noの下８桁を切り取る　まだ請求データが存在しなければ１を代入
+$nextNo = isset($lastId['no']) ? intval(substr($lastId['no'], -8)) + 1 : 1;
+// ８桁になるまで0を先頭に代入
+$tailNumber = sprintf('%08d', $nextNo);
+// prefixと指定記号と$tailNumberで見積番号の作成
+$no = $newInvoice['prefix'] . '-i-' . $tailNumber;
 
+// 作成ボタンが押されたらinvoiceテーブルにinsert
 if (!empty($_POST)) {
-    $insertStmt = $db->prepare('INSERT INTO invoices SET company_id=?, no=?, title=?, total=?, payment_deadline=?, date_of_issue=?, quotation_no=?, status=?, created=NOW(), modified=NOW()');
-    $insertStmt->bindParam(1, $newInvoice['company_id']);
-    $insertStmt->bindParam(2, $no);
-    $insertStmt->bindParam(3, $newInvoice['title']);
-    $insertStmt->bindParam(4, $newInvoice['total'], PDO::PARAM_INT);
-    $insertStmt->bindParam(5, $newInvoice['payment_deadline']);
-    $insertStmt->bindParam(6, $newInvoice['date_of_issue']);
-    $insertStmt->bindParam(7, $newInvoice['quotation_no']);
-    $insertStmt->bindParam(8, $newInvoice['status'], PDO::PARAM_INT);
+    $insertStmt = $db->prepare('INSERT INTO invoices SET company_id=:company_id, no=:no, title=:title, total=:total, payment_deadline=:payment_deadline, date_of_issue=:date_of_issue, quotation_no=:quotation_no, status=:status, created=NOW(), modified=NOW()');
+    $insertStmt->bindParam(':company_id', $newInvoice['company_id']);
+    $insertStmt->bindParam(':no', $no);
+    $insertStmt->bindParam(':title', $newInvoice['title']);
+    $insertStmt->bindParam(':total', $newInvoice['total'], PDO::PARAM_INT);
+    $insertStmt->bindParam(':payment_deadline', $newInvoice['payment_deadline']);
+    $insertStmt->bindParam(':date_of_issue', $newInvoice['date_of_issue']);
+    $insertStmt->bindParam(':quotation_no', $newInvoice['quotation_no']);
+    $insertStmt->bindParam(':status', $newInvoice['status'], PDO::PARAM_INT);
     $insertStmt->execute();
+    // セッションを削除
     unset($_SESSION['new_quotation']);
     header("Location: index.php?id={$newInvoice['company_id']}");
     exit();
