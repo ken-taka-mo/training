@@ -496,6 +496,16 @@ form {
     margin-top: 5px;
 }
 
+.address-item input[type="submit"] {
+    height: 20px;
+    font-size: 12px;
+    color: black;
+    background-color: #efefef;
+    padding: 0 4px;
+    margin-top: 10px;
+    width: 60px;
+}
+
 .address-item select {
     height: 30px;
     margin-top: 5px;
