@@ -3,17 +3,17 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 session_start();
 
-$companyId = $_GET['id'];
-
-if (empty($companyId) || !preg_match('/^[1-9]+[0]*$/', $companyId)) {
+if (!is_exact_id($_GET['id'])) {
     header('Location: ../companies/index.php');
     exit();
 }
+$companyId = $_GET['id'];
 
-$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=? AND deleted is NULL');
-$countStmt->execute([$companyId]);
-$count = $countStmt->fetch();
-if ($count['cnt'] < 1) {
+
+$companyDataStmt = $db->prepare('SELECT name, manager_name, prefix FROM companies WHERE id=?');
+$companyDataStmt->execute([$companyId]);
+$companyData = $companyDataStmt->fetch();
+if (!$companyData) {
     header('Location: ../companies/index.php');
     exit();
 }
@@ -24,10 +24,6 @@ $paymentDeadline = '';
 $dateOfIssue = '';
 $quotationNo = '';
 $status = '';
-
-$companyDataStmt = $db->prepare('SELECT name, manager_name, prefix FROM companies WHERE id=?');
-$companyDataStmt->execute([$companyId]);
-$companyData = $companyDataStmt->fetch();
 
 $quotationsNoStmt = $db->prepare('SELECT no FROM quotations WHERE company_id=?');
 $quotationsNoStmt->execute([$companyId]);
