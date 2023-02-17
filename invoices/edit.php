@@ -2,29 +2,32 @@
 require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 
+// パラメータのバリデーション(no)
 $no = $_GET['no'];
 if (!isset($no) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-i-)[0-9]{8}$/', $no)) {
     header('Location: ../companies/index.php');
     exit();
 }
-
-
-$invoiceCntStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE no=?');
-$invoiceCntStmt->execute([$no]);
-$invoiceCnt = $invoiceCntStmt->fetch();
-if ($invoiceCnt['cnt'] < 1) {
+// $noを持つ請求データの取得
+$invoiceDataStmt = $db->prepare('SELECT id, title, company_id, total, payment_deadline, date_of_issue, no, quotation_no, status FROM invoices WHERE no=:no AND deleted is NULL');
+$invoiceDataStmt->execute([':no' => $no]);
+$invoiceData = $invoiceDataStmt->fetch(PDO::FETCH_ASSOC);
+// なければ会社一覧ページに遷移
+if (!$invoiceData) {
+    header('Location: ../companies/index.php');
+    exit();
+}
+// company_idをidに持つ会社データの取得
+$companyDataStmt = $db->prepare('SELECT name, prefix FROM companies WHERE id=:company_id AND deleted is NULL');
+$companyDataStmt->execute(['company_id' => $invoiceData['company_id']]);
+$companyData = $companyDataStmt->fetch(PDO::FETCH_ASSOC);
+// なければ会社一覧ページに遷移
+if (!$companyData) {
     header('Location: ../companies/index.php');
     exit();
 }
 
-$invoiceDataStmt = $db->prepare('SELECT id, title, company_id, total, payment_deadline, date_of_issue, no, quotation_no, status FROM invoices WHERE no=?');
-$invoiceDataStmt->execute([$no]);
-$invoiceData = $invoiceDataStmt->fetch();
-
-$companyDataStmt = $db->prepare('SELECT name, prefix FROM companies WHERE id = ?');
-$companyDataStmt->execute(array($invoiceData['company_id']));
-$companyData = $companyDataStmt->fetch();
-
+// フォームの初期値
 $title = $invoiceData['title'];
 $total = $invoiceData['total'];
 $paymentDeadline = $invoiceData['payment_deadline'];
@@ -33,30 +36,30 @@ $status = $invoiceData['status'];
 $id = $invoiceData['id'];
 
 $post = $_POST;
-$items = [];
-$error = [];
-
 if (!empty($post)) {
+    // 全角スペース、全角数字を半角に
     $items = convert_half_width($post);
+    // バリデーションにかける
     $error = check_invoice($items);
 
+    // フォームの値に$itemsを代入
     $title = $items['title'];
     $total = $items['total'];
     $paymentDeadline = $items['payment_deadline'];
     $dateOfIssue = $items['date_of_issue'];
     $status = $items['status'];
 
-
+    // 問題なければupdate
     if (empty($error)) {
         $updateStmt = $db->prepare('UPDATE invoices SET
-        title=?, total=?, payment_deadline=?, date_of_issue=?, status=?, modified=NOW()
-        WHERE id=?');
-        $updateStmt->bindParam(1, $title);
-        $updateStmt->bindParam(2, $total, PDO::PARAM_INT);
-        $updateStmt->bindParam(3, $paymentDeadline);
-        $updateStmt->bindParam(4, $dateOfIssue);
-        $updateStmt->bindParam(5, $status, PDO::PARAM_INT);
-        $updateStmt->bindParam(6, $id, PDO::PARAM_INT);
+        title=:title, total=:total, payment_deadline=:payment_deadline, date_of_issue=:date_of_issue, status=:status, modified=NOW()
+        WHERE id=:id');
+        $updateStmt->bindParam(':title', $title);
+        $updateStmt->bindParam(':total', $total, PDO::PARAM_INT);
+        $updateStmt->bindParam(':payment_deadline', $paymentDeadline);
+        $updateStmt->bindParam(':date_of_issue', $dateOfIssue);
+        $updateStmt->bindParam(':status', $status, PDO::PARAM_INT);
+        $updateStmt->bindParam(':id', $id, PDO::PARAM_INT);
         $updateStmt->execute();
         header("Location: index.php?id={$invoiceData['company_id']}");
         exit();

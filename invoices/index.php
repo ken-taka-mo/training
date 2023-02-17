@@ -3,83 +3,68 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/data_per_page.php');
 
-$id = $_GET['id'];
-if (empty($id) || !preg_match('/^[1-9]+[0]*$/', $id)) {
+// パラメータのバリデーション
+if (!is_exact_id($_GET['id'])) {
+    header('Location: ../companies/index.php');
+    exit();
+}
+$companyId = $_GET['id'];
+
+// 会社名・担当者名を取得　なければ会社一覧ページに遷移
+$companyDataStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=:id AND deleted is NULL');
+$companyDataStmt->execute(['id' => $companyId]);
+$companyData = $companyDataStmt->fetch(PDO::FETCH_ASSOC);
+if (!$companyData) {
     header('Location: ../companies/index.php');
     exit();
 }
 
+// idをcompany_idに持つ請求データを全て取得
+$invoicesStmt = $db->prepare('SELECT no, title, total, payment_deadline, date_of_issue, quotation_no, status FROM invoices WHERE company_id=:company_id AND deleted is NULL');
+$invoicesStmt->bindParam('company_id', $companyId, PDO::PARAM_INT);
+$invoicesStmt->execute();
+$invoices = $invoicesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-$companyCountStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM companies WHERE id=:id AND deleted is NULL');
-$companyCountStmt-> bindParam(':id', $id, PDO::PARAM_INT);
-$companyCountStmt->execute();
-$companyCnt = $companyCountStmt->fetch();
-if ($companyCnt['cnt'] < 1) {
-    header('Location: ../companies/index.php');
-    exit();
-}
+// 請求データがいくつあるか
+$invoicesCount = count($invoices) ?? 0;
 
-$countStmt = $db->prepare('SELECT COUNT(*) AS cnt FROM invoices WHERE company_id=:company_id AND deleted is NULL');
-$countStmt->bindParam('company_id', $id, PDO::PARAM_INT);
-$countStmt->execute();
-$count = $countStmt->fetch();
-if ($count['cnt'] < 1) {
-    $invoicesExist = false;
-} else {
-    $invoicesExist = true;
-    $listStmt = $db->prepare('SELECT no, title, total, payment_deadline, date_of_issue, quotation_no, status FROM invoices WHERE company_id=:company_id AND deleted is NULL');
-    $listStmt->bindParam('company_id', $id, PDO::PARAM_INT);
-    $listStmt->execute();
-    $invoices = $listStmt->fetchAll();
-}
+// 請求データが１つ以上ある場合の処理
+if ($invoicesCount) {
+    // 最大ページ = データの総数 / 1ページの表示データ数 小数点以下切り上げる
+    $maxPage = ceil($invoicesCount / DATA_PER_PAGE);
+    // パラメータ(page)のバリデーション
+    if (isset($_GET['page'])) {
+        if (isset($_GET['page']) && !preg_match('/^[1-9]+\d*$/', $_GET['page'])) {
+            header("Location: index.php?id={$companyId}");
+            exit();
+        }
 
-$page = 1;
-$maxPage = ceil($count['cnt'] / DATA_PER_PAGE);
-if ($maxPage == 0) {
-    $maxPage = 1;
-}
-
-if (isset($_GET['page'])) {
-    if (!preg_match('/^[0-9]+$/', $_GET['page']) || preg_match('/^[0]*$/', $_GET['page'])) {
-        header("Location: index.php?id={$id}");
-        exit();
+        if ($_GET['page'] > $maxPage) {
+            header("Location: index.php?id={$companyId}&page={$maxPage}");
+            exit();
+        }
     }
 
-    if ($_GET['page'] > $maxPage) {
-        header("Location: index.php?id={$id}&page={$maxPage}");
-        exit();
+    $page = $_GET['page'] ?? 1;
+    $start = ($page - 1) * DATA_PER_PAGE;
+    $end = $start + (DATA_PER_PAGE - 1);
+    if ($end >= $invoicesCount) {
+        $end = $invoicesCount - 1;
     }
-    $page = $_GET['page'];
-    $page = max($page, 1);
-    $page = min($page, $maxPage);
-}
 
-$start = ($page - 1) * DATA_PER_PAGE;
-$end = $start + (DATA_PER_PAGE - 1);
-if ($end >= $count['cnt']) {
-    $end = $count['cnt'] - 1;
-}
+    $showButton = $maxPage > 1 ? true : false;
 
-$showButton = false;
-if ($maxPage > 1) {
-    $showButton = true;
-}
-
-$companyDataStmt = $db->prepare('SELECT name, manager_name FROM companies WHERE id=:id');
-$companyDataStmt->execute(['id' => $id]);
-$companyData = $companyDataStmt->fetch();
-
-if (isset($_GET['order'])) {
-    if ($_GET['order'] == 'desc') {
+    $desc = false;
+    if (isset($_GET['order'])) {
+        if (!$_GET['order'] == 'desc') {
+            header('index.php');
+            exit();
+        }
         $desc = true;
         $invoices = array_reverse($invoices);
-    } else {
-        header('index.php');
-        exit();
     }
-} else {
-    $desc = false;
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -102,9 +87,9 @@ if (isset($_GET['order'])) {
                 </div>
             </div>
             <div class="menu">
-                <a href="create.php?id=<?= $id ?>" class="btn">新規登録</a>
+                <a href="create.php?id=<?= $companyId ?>" class="btn">新規登録</a>
                 <form action="search.php" method="GET" class="search-total">
-                    <input type="hidden" name="id" value=<?= $id?>>
+                    <input type="hidden" name="id" value=<?= $companyId?>>
                     <span>金額検索(半角)</span>
                     <input type="text" class="search-total" name="min" maxlength="9" placeholder="下限">
                     <span>~</span>
@@ -112,17 +97,17 @@ if (isset($_GET['order'])) {
                     <input class="btn-search" type="submit" value="検索">
                 </form>
             </div>
-            <?php if ($invoicesExist) :?>
+            <?php if ($invoicesCount) :?>
             <div class="table-wrapper">
                 <table>
                     <tr class="title list-title">
-                        <?php if ($count['cnt'] == 1) :?>
+                        <?php if ($invoicesCount == 1) :?>
                             <th class="order i-id">請求番号</th>
                         <?php else :?>
                             <?php if ($desc) :?>
-                                <th class="order i-id"><a href="index.php?id=<?= h($id) ?>">請求番号  ▼</a></th>
+                                <th class="order i-id"><a href="index.php?id=<?= h($companyId) ?>">請求番号  ▼</a></th>
                             <?php else :?>
-                                <th class="order i-id"><a href="index.php?id=<?= h($id) ?>&order=desc">請求番号  ▲</a></th>
+                                <th class="order i-id"><a href="index.php?id=<?= h($companyId) ?>&order=desc">請求番号  ▲</a></th>
                             <?php endif ?>
                         <?php endif?>
                         <th class="i-name">請求名</th>
@@ -164,22 +149,22 @@ if (isset($_GET['order'])) {
                 <?php if ($showButton) :?>
                     <?php if ($desc) :?>
                         <?php if ($page <= 1) :?>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
+                            <a href="index.php?id=<?= h($companyId) ?>&page=<?= $page +1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
                         <?php elseif ($page >= $maxPage) :?>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page -1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
+                            <a href="index.php?id=<?= h($companyId) ?>&page=<?= $page -1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
                         <?php elseif ($page == $maxPage) :?>
                         <?php else :?>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page -1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
+                            <a href="index.php?id=<?= h($companyId) ?>&page=<?= $page -1?>&order=desc" class="prev p-nav"><span>&larr;</span>前へ</a>
+                            <a href="index.php?id=<?= h($companyId) ?>&page=<?= $page +1?>&order=desc" class="next p-nav">次へ<span>&rarr;</span></a>
                         <?php endif?>
                     <?php else :?>
                         <?php if ($page <= 1) :?>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>" class="next p-nav">次へ<span>&rarr;</span></a>
+                            <a href="index.php?id=<?= h($companyId) ?>&page=<?= $page +1?>" class="next p-nav">次へ<span>&rarr;</span></a>
                         <?php elseif ($page >= $maxPage) :?>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page -1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
+                            <a href="index.php?id=<?= h($companyId) ?>&page=<?= $page -1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
                         <?php else :?>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page -1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
-                            <a href="index.php?id=<?= h($id) ?>&page=<?= $page +1?>" class="next p-nav">次へ<span>&rarr;</span></a>
+                            <a href="index.php?id=<?= h($companyId) ?>&page=<?= $page -1?>" class="prev p-nav"><span>&larr;</span>前へ</a>
+                            <a href="index.php?id=<?= h($companyId) ?>&page=<?= $page +1?>" class="next p-nav">次へ<span>&rarr;</span></a>
                         <?php endif?>
                     <?php endif?>
                 <?php endif?>

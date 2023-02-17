@@ -3,21 +3,23 @@ require_once('../dbconnect.php');
 require_once('../utils/functions.php');
 session_start();
 
+// パラメータidのバリデーション
 if (!is_exact_id($_GET['id'])) {
     header('Location: ../companies/index.php');
     exit();
 }
 $companyId = $_GET['id'];
 
-
-$companyDataStmt = $db->prepare('SELECT name, manager_name, prefix FROM companies WHERE id=?');
-$companyDataStmt->execute([$companyId]);
-$companyData = $companyDataStmt->fetch();
+// 会社名・担当者名・プレフィックスを取得
+$companyDataStmt = $db->prepare('SELECT name, manager_name, prefix FROM companies WHERE id=:company_id AND deleted is NULL');
+$companyDataStmt->execute([':company_id' => $companyId]);
+$companyData = $companyDataStmt->fetch(PDO::FETCH_ASSOC);
 if (!$companyData) {
     header('Location: ../companies/index.php');
     exit();
 }
 
+// フォームの初期値
 $title = '';
 $total = '';
 $paymentDeadline = '';
@@ -25,8 +27,9 @@ $dateOfIssue = '';
 $quotationNo = '';
 $status = '';
 
-$quotationsNoStmt = $db->prepare('SELECT no FROM quotations WHERE company_id=?');
-$quotationsNoStmt->execute([$companyId]);
+// 見積番号セレクトボックスの値を取得し配列に代入
+$quotationsNoStmt = $db->prepare('SELECT no FROM quotations WHERE company_id=:company_id AND deleted is NULL');
+$quotationsNoStmt->execute(['company_id' => $companyId]);
 $quotationsNoArray = $quotationsNoStmt->fetchAll(PDO::FETCH_ASSOC);
 $qNoArray = [];
 for ($x = 0; $x < count($quotationsNoArray); $x++) {
@@ -34,25 +37,23 @@ for ($x = 0; $x < count($quotationsNoArray); $x++) {
 }
 
 $post = $_POST;
-$items = [];
-$error = [];
-
 if (!empty($post)) {
+    // 全角スペース、全角数字を半角に
     $items = convert_half_width($post);
+    // 請求データバリデーションにかける
     $error = check_invoice($items);
-
+    // 問題がなければ確認ページにセッションで値を渡す
     if (empty($error)) {
         $_SESSION['new_invoice'] = $items;
         header('Location: check.php');
         exit();
     }
 }
-
+// 書き戻しで遷移してきた場合セッションの値を$itemsに代入
 if (isset($_GET['action']) && $_GET['action'] == 'rewrite') {
     $items = $_SESSION['new_invoice'];
 }
-
-
+// $itemsに値がある場合フォームの初期値に$itemsを代入
 if (!empty($items)) {
     $title = $items['title'];
     $total = $items['total'];
@@ -120,7 +121,7 @@ if (!empty($items)) {
                     <div class="item">
                         <h3 class="item-title">見積番号<span>(半角数字)</span></h3>
                         <div class="q-no-wrapper">
-                            <?php if (count($qNoArray) < 1) :?>
+                            <?php if (!$qNoArray) :?>
                                 <p class="error">見積が作成されていません</p>
                             <?php else :?>
                                 <p><?=$companyData['prefix'] . '-q-'?></p>
