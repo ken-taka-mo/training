@@ -1,5 +1,5 @@
 <?php
-require_once('../dbconnect.php');
+require_once('../databese/dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
 require_once('../utils/data_per_page.php');

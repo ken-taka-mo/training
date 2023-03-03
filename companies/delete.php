@@ -1,5 +1,5 @@
 <?php
-require_once('../dbconnect.php');
+require_once('../databese/dbconnect.php');
 require_once('../utils/functions.php');
 // postで会社idを受け取る
 if (!is_exact_id($_POST['id'])) {

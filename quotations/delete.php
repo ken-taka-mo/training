@@ -1,5 +1,5 @@
 <?php
-require_once('../dbconnect.php');
+require_once('../databese/dbconnect.php');
 
 $no = $_POST['no'];
 $status = $_POST['status'];

@@ -1,7 +1,7 @@
 <?php
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
-require_once('../dbconnect.php');
+require_once('../databese/dbconnect.php');
 session_start();
 
 // 会社登録ページで入力した値をセッションで受け取る。空だった場合は一覧ページに遷移。
