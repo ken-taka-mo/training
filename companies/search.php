@@ -2,7 +2,7 @@
 require_once('../databese/dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
-require_once('../utils/data_per_page.php');
+require_once('../config/data_per_page.php');
 
 if (!isset($_GET['name']) || preg_match('/^[\s]*$/', $_GET['name'])) {
     header('Location: index.php');

@@ -1,7 +1,7 @@
 <?php
 require_once('../databese/dbconnect.php');
 require_once('../utils/functions.php');
-require_once('../utils/data_per_page.php');
+require_once('../config/data_per_page.php');
 // クエリパラメータのidをバリデーション後受け取る
 if (!is_exact_id($_GET['id'])) {
     header('Location: ../companies/index.php');
