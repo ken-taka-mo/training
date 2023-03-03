@@ -48,7 +48,7 @@ function check_company($array)
     }
 
     if (!preg_match('/^\d{7}$/', $array['postal_code'])) {
-        $invalidValArray['postal_code'] = '郵便番号は7桁の整数で入力してください';
+        $invalidValArray['postal_code'] = '郵便番号は7桁の半角数字で入力してください';
     }
 
     if ($array['prefecture_code'] < 1 && $array['prefecture_code'] > 47) {
@@ -61,7 +61,7 @@ function check_company($array)
 
     if (isset($array['prefix'])) {
         if (!preg_match('/^[a-zA-Z0-9]{1,8}$/', $array['prefix'])) {
-            $invalidValArray['prefix'] = 'プレフィックスは8字以内の英数字で入力してください';
+            $invalidValArray['prefix'] = 'プレフィックスは8字以内の半角英数字で入力してください';
         }
     }
     $invalidValArray += check_length_over($array, 'name', 64);
@@ -140,10 +140,33 @@ function get_address($items)
 }
 
 ?>
-
 <script type="text/javascript">
     function confirm_delete() {
         let answer = confirm("本当に削除しますか");
         return answer;
     }
+
+    function getAddress() {
+        const postalCodeInput = document.getElementById('postal_code');
+        postalCodeInput.addEventListener("input",function () {
+            let postalCode = postalCodeInput.value;
+            let stringValue = postalCode.toString();
+            let numberValue = Number(postalCode);
+            if (stringValue.length === 7 && Number.isInteger(numberValue)) {
+                async function callAddressApi() {
+                    let res = await fetch(`http://zipcloud.ibsnet.co.jp/api/search?zipcode=${postalCode}`);
+                    let resJson = await res.json();
+                    if (resJson.results) {
+                        let addressData = resJson.results[0];
+                        let prefectureCode = addressData.prefcode;
+                        let address = addressData.address2 + addressData.address3;
+                        console.log(resJson);
+                        document.getElementById('prefecture_code').value = prefectureCode
+                        document.getElementById('address').value = address;
+                    }
+                }
+                callAddressApi();
+            }
+        });
+    };
 </script>

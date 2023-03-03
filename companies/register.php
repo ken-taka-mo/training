@@ -18,29 +18,12 @@ $post = $_POST;
 if (!empty($post)) {
     // 入力された値の全角スペース、全角数字を半角に変換
     $items = convert_half_width($post);
-
-    // inputのnameで処理分け
-    // 自動入力ボタンが押された場合
-    if (isset($post['get_address'])) {
-        // apiで住所情報のjsonを配列して取得する
-        $addressArr = get_address($items);
-        // addressArrの中身がある場合はitemsの都道府県コードと市区町村を書き換え
-        if ($addressArr) {
-            $items['prefecture_code'] = $addressArr['prefecture_code'];
-            $items['address'] = $addressArr['address'];
-        } else {
-            $error['postal_code'] = 'もう一度郵便番号をご確認ください';
-        }
-    // 新規登録ボタンが押された場合
-    } elseif (isset($post['register'])) {
-        // 会社テーブルのバリデーションチェック
-        $error = check_company($items);
-        // バリデーションチェックで問題がなかった場合セッションに値を代入し確認ページへ遷移
-        if (empty($error)) {
-            $_SESSION['register'] = $items;
-            header('Location: check.php');
-            exit();
-        }
+    $error = check_company($items);
+    // バリデーションチェックで問題がなかった場合セッションに値を代入し確認ページへ遷移
+    if (empty($error)) {
+        $_SESSION['register'] = $items;
+        header('Location: check.php');
+        exit();
     }
 }
 
@@ -107,13 +90,12 @@ if (!empty($items)) {
                         <div class="address-item-wrapper">
                             <div class="address-item">
                                 <h4>郵便番号</h4>
-                                <input type="text" name="postal_code" class="short-input" maxlength="7" value=<?= h($postalCode) ?>>
-                                <span>(ハイフンなし)</span>
-                                <input class="btn-postal btn" type="submit" name="get_address" value="自動入力">
+                                <input type="text" name="postal_code" id="postal_code" class="short-input" maxlength="7" value=<?= h($postalCode) ?>>
+                                <span>(半角数字のみ・ハイフンなし)</span>
                             </div>
                             <div class="address-item">
                                 <h4>都道府県</h4>
-                                <select name="prefecture_code">
+                                <select name="prefecture_code" id="prefecture_code">
                                     <option value="">選択してください</option>
                                     <?php for ($i = 1; $i <= 47; $i++) :?>
                                         <?php if ($prefectureCode == $i) :?>
@@ -126,7 +108,7 @@ if (!empty($items)) {
                             </div>
                             <div class="address-item">
                                 <h4>市区町村</h4>
-                                <input type="text" name="address" value=<?= h($address) ?>>
+                                <input type="text" name="address" id="address" value=<?= h($address) ?>>
                             </div>
                         </div>
                     </div>
@@ -148,15 +130,18 @@ if (!empty($items)) {
                     <?php endif ?>
                     <div class="item">
                         <h3 class="item-title">プレフィックス</h3>
-                        <div class="form-wrapper"><input type="text" name="prefix" class="short-input" maxlength="8" value=<?= h($prefix) ?>><span class="prefix-span">(半角8桁以下)</soan></div>
+                        <div class="form-wrapper"><input type="text" name="prefix" class="short-input" maxlength="8" value=<?= h($prefix) ?>><span class="prefix-span">(半角英数字8文字以下)</soan></div>
                     </div>
                     <?php if (isset($error['prefix'])) :?>
                         <p class="error"><?= $error['prefix'] ?></p>
                     <?php endif ?>
                 </div>
-                <input class="btn btn-form" type="submit" name="register" value="新規登録">
+                <input class="btn btn-form" type="submit" value="新規登録">
             </form>
         </div>
     </main>
+    <script type="text/javascript">
+        getAddress();
+    </script>
 </body>
 </html>
