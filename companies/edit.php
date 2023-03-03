@@ -43,42 +43,30 @@ if (empty($post)) {
     $address = $items['address'];
     $mailAddress = $items['mail_address'];
 
-    if (isset($post['get_address'])) {
-        // apiで住所情報のjsonを配列して取得する
-        $addressArr = get_address($items);
-        // addressArrの中身がある場合はitemsの都道府県コードと市区町村を書き換え
-        if ($addressArr) {
-            $prefectureCode = $addressArr['prefecture_code'];
-            $address = $addressArr['address'];
-        } else {
-            $error['postal_code'] = 'もう一度郵便番号をご確認ください';
-        }
-    } elseif (isset($post['update'])) {
-        // 会社テーブルのバリデーションチェック
-        $error = check_company($items);
-        // バリデーションで問題がなければidの会社データをupdate
-        if (empty($error)) {
-            $updateStmt = $db->prepare('UPDATE companies SET
-            name=:name,
-            manager_name=:manager_name,
-            phone_number=:phone_number,
-            postal_code=:postal_code,
-            prefecture_code=:prefecture_code,
-            address=:address,
-            mail_address=:mail_address,
-            modified=NOW() WHERE id=:id');
-            $updateStmt->bindParam(':name', $name);
-            $updateStmt->bindParam(':manager_name', $managerName);
-            $updateStmt->bindParam(':phone_number', $phoneNumber);
-            $updateStmt->bindParam(':postal_code', $postalCode);
-            $updateStmt->bindParam(':prefecture_code', $prefectureCode, PDO::PARAM_INT);
-            $updateStmt->bindParam(':address', $address);
-            $updateStmt->bindParam(':mail_address', $mailAddress);
-            $updateStmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $updateStmt->execute();
-            header('Location: index.php');
-            exit();
-        }
+    // 会社テーブルのバリデーションチェック
+    $error = check_company($items);
+    // バリデーションで問題がなければidの会社データをupdate
+    if (empty($error)) {
+        $updateStmt = $db->prepare('UPDATE companies SET
+        name=:name,
+        manager_name=:manager_name,
+        phone_number=:phone_number,
+        postal_code=:postal_code,
+        prefecture_code=:prefecture_code,
+        address=:address,
+        mail_address=:mail_address,
+        modified=NOW() WHERE id=:id');
+        $updateStmt->bindParam(':name', $name);
+        $updateStmt->bindParam(':manager_name', $managerName);
+        $updateStmt->bindParam(':phone_number', $phoneNumber);
+        $updateStmt->bindParam(':postal_code', $postalCode);
+        $updateStmt->bindParam(':prefecture_code', $prefectureCode, PDO::PARAM_INT);
+        $updateStmt->bindParam(':address', $address);
+        $updateStmt->bindParam(':mail_address', $mailAddress);
+        $updateStmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $updateStmt->execute();
+        header('Location: index.php');
+        exit();
     }
 }
 ?>
@@ -131,13 +119,12 @@ if (empty($post)) {
                         <div class="address-item-wrapper">
                             <div class="address-item">
                                 <h4>郵便番号<span>(半角)</span></h4>
-                                <input type="text" name="postal_code" class="short-input" maxlength="7" value=<?= h($postalCode) ?>>
+                                <input type="text" name="postal_code" class="short-input" maxlength="7" id="postal_code" value=<?= h($postalCode) ?>>
                                 <span>(ハイフンなし)</span>
-                                <input class="btn-postal btn" type="submit" name="get_address" value="自動入力">
                             </div>
                             <div class="address-item">
                                 <h4>都道府県</h4>
-                                <select name="prefecture_code">
+                                <select name="prefecture_code" id="prefecture_code">
                                     <?php for ($i = 1; $i <= 47; $i++) :?>
                                         <?php if ($prefectureCode == $i) :?>
                                             <option value=<?= $i ?> selected><?= PREFECTURES[$i] ?></option>
@@ -149,7 +136,7 @@ if (empty($post)) {
                             </div>
                             <div class="address-item">
                                 <h4>市区町村</h4>
-                                <input type="text" name="address" value=<?= h($address) ?>>
+                                <input type="text" name="address" id="address" value=<?= h($address) ?>>
                             </div>
                         </div>
                     </div>
@@ -170,9 +157,12 @@ if (empty($post)) {
                         <p class="error"><?= $error['mail_address'] ?></p>
                     <?php endif ?>
                 </div>
-                <input class="btn btn-form" type="submit" name="update" value="更新">
+                <input class="btn btn-form" type="submit" value="更新">
             </form>
         </div>
     </main>
+    <script type="text/javascript">
+        getAddress();
+    </script>
 </body>
 </html>
