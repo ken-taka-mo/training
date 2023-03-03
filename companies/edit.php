@@ -162,6 +162,6 @@ if (empty($post)) {
             </form>
         </div>
     </main>
-    <script type="text/javascript" src="../js/functions/getAddress.js"></script>
+    <script type="text/javascript" src="../js/getAddress.js"></script>
 </body>
 </html>

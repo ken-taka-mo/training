@@ -17,18 +17,6 @@ function convert_half_width($array)
     return $halvedArray;
 }
 
-function get_address($items)
-{
-    $json = file_get_contents("http://zipcloud.ibsnet.co.jp/api/search?zipcode={$items['postal_code']}");
-    $json = mb_convert_encoding($json, 'UTF8');
-    $jsonArr = json_decode($json, true);
-    if ($jsonArr['results']) {
-        $addressArr = $jsonArr['results'][0];
-        return ['prefecture_code' => $addressArr['prefcode'], 'address' => $addressArr['address2'] . $addressArr['address3']];
-    }
-    return false;
-}
-
 ?>
 <script type="text/javascript">
     function confirm_delete() {
