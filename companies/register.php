@@ -1,7 +1,6 @@
 <?php
 require_once('../utils/prefectures.php');
 require_once('../utils/functions.php');
-require_once('../utils/columns.php');
 session_start();
 
 // 各入力データを初期化（フォームの初期値)

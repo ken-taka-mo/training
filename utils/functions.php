@@ -1,5 +1,5 @@
 <?php
-require_once('columns.php');
+require_once('../config/columns.php');
 // htmlタグの入力を変換する
 function h($value)
 {
