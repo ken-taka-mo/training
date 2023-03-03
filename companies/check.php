@@ -1,6 +1,6 @@
 <?php
 require_once('../utils/functions.php');
-require_once('../utils/prefectures.php');
+require_once('../config/prefectures.php');
 require_once('../databese/dbconnect.php');
 session_start();
 
