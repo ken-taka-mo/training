@@ -140,8 +140,6 @@ if (!empty($items)) {
             </form>
         </div>
     </main>
-    <script type="text/javascript">
-        getAddress();
-    </script>
+    <script type="text/javascript" src="../js/functions/getAddress.js"></script>
 </body>
 </html>
