@@ -191,7 +191,7 @@ if ($count) {
                 <?php endif?>
             </div>
             <?php else :?>
-                <?php include("../no_data.php") ?>
+                <?php include("../common/no_data.php") ?>
             <?php endif ?>
         </div>
     </main>
