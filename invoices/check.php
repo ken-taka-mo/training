@@ -1,5 +1,5 @@
 <?php
-require_once('../dbconnect.php');
+require_once('../databese/dbconnect.php');
 require_once('../utils/functions.php');
 session_start();
 // セッションに値がなければ会社一覧ページに遷移

@@ -1,5 +1,5 @@
 <?php
-require_once('../dbconnect.php');
+require_once('../databese/dbconnect.php');
 // パラメータのバリデーション(no)
 if (empty($_POST['no']) || !preg_match('/^[a-zA-Z0-9]{1,8}?(-i-)\d{8}$/', $_POST['no'])) {
     header('Location: ../companies/index.php');

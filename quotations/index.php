@@ -1,5 +1,5 @@
 <?php
-require_once('../dbconnect.php');
+require_once('../databese/dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/data_per_page.php');
 // クエリパラメータのidをバリデーション後受け取る
