@@ -1,4 +1,5 @@
 <?php
+//カラム名にに日本語紐づけ
 const COLUMNS = [
     'name' => "会社名",
     'manager_name' => "担当者名",
