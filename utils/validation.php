@@ -1,5 +1,7 @@
 <?php
 require_once('../config/columns.php');
+
+
 // 入力が空かチェック
 function check_empty($array)
 {
@@ -105,4 +107,10 @@ function check_invoice($array)
     $checkedArray += check_empty($array);
     $checkedArray += $invalidValArray;
     return $checkedArray;
+}
+
+// idの値が有効か
+function is_exact_id($id)
+{
+    return preg_match('/^[1-9]+\d*$/', $id);
 }
