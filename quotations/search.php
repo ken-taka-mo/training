@@ -1,6 +1,7 @@
 <?php
 require_once('../databese/dbconnect.php');
 require_once('../utils/functions.php');
+require_once('../utils/validation.php');
 require_once('../config/data_per_page.php');
 
 $id = $_GET['id'];

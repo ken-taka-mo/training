@@ -1,6 +1,8 @@
 <?php
 require_once('../databese/dbconnect.php');
 require_once('../utils/functions.php');
+require_once('../utils/validation.php');
+
 // postで会社idを受け取る
 if (!is_exact_id($_POST['id'])) {
     header('Location: index.php');

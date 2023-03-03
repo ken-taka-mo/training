@@ -17,11 +17,6 @@ function convert_half_width($array)
     return $halvedArray;
 }
 
-function is_exact_id($id)
-{
-    return preg_match('/^[1-9]+\d*$/', $id);
-}
-
 function get_address($items)
 {
     $json = file_get_contents("http://zipcloud.ibsnet.co.jp/api/search?zipcode={$items['postal_code']}");
