@@ -2,7 +2,7 @@
 require_once('../databese/dbconnect.php');
 require_once('../utils/functions.php');
 require_once('../utils/prefectures.php');
-require_once('../utils/data_per_page.php');
+require_once('../config/data_per_page.php');
 
 // 会社テーブルにデータがあるかチェック（$companyiesExistでHTML表示を切り替える）
 $companiesExist = false;
